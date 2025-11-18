@@ -1,11 +1,11 @@
 Package: NanoQuRe
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Quality Control for Nanopore Sequencing Data
 Version: 0.1.0
 Authors@R: c(
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Alicja", "Stachurska",
+      email = "ala.stachurska04@gmail.com",
       role = c("aut", "cre")
     )
   )
