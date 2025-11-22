@@ -1,20 +1,12 @@
 
-
-
-#' Title
-#'
-#' @param data
-#'
-#' @returns
-#' @export
-#'
-#' @examples
-#'
-basic_table <- function(data){
-
-  b_table <- data %>%  data$run_id + select(max(data$start_time + data$duration)) + nrow(data)
-
-  return(b_table)
+basic_table <- function(ligase_data){
+  ligase_data %>%
+  summarise(
+  "run id" = first(run_id),
+  "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
+  "number of reads" = n()
+  )
 }
 
-basic_table(ligase_data)
+pro_table <- basic_table(ligase_data)
+
