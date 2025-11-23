@@ -1,6 +1,6 @@
 Package: NanoQuRe
 Type: Package
-Title: Quality Control for Nanopore Sequencing Data
+Title: Quality Control for Oxford Nanopore Sequencing
 Version: 0.1.0
 Authors@R: c(
     person(
@@ -16,4 +16,3 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/All-ice0/NanoQuRe
 BugReports: https://github.com/All-ice0/NanoQuRe/issues
-RoxygenNote: 7.3.2
