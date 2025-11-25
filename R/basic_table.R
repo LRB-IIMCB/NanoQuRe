@@ -5,8 +5,21 @@ ligase_induro <- read_tsv("/mnt/nanopore/raw_data/libraries_tests/250320_ligaseT
 
 seqsum_database = list(ligase_ela, ligase_induro)
 
+#assertthat::`%has_name%`()
 
+#' Basic Table
+#' From a list of provided sequencing summaries it generates a database with basic table (contains data such as: run id, duration, number of reads) for each sequencing summary
+#' @param my_data
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 basic_table <- function(my_data){
+  assertthat::not_empty(my_data$run_id)
+  assertthat::not_empty(my_data$start_time)
+  assertthat::not_empty(my_data$duration)
+
   my_data %>%
   summarise(
   "run id" = first(run_id),
@@ -15,15 +28,9 @@ basic_table <- function(my_data){
   )
 }
 
-for (n in seqsum_database)
-{
-  basic_table(n)
-
-}
+btable_database_lapply <- lapply(seqsum_database, basic_table)
 
 
-"""
-table_ela <- basic_table(ligase_ela)
-table_induro <- basic_table(ligase_induro)
 
-"""
+#assertthat::assert_that(assertive::has_rows(samples_table),msg = "Empty data frame provided as an input (samples_table). Please provide samples_table describing data to load")
+
