@@ -24,18 +24,38 @@ basic_table <- function(my_data){
   assertthat::not_empty(my_data$duration)
 
   # creating table with sequencing parameters
-  my_data %>%
+  tab1 <- my_data %>%
   summarise(
   "run id" = first(run_id),
   "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
   "number of reads" = n()
   )
+  tab2 <- plot_ly(
+    type = 'table',
+    header = list(
+      values = tab1))
+
 }
+
+
+
 
 # applying basic_table function to every element in the seqencing summary database
 btable_database_lapply <- lapply(seqsum_database, basic_table)
 
+tab1 <- ligase_ela %>%
+  summarise(
+    "run id" = first(run_id),
+    "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
+    "number of reads" = n())
 
+tab2 <- plot_ly(
+  type = 'table',
+  header = list(
+    values = c("run id", "duration", "number of reads")),
+  cells = list(
+    values = t(tab1))
+)
 
-
+print(tab2)
 
