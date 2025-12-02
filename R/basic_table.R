@@ -52,17 +52,13 @@ plotly_table <- function(my_data){
       summarise(
         "run id" = first(run_id),
         "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
-        "number of reads" = n())
+        "number of reads" = n(),
+        "sample id" = first(sample_id))
     #plotlytab_database <- append(tab1, plotlytab_database)
     plotlytab_database <- c(plotlytab_database, list(tab1))
     print(plotlytab_database)
   }
   joinedtab <- dplyr::bind_rows(plotlytab_database)
-
-  print(joinedtab)
-
-
-  joinedtab <-  dplyr::bind_rows(plotlytab_database)
   print(joinedtab)
 
   tab2 <- plot_ly(
@@ -70,7 +66,7 @@ plotly_table <- function(my_data){
     columnwidth = c(200, 50),
     columnorder = c(0, 1),
     header = list(
-      values = c("run id", "duration", "number of reads"),
+      values = c("run id", "duration", "number of reads", "sample id"),
       line = list(width = 1, color = 'black'),
       fill = list(color = c("royalblue", "royalblue")),
       font = list(family = "Arial", size = 14, color = "white")),
