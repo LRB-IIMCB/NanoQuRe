@@ -4,27 +4,21 @@ plotlytab_database = list()
 
 
 
-all_reads = nrow(ligase_ela)
-passed_reads = sum(ligase_ela$passes_filtering)
-failed_reads = all_reads - passed_reads
-n50_value <- Biostrings::N50(ligase_ela$sequence_length_template)
-qscore = mean(ligase_ela$mean_qscore_template)
-longest_read = max(ligase_ela$sequence_length_template)
-
-all_passed = ligase_ela %>% dplyr::filter(passes_filtering == TRUE)
-passed_meanlength = mean(all_passed$sequence_length_template)
-
-
-
-
-
-
 plotlytab_database = list()
 
 
+#' Quality table
+#'collects and summarizes most important quality metrics from sequencing summary files including: sample id, all reads, passed reads, n50 value, mean qscore, longest read, passed mean length
+#' @param my_data
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 quality_table <- function(my_data){
   for (n in 1:length(seqsum_database)){
 
+    # creating a tab1 containg data from all sequencing summaries
     qtab1 <- seqsum_database[[n]] %>%
       summarise(
         "sample id" = dplyr::first(sample_id),
@@ -39,13 +33,15 @@ quality_table <- function(my_data){
           sequence_length_template[passes_filtering == TRUE],
           na.rm = TRUE)
               )
-
+# adding all qtab1 to a plotlytab databse
     plotlytab_database <- c(plotlytab_database, list(qtab1))
     print(plotlytab_database)
   }
+  # binding all qtab1 and converting it to one plotly table
   qjoinedtab <- dplyr::bind_rows(plotlytab_database)
   print(qjoinedtab)
 
+  # converting qjoinedtable into plotly table
   qtab2 <- plot_ly(
     type = 'table',
     columnwidth = c(200, 50),
@@ -66,5 +62,13 @@ quality_table <- function(my_data){
 qplotly_database <- quality_table(seqsum_database)
 
 print(qplotly_database)
+
+
+ela_passed_meanlength = mean(
+  ligase_ela$sequence_length_template[ligase_ela$passes_filtering == TRUE],
+  na.rm = TRUE)
+
+
+
 
 

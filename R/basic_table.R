@@ -17,50 +17,34 @@ seqsum_database = list(ligase_ela, ligase_induro)
 #' @export
 #'
 #' @examples
-basic_table <- function(my_data){
-  #checking data
-  assertthat::not_empty(my_data$run_id)
-  assertthat::not_empty(my_data$start_time)
-  assertthat::not_empty(my_data$duration)
 
-  # creating table with sequencing parameters
-  tab1 <- my_data %>%
-  summarise(
-  "run id" = first(run_id),
-  "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
-  "number of reads" = n()
-  )
-  tab2 <- plot_ly(
-    type = 'table',
-    header = list(
-      values = tab1))
-
-}
-
-
-# applying basic_table function to every element in the seqencing summary database
-
-
+# creating a list of tab1 that would be then binded and form into plotly table
 plotlytab_database = list()
 
 plotly_table <- function(my_data){
+  # iteration over every element in seqsum database
   for (n in 1:length(seqsum_database)){
-    #print(n)
-    #print(seqsum_database[n])
-    #new_tab <- as.data.frame(seqsum_database[n])
+    # checking for required input
+    assertthat::not_empty(my_data$run_id)
+    assertthat::not_empty(my_data$start_time)
+    assertthat::not_empty(my_data$duration)
+    assertthat::not_empty(my_data$sample_id)
+    # n as integrer, seqsum database indexing
     tab1 <- seqsum_database[[n]] %>%
       summarise(
         "run id" = first(run_id),
         "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
         "number of reads" = n(),
         "sample id" = first(sample_id))
-    #plotlytab_database <- append(tab1, plotlytab_database)
+    # adding tab1 to plotly database
     plotlytab_database <- c(plotlytab_database, list(tab1))
     print(plotlytab_database)
   }
+  #binding all tab1 into one joined table that would be coverted into plotly table
   joinedtab <- dplyr::bind_rows(plotlytab_database)
-  print(joinedtab)
+  #print(joinedtab)
 
+  # creating a plotly table
   tab2 <- plot_ly(
     type = 'table',
     columnwidth = c(200, 50),
@@ -76,27 +60,10 @@ plotly_table <- function(my_data){
   )
 }
 
-
-plotly_database_lapply <- lapply(seqsum_database, plotly_table)
+# applying plotly table to all all in database
+plotly_database_lapply <- plotly_table(seqsum_database)
 
 print(plotly_database_lapply)
 
-
-for (n in 1:length(seqsum_database)){
-  #print(n)
-  #print(seqsum_database[n])
-  #new_tab <- as.data.frame(seqsum_database[n])
-  tab1 <- seqsum_database[[n]] %>%
-    summarise(
-      "run id" = first(run_id),
-      "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
-      "number of reads" = n())
-  #plotlytab_database <- append(tab1, plotlytab_database)
-  plotlytab_database <- c(plotlytab_database, list(tab1))
-  print(plotlytab_database)
-}
-joinedtab <- dplyr::bind_rows(plotlytab_database)
-
-print(joinedtab)
 
 
