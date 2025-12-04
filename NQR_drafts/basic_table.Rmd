@@ -1,0 +1,37 @@
+---
+title: "basic_table"
+output: html_document
+---
+
+```{r}
+library(kableExtra)
+```
+
+
+```{r}
+basic_table <- function(my_data){
+  tab1 <- my_data %>%
+      summarise(
+        "sample id" = first(sample_id),
+        "run id" = first(run_id),
+        "duration" = max(start_time + duration, na.rm = TRUE) / 3600,
+        "number of reads" = n())
+  
+}
+```
+
+```{r}
+ 
+tab1_database <- lapply(seqsum_database, basic_table)
+print(tab1_database)
+```
+
+```{r}
+joinedtab <- dplyr::bind_rows(tab1_database)
+print(joinedtab)
+```
+
+```{r}
+
+
+```

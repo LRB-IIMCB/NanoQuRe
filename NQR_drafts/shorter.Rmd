@@ -1,0 +1,25 @@
+---
+title: "shorter"
+output: html_document
+---
+
+```{r}
+short_ligase_ela <- ligase_ela %>% select(-filename_fastq,-filename_fast5, -filename_pod5, -parent_read_id, -pore_type)
+```
+
+```{r}
+
+shorter_seqsum <- function(my_data){
+  my_data <- my_data %>% select(-filename_fastq,-filename_fast5, -filename_pod5, -parent_read_id, -pore_type)
+  
+}
+
+```
+
+
+```{r}
+sseqsum_database <- lapply(seqsum_database, shorter_seqsum)
+```
+
+
+

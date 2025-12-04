@@ -1,0 +1,50 @@
+---
+title: "quality_table"
+output: html_document
+---
+
+#N50 function
+```{r}
+
+```
+
+
+
+```{r}
+quality_table <- function(my_data){
+  qtab1 <- my_data %>%
+      summarise(
+        "sample id" = dplyr::first(sample_id),
+        "all reads" = nrow(my_data),
+        "passed reads" = sum(passes_filtering),
+        #"failed reads" = "all reads" - "passed reads",
+        "n50 value" = Biostrings::N50(sequence_length_template),
+        "mean qscore" = mean(mean_qscore_template),
+        "longest read" = max(sequence_length_template),
+        "passed meanlength" = mean(
+          sequence_length_template[passes_filtering == TRUE],
+          na.rm = TRUE)
+        )
+  
+}
+```
+
+
+
+```{r}
+qtab1_database <- lapply(seqsum_database, quality_table)
+print(qtab1_database)
+
+```
+
+
+
+```{r}
+joinedqtab <- dplyr::bind_rows(qtab1_database)
+print(joinedqtab)
+```
+
+
+
+
+
