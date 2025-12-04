@@ -25,7 +25,6 @@ plotly_table <- function(my_data){
   # iteration over every element in seqsum database
   for (n in 1:length(seqsum_database)){
     # checking for required input
-    #c()
     assertthat::not_empty(my_data$run_id)
     assertthat::not_empty(my_data$start_time)
     assertthat::not_empty(my_data$duration)

@@ -1,0 +1,75 @@
+---
+title: "length_plot"
+output: html_document
+---
+
+```{r}
+mean_length_ela = mean(ligase_ela$sequence_length_template)
+max_y_mean <- max(count_seq$n, na.rm = TRUE)
+
+```
+
+```{r}
+bs_n50_ela <- Biostrings::N50(ligase_ela$sequence_length_template)
+```
+
+
+
+```{r}
+count_seq <- ligase_ela %>% dplyr::count(sequence_length_template)
+```
+
+```{r}
+data <- ggplot(data = count_seq) + aes(x = sequence_length_template, y = n)
+bar_color <- geom_col(color = "skyblue")
+mean_lengt <- geom_vline(aes(xintercept = mean_length_ela), color = "purple")
+axis_limit <- coord_cartesian(xlim = c(0, 4000), ylim = c(0, 10000))
+plot_lable <-  labs(title ="Length plot", x = "Sequence length [nt]", y = "No of bases sequenced")
+
+mean_label <- annotate(geom = "text", x = mean_length_ela* 2.5, y = max_y_mean * 0.65, label = paste("Mean Length"), color = "purple", fontface = "bold", size = 4)
+
+
+
+length_plot <- data + bar_color + mean_lengt + axis_limit + plot_lable + mean_label
+length_plot
+```
+
+```{r}
+
+```
+
+
+```{r}
+
+len_plot <- function(my_data){
+  mean_length = mean(my_data$sequence_length_template)
+max_y_mean <- max(count_seq$n, na.rm = TRUE)
+  n50_SR <- Biostrings::N50(my_data$sequence_length_template)
+  count_seq <- my_data %>% dplyr::count(sequence_length_template)
+  
+  
+  
+  
+  data <- ggplot(data = count_seq) + aes(x = sequence_length_template, y = n)
+bar_color <- geom_col(color = "skyblue")
+mean_lengt <- geom_vline(aes(xintercept = mean_length), color = "purple")
+axis_limit <- coord_cartesian(xlim = c(0, 4000), ylim = c(0, 10000))
+plot_lable <-  labs(title ="Length plot", x = "Sequence length [nt]", y = "No of bases sequenced")
+
+mean_label <- annotate(geom = "text", x = mean_length* 2.5, y = max_y_mean * 0.65, label = paste("Mean Length"), color = "purple", fontface = "bold", size = 4)
+
+
+length_plot <- data + bar_color + mean_lengt + axis_limit + plot_lable + mean_label
+length_plot
+}
+```
+
+```{r}
+leng_plot_database <- lapply(seqsum_database, length_plot)
+
+```
+
+```{r}
+
+```
+

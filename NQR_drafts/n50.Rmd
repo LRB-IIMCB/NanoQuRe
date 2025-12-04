@@ -1,0 +1,70 @@
+---
+title: "n50"
+output: html_document
+---
+
+```{r}
+print(type(ligase_ela$sequence_length_template))
+as.numeric(ligase_ela$sequence_length_template)
+print(type(ligase_ela$sequence_length_template))
+```
+
+
+# Total Bases
+```{r}
+total_bases <- sum(ligase_induro$sequence_length_template)
+
+```
+
+
+#Find the length that represents half of your total data. Action: Calculate 50% of the total bases.
+```{r}
+half_data <- total_bases/2
+```
+
+#Sort Sequences Action: Sort all sequence lengths from longest to shortest (descending order).
+```{r}
+induro_descend_seq <- ligase_induro %>% select(sequence_length_template) %>% arrange(desc(sequence_length_template)) %>% pull(sequence_length_template)
+#The function pull selects a column in a data frame and transforms it into a vector.
+
+```
+
+# Calculate Cumulative SumIterate through the sorted lengths to find where the midpoint is passed.Action: Starting with the longest sequence, add the lengths together sequentially.Goal: Continue adding until the running total (the cumulative sum) exceeds or equals half_data
+```{r}
+induro_cumulative_sum <- cumsum(induro_descend_seq)
+in50_index <- which(cumulative_sum >= half_data)[1]
+in50_value <- induro_descend_seq[n50_index]
+
+```
+
+
+```{r}
+
+```
+
+
+
+
+```{r}
+n50_calc <- function(my_data){
+  total_bases <- sum(my_data$sequence_length_template)
+  half_data <- total_bases/2
+  descend_seq <- ligase_ela %>% select(sequence_length_template) %>% arrange(desc(sequence_length_template)) %>% pull(sequence_length_template)
+  cumulative_sum <- cumsum(descend_seq)
+n50_index <- which(cumulative_sum >= half_data)[1]
+n50_value <- descend_seq[n50_index]
+}
+```
+
+```{r}
+n50_database <- lapply(seqsum_database, n50_calc)
+```
+
+```{r}
+induro_n50 <- n50_calc(ligase_induro)
+```
+
+
+
+
+
