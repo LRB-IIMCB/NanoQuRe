@@ -1,0 +1,43 @@
+---
+title: "quality_distribution"
+output: html_document
+---
+
+```{r}
+length_qscore <- ligase_ela %>% select(c(sequence_length_template, mean_qscore_template)) 
+sorted_lenq <- length_qscore %>% arrange(length_qscore$mean_qscore_template)
+
+
+```
+
+```{r}
+data <- ggplot(data = sorted_lenq) + aes(x = mean_qscore_template , y = sequence_length_template)
+bar_color <- geom_col(color = "skyblue")
+qscore_line <- geom_vline(aes(xintercept = 7), color = "darkred")
+axis_limit <- coord_cartesian(xlim = c(0, 20), ylim = c(0, 10000))
+plot_lable <-  labs(title ="Quality distribuion", x = "Mean Q score of read", y = "No of reads")
+
+n50_label <- annotate(geom = "text", x = 7, y = 9999, label = paste("Q score cut-off"), color = "darkred", fontface = "bold", size = 4)
+
+length_plot <- data + bar_color + qscore_line + axis_limit + plot_lable + n50_label
+length_plot
+```
+
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
