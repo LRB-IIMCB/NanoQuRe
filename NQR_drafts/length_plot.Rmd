@@ -50,7 +50,7 @@ max_y_mean <- max(count_seq$n, na.rm = TRUE)
   n50_SR <- Biostrings::N50(my_data$sequence_length_template)
   max_y_n50 <- max(count_seq$n, na.rm = TRUE)
   count_seq <- my_data %>% dplyr::count(sequence_length_template)
-  
+  sample_name <-  first(my_data$sample_id)
   
   
   
@@ -59,7 +59,7 @@ bar_color <- geom_col(color = "skyblue")
 mean_lengt <- geom_vline(aes(xintercept = mean_length), color = "purple")
 n50_line <- geom_vline(aes(xintercept = n50_SR), color = "darkgreen")
 axis_limit <- coord_cartesian(xlim = c(0, 4000), ylim = c(0, 10000))
-plot_lable <-  labs(title ="Length plot", x = "Sequence length [nt]", y = "No of bases sequenced")
+plot_lable <-  labs(title =paste0("Length plot ", sample_name), x = "Sequence length [nt]", y = "No of bases sequenced")
 
 mean_label <- annotate(geom = "text", x = mean_length* 2.5, y = max_y_mean * 0.65, label = paste("Mean Length"), color = "purple", fontface = "bold", size = 4)
 n50_label <- annotate(geom = "text", x = n50_SR* 2.5, y = max_y_n50 * 0.65, label = paste("N50"), color = "darkgreen", fontface = "bold", size = 4)

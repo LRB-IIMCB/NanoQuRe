@@ -4,32 +4,49 @@ output: html_document
 ---
 
 ```{r}
-length_qscore <- ligase_ela %>% select(c(sequence_length_template, mean_qscore_template)) 
+length_qscore <- ligase_ela %>% select(c(sequence_length_template, mean_qscore_template, passes_filtering)) 
 sorted_lenq <- length_qscore %>% arrange(length_qscore$mean_qscore_template)
-
+sample_name <- first(ligase_ela$sample_id)
 
 ```
 
 ```{r}
-data <- ggplot(data = sorted_lenq) + aes(x = mean_qscore_template , y = sequence_length_template)
-bar_color <- geom_col(color = "skyblue")
-qscore_line <- geom_vline(aes(xintercept = 7), color = "darkred")
-axis_limit <- coord_cartesian(xlim = c(0, 20), ylim = c(0, 10000))
+data <- ggplot(data = sorted_lenq) + aes(x = mean_qscore_template, fill = passes_filtering)
+#bar_color <- geom_col(color = "skyblue")
+pass_fail <- geom_histogram(binwidth = 0.09, color = "black", position = "stack")
+qscore_line <- geom_vline(aes(xintercept = 7), color = "orange")
+axis_limit <- coord_cartesian(xlim = c(0, 15), ylim = c(0, 40000))
 plot_lable <-  labs(title ="Quality distribuion", x = "Mean Q score of read", y = "No of reads")
 
-n50_label <- annotate(geom = "text", x = 7, y = 9999, label = paste("Q score cut-off"), color = "darkred", fontface = "bold", size = 4)
+n50_label <- annotate(geom = "text", x = 7, y = 39999, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
 
-length_plot <- data + bar_color + qscore_line + axis_limit + plot_lable + n50_label
+length_plot <- data + pass_fail + qscore_line + axis_limit + plot_lable + n50_label
 length_plot
 ```
 
 
 
 ```{r}
+quality_distr <- function(my_data){
+  sample_name <-  first(my_data$sample_id)
+  length_qscore <- my_data %>% select(c(sequence_length_template, mean_qscore_template, passes_filtering)) 
+sorted_lenq <- length_qscore %>% arrange(length_qscore$mean_qscore_template)
+
+data <- ggplot(data = sorted_lenq) + aes(x = mean_qscore_template, fill = passes_filtering)
+pass_fail <- geom_histogram(binwidth = 0.09, color = "black", position = "stack")
+qscore_line <- geom_vline(aes(xintercept = 7), color = "orange")
+axis_limit <- coord_cartesian(xlim = c(0, 15), ylim = c(0, 40000))
+plot_lable <-  labs(title = paste0("Quality distribuion ", sample_name), x = "Mean Q score of read", y = "No of reads")
+
+n50_label <- annotate(geom = "text", x = 7, y = 39999, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
+
+length_plot <- data + pass_fail + qscore_line + axis_limit + plot_lable + n50_label
+}
 
 ```
 
 ```{r}
+lapply(seqsum_database, quality_distr)
 
 ```
 
