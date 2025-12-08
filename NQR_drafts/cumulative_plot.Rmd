@@ -1,0 +1,56 @@
+---
+title: "seq_throughput"
+output: html_document
+---
+
+```{r}
+cum_ela <- ligase_ela %>% select(c(start_time,duration, passes_filtering, sequence_length_template))
+sampl_id = first(ligase_ela$sample_id)
+pass_cum_ela <- cum_ela %>% filter(passes_filtering==TRUE)
+fail_cum_ela <- cum_ela %>% filter(passes_filtering==FALSE)
+```
+
+
+
+```{r}
+#df %>% mutate(sales_tax = price * 0.075)
+pass_cum_ela %>% mutate(duration = duration/3600)
+fail_cum_ela %>% mutate(duration = duration/3600)
+```
+
+#seconds to hours
+```{r}
+
+
+
+sec_to_h <- function(my_data){
+  mutate my_data$duration = my_data$duration / 3600
+  my_data$start_time = my_data$start_time
+  my_data$passes_filtering = my_data$passes_filtering 
+  my_data$sequence_length_template = my_data$sequence_length_template
+}
+
+hpass_cum_ela <- sec_to_h(pass_cum_ela)
+
+```
+
+
+#1 Gigabase (Gb): 1,000,000,000 bases.
+```{r}
+
+
+
+
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
