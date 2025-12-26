@@ -11,9 +11,20 @@ output: html_document
 
 
 ```{r}
+#' Quality Table
+#'Generates a joined table from sequencing summaries that contains most import quality metrics - number of all reads, number of passed reads, n50 values, mean q-score, longest read length, mean length of passed reads.
+#'
+#' @param my_data 
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+#' /dontrun
+#' tab2 <- lapply(seq_sum_database, quality_table)
 quality_table <- function(my_data){
   qtab1 <- my_data %>%
-      summarise(
+      dplyr::summarise(
         "sample id" = dplyr::first(sample_id),
         "all reads" = nrow(my_data),
         "passed reads" = sum(passes_filtering),
