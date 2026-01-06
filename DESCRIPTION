@@ -17,3 +17,6 @@ LazyData: true
 URL: https://github.com/All-ice0/NanoQuRe
 BugReports: https://github.com/All-ice0/NanoQuRe/issues
 RoxygenNote: 7.3.2
+Imports: 
+    dplyr,
+    ggplot2
