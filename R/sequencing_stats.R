@@ -1,5 +1,5 @@
 
-#' Basic Table
+#' Sequencing Stats
 #'
 #' From sequencing summary's database creates a joined table containing general metrics regarding each run - each sequencing summary.
 #'
@@ -13,7 +13,7 @@
 #' \dontrun {
 #'  tab1 <- lapply(seq_sum_database, basic_table)
 #' }
-basic_table <- function(my_data){
+seq_stats <- function(my_data){
   tab1 <- my_data %>%
     dplyr::summarise(
       "sample id" = first(sample_id),
@@ -25,7 +25,7 @@ basic_table <- function(my_data){
       "passed_reads [%]" = sum(passes_filtering)/n()*100
 
     )
-  tab1_database <- lapply(seqsum_database, basic_table)
+  tab1_database <- lapply(seqsum_database, seq_stats)
   joinedtab <- dplyr::bind_rows(tab1_database)
   print(joinedtab)
 

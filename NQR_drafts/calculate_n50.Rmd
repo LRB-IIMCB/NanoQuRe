@@ -32,8 +32,8 @@ induro_descend_seq <- ligase_induro %>% select(sequence_length_template) %>% arr
 # Calculate Cumulative SumIterate through the sorted lengths to find where the midpoint is passed.Action: Starting with the longest sequence, add the lengths together sequentially.Goal: Continue adding until the running total (the cumulative sum) exceeds or equals half_data
 ```{r}
 induro_cumulative_sum <- cumsum(induro_descend_seq)
-in50_index <- which(cumulative_sum >= half_data)[1]
-in50_value <- induro_descend_seq[n50_index]
+in50_index <- which(induro_cumulative_sum >= half_data)[1]
+in50_value <- induro_descend_seq[in50_index]
 
 ```
 

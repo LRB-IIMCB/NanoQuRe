@@ -1,11 +1,11 @@
 ---
-title: "basic_table"
+title: "sequencing stats"
 output: html_document
 ---
 
 
 ```{r}
-#' Basic Table
+#' Sequencing stats
 #' From sequencing summary's database creates a joined table containing general metrics regarding each run - each sequencing summary. 
 #'
 #' @param my_data 
@@ -16,7 +16,7 @@ output: html_document
 #' @examples
 #' /dontrun 
 #' tab1 <- lapply(seq_sum_database, basic_table)
-basic_table <- function(my_data){
+seq_stats <- function(my_data){
   tab1 <- my_data %>%
       dplyr::summarise(
         "sample id" = first(sample_id),
@@ -34,7 +34,7 @@ basic_table <- function(my_data){
 
 ```{r}
  
-tab1_database <- lapply(seqsum_database, basic_table)
+tab1_database <- lapply(seqsum_database, seq_stats)
 print(tab1_database)
 ```
 

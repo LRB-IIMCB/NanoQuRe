@@ -22,7 +22,7 @@ output: html_document
 #' @examples
 #' /dontrun
 #' tab2 <- lapply(seq_sum_database, quality_table)
-quality_table <- function(my_data){
+quality_stats <- function(my_data){
   qtab1 <- my_data %>%
       dplyr::summarise(
         "sample id" = dplyr::first(sample_id),
@@ -43,7 +43,7 @@ quality_table <- function(my_data){
 
 
 ```{r}
-qtab1_database <- lapply(seqsum_database, quality_table)
+qtab1_database <- lapply(seqsum_database, quality_stats)
 print(qtab1_database)
 
 ```
