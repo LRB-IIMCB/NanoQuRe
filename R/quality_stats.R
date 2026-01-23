@@ -3,12 +3,15 @@
 #'
 #' @param my_data
 #'
-#' @returns
+#' @return joined table with quality data for all sequencing summaries in database
+#' @import dplyr
 #' @export
 #'
 #' @examples
-#' /dontrun
-#' tab2 <- lapply(seq_sum_database, quality_table)
+#' \dontrun {
+#'  tab2 <- lapply(seq_sum_database, quality_table)
+#' }
+#'
 quality_stats <- function(my_data){
   qtab1 <- my_data %>%
     dplyr::summarise(

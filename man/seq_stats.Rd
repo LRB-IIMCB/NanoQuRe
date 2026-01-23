@@ -10,7 +10,7 @@ seq_stats(my_data)
 \item{my_data}{}
 }
 \value{
-return joined table with rudimentary data for all sequencing summaries in database
+returns joined table with rudimentary data for all sequencing summaries in database
 }
 \description{
 From sequencing summary's database creates a joined table containing general metrics regarding each run - each sequencing summary.
@@ -19,4 +19,8 @@ From sequencing summary's database creates a joined table containing general met
 \dontrun {
  tab1 <- lapply(seq_sum_database, basic_table)
 }
+
+
+
+
 }
