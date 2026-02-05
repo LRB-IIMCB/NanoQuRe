@@ -4,7 +4,7 @@
 #' @param my_data
 #'
 #' @returns plot
-#' @import dplyr, ggplot2
+#' @import
 #' @export
 #'
 #' @examples

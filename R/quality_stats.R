@@ -4,7 +4,7 @@
 #' @param my_data
 #'
 #' @return joined table with quality data for all sequencing summaries in database
-#' @import dplyr
+#' @import
 #' @export
 #'
 #' @examples
@@ -13,6 +13,13 @@
 #' }
 #'
 quality_stats <- function(my_data){
+
+  ssertthat::assert_that(my_data %has_name% "sample_id", msg = "The data frame is missing the 'sample_id' column")
+  ssertthat::assert_that(my_data %has_name% "run_id", msg = "The data frame is missing the 'run_id' column")
+  ssertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
+  ssertthat::assert_that(my_data %has_name% "mean_qscore_template", msg = "The data frame is missing the 'mean_qscore_template' column")
+  ssertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
+
   qtab1 <- my_data %>%
     dplyr::summarise(
       "sample id" = dplyr::first(sample_id),

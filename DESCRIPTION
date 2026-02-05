@@ -16,7 +16,8 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/All-ice0/NanoQuRe
 BugReports: https://github.com/All-ice0/NanoQuRe/issues
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
+    assertthat,
     dplyr,
     ggplot2

@@ -4,7 +4,7 @@
 #' @param my_data
 #'
 #' @returns n50 value
-#' @import dplyr
+#' @import
 #' @export
 #'
 #' @examples

@@ -1,0 +1,41 @@
+---
+title: "active_channels"
+output: html_document
+---
+
+
+```{r}
+#for each channel max end time
+sorted_by_channel <- channels_ela %>% group_by(channel)
+
+
+sorted_by_channel <- sorted_by_channel %>% summarise(
+    last_activity = max(reads_end_time, na.rm = TRUE) / 3600)
+
+sorted_by_channel <- sorted_by_channel %>% arrange(last_activity)
+
+
+sorted_by_channel <- sorted_by_channel %>% dplyr::mutate(channel_no_start = dplyr::n(), event = 1, inactive_channels = cumsum(event), active_channels = channel_no_start - inactive_channels)
+
+```
+
+
+```{r}
+channel_data <- ggplot(sorted_by_channel, aes(x= last_activity, y=active_channels))
+channel_lines <- geom_line(linewidth = 1)
+channel_labels <- labs(title = "Active channels", x = "Time (hours)", y = "Channels active") 
+
+
+
+channel_plot <- channel_data + channel_lines + channel_labels
+channel_plot
+```
+
+
+
+```{r}
+
+```
+
+
+
