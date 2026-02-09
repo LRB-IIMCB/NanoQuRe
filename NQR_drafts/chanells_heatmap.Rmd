@@ -1,0 +1,23 @@
+---
+title: "chanells_heatmap"
+output: html_document
+---
+
+```{r}
+sorted_by_channel <- channels_ela %>% group_by(channel)
+
+
+sorted_by_channel <- sorted_by_channel %>% summarise(
+    totall_output = sum(sequence_length_template))
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
