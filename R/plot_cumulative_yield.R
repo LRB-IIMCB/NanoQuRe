@@ -2,9 +2,12 @@
 
 #'Plot Cumulative Yield
 #'
+#'Generates a cumulative plot containing the number of sequenced bases in Gb over time in hours sorted by pass/fail filtering status.
+#'
+#'
 #' @param my_data
 #'
-#' @returns plot
+#' @returns ggplot2 object
 #' @export
 #'
 #' @examples
@@ -12,6 +15,15 @@
 #'  plot_yield <- lapply(seq_sum_database, plot_cumulative_yield)
 #' }
 plot_cumulative_yield() <- function(my_data){
+
+
+  assertthat::assert_that(my_data %has_name% "start_time", msg = "The data frame is missing the 'start_time' column")
+  assertthat::assert_that(my_data %has_name% "duration", msg = "The data frame is missing the 'duration' column")
+  assertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
+  assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
+
+
+
   sample_name <-  first(my_data$sample_id)
   cum_data <- my_data %>% select(c(start_time,duration, passes_filtering, sequence_length_template))
 

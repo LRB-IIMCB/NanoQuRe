@@ -1,9 +1,11 @@
 
 #' Plot Quality Distribution
+#' Generates a plot with number of reads of each length and their average quality score Q score sorted by pass/fail filtering status. Vertical line represents Q score cut-off which is by default equal to 7.
+#'
 #'
 #' @param my_data
 #'
-#' @returns plot
+#' @returns ggplot2 object
 #' @import
 #' @export
 #'
@@ -13,6 +15,12 @@
 #' }
 #'
 quality_distr <- function(my_data){
+
+  assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(my_data %has_name% "mean_qscore_template", msg = "The data frame is missing the 'mean_qscore_template' column")
+  assertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
+
+
   sample_name <-  dplyr::first(my_data$sample_id)
   length_qscore <- my_data %>% dplyr::select(c(sequence_length_template, mean_qscore_template, passes_filtering))
   sorted_lenq <- length_qscore %>% dplyr::arrange(length_qscore$mean_qscore_template)
