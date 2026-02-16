@@ -4,7 +4,8 @@
 #' @param my_data
 #'
 #' @return joined table with quality data for all sequencing summaries in database
-#' @import
+#' @import dplyr
+#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
@@ -34,8 +35,9 @@ quality_stats <- function(my_data){
         na.rm = TRUE)
     )
 
-  qtab1_database <- lapply(seqsum_database, quality_stats)
-  joinedqtab <- dplyr::bind_rows(qtab1_database)
-  print(joinedqtab)
+  return(qtab1)
+  #qtab1_database <- lapply(seqsum_database, quality_stats)
+  #joinedqtab <- dplyr::bind_rows(qtab1_database)
+  #return(joinedqtab)
 
 }

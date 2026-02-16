@@ -5,7 +5,7 @@
 #' @param my_data
 #'
 #' @returns n50 value
-#' @import
+#' @import dplyr
 #' @export
 #'
 #' @examples
@@ -26,5 +26,6 @@ n50_calc <- function(my_data){
   n50_index <- which(cumulative_sum >= half_data)[1]
   n50_value <- descend_seq[n50_index]
 
-  n50_database <- lapply(seqsum_database, n50_calc)
+  return(n_50_value)
+  #n50_database <- lapply(seqsum_database, n50_calc)
 }

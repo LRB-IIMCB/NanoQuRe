@@ -6,7 +6,9 @@
 #' @param my_data
 #'
 #' @returns ggplot2 object
-#' @import
+#' @import ggplot2
+#' @import dplyr
+#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
@@ -34,4 +36,5 @@ quality_distr <- function(my_data){
   n50_label <- ggplot2::annotate(geom = "text", x = 7, y = 39999, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
 
   length_plot <- data + pass_fail + qscore_line + axis_limit + plot_lable + n50_label
+  return(length_plot)
 }

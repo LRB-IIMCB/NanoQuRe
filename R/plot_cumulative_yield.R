@@ -8,13 +8,16 @@
 #' @param my_data
 #'
 #' @returns ggplot2 object
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
 #' \dontrun {
 #'  plot_yield <- lapply(seq_sum_database, plot_cumulative_yield)
 #' }
-plot_cumulative_yield() <- function(my_data){
+plot_cumulative_yield <- function(my_data){
 
 
   assertthat::assert_that(my_data %has_name% "start_time", msg = "The data frame is missing the 'start_time' column")
@@ -46,6 +49,6 @@ cum_lines <- geom_line(linewidth = 1)
 cum_labels <- labs(title = "Cumulative Yield", x = "Time (hours)", y = "Yield (Gb)")
 
 cum_plot <- cum_data + cum_lines + cum_labels
-cum_plot
+return(cum_plot)
 
 }

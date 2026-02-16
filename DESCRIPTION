@@ -20,4 +20,6 @@ RoxygenNote: 7.3.3
 Imports: 
     assertthat,
     dplyr,
-    ggplot2
+    ggplot2,
+    testthat
+Config/testthat/edition: 3

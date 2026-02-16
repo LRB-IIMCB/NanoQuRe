@@ -5,7 +5,9 @@
 #' @param my_data
 #'
 #' @returns ggplot2 object
-#' @import
+#' @import ggplot2
+#' @import dplyr
+#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
@@ -17,10 +19,10 @@ plot_read_lengths <- function(my_data){
   assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
   assertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
 
-  mean_length = mean(my_data$sequence_length_template)
   max_y_mean <- max(count_seq$n, na.rm = TRUE)
-  n50_SR <- Biostrings::N50(my_data$sequence_length_template)
-  #n50_SR <- calculate_n50(my_data$sequence_length_template)
+  mean_length = mean(my_data$sequence_length_template)
+  #n50_SR <- Biostrings::N50(my_data$sequence_length_template)
+  n50_SR <- calculate_n50(my_data)
   max_y_n50 <- max(count_seq$n, na.rm = TRUE)
   count_seq <- my_data %>% dplyr::count(sequence_length_template)
   sample_name <-  dplyr::first(my_data$sample_id)
@@ -36,5 +38,5 @@ plot_read_lengths <- function(my_data){
   n50_label <- ggplot2::annotate(geom = "text", x = n50_SR* 2.5, y = max_y_n50 * 0.65, label = paste("N50"), color = "darkgreen", fontface = "bold", size = 4)
 
   length_plot <- data + bar_color + mean_lengt + n50_line + axis_limit + plot_lable + mean_label + n50_label
-  length_plot
+  return(length_plot)
 }

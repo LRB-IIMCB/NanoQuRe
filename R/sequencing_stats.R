@@ -6,7 +6,8 @@
 #' @param my_data
 #'
 #' @returns returns joined table with rudimentary data for all sequencing summaries in database
-#' @import
+#' @import dplyr
+#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
@@ -35,9 +36,12 @@ seq_stats <- function(my_data){
       "passed_reads [%]" = sum(passes_filtering)/dplyr::n()*100
 
     )
-  tab1_database <- lapply(seqsum_database, seq_stats)
-  joinedtab <- dplyr::bind_rows(tab1_database)
-  print(joinedtab)
+
+  return(tab1)
+
+  #tab1_database <- lapply(seqsum_database, seq_stats)
+  #joinedtab <- dplyr::bind_rows(tab1_database)
+  #return(joinedtab)
 
 }
 
