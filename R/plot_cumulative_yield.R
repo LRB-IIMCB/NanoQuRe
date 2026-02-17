@@ -5,7 +5,7 @@
 #'Generates a cumulative plot containing the number of sequenced bases in Gb over time in hours sorted by pass/fail filtering status.
 #'
 #'
-#' @param my_data
+#' @param my_data A dataframe containing the sequencing summary
 #'
 #' @returns ggplot2 object
 #' @import dplyr
@@ -14,9 +14,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun {
-#'  plot_yield <- lapply(seq_sum_database, plot_cumulative_yield)
-#' }
+#'
 plot_cumulative_yield <- function(my_data){
 
 

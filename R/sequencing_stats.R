@@ -3,7 +3,7 @@
 #'
 #' From sequencing summary's database creates a joined table containing general metrics regarding each run - each sequencing summary. Information in the table contains: sample id, run id, duration in hours, number of reads, total bases sequenced in GB gigabases and passed_reads in percentage.
 #'
-#' @param my_data
+#' @param my_data A dataframe containing the sequencing summary
 #'
 #' @returns returns joined table with rudimentary data for all sequencing summaries in database
 #' @import dplyr
@@ -11,10 +11,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun {
-#'  tab1 <- lapply(seq_sum_database, basic_table)
-#' }
-#'
 #'
 seq_stats <- function(my_data){
   assertthat::assert_that(my_data %has_name% "sample_id", msg = "The data frame is missing the 'sample_id' column")
@@ -38,10 +34,6 @@ seq_stats <- function(my_data){
     )
 
   return(tab1)
-
-  #tab1_database <- lapply(seqsum_database, seq_stats)
-  #joinedtab <- dplyr::bind_rows(tab1_database)
-  #return(joinedtab)
 
 }
 

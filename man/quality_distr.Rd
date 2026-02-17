@@ -8,7 +8,7 @@ Generates a plot with number of reads of each length and their average quality s
 quality_distr(my_data)
 }
 \arguments{
-\item{my_data}{}
+\item{my_data}{A dataframe containing the sequencing summary}
 }
 \value{
 ggplot2 object
@@ -16,10 +16,4 @@ ggplot2 object
 \description{
 Plot Quality Distribution
 Generates a plot with number of reads of each length and their average quality score Q score sorted by pass/fail filtering status. Vertical line represents Q score cut-off which is by default equal to 7.
-}
-\examples{
-\dontrun {
- plot_quality <- lapply(seq_sum_database, plot_quality_distribution)
-}
-
 }

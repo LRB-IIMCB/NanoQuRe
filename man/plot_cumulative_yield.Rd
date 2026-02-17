@@ -7,16 +7,11 @@
 plot_cumulative_yield(my_data)
 }
 \arguments{
-\item{my_data}{}
+\item{my_data}{A dataframe containing the sequencing summary}
 }
 \value{
 ggplot2 object
 }
 \description{
 Generates a cumulative plot containing the number of sequenced bases in Gb over time in hours sorted by pass/fail filtering status.
-}
-\examples{
-\dontrun {
- plot_yield <- lapply(seq_sum_database, plot_cumulative_yield)
-}
 }

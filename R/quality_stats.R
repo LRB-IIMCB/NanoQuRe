@@ -1,7 +1,7 @@
 #' Quality Stats
 #'Generates a joined table from sequencing summaries that contains most import quality metrics - number of all reads, number of passed reads, n50 value, mean q-score, longest read length, mean length of passed reads.
 #'
-#' @param my_data
+#' @param my_data A dataframe containing the sequencing summary
 #'
 #' @return joined table with quality data for all sequencing summaries in database
 #' @import dplyr
@@ -9,9 +9,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun {
-#'  tab2 <- lapply(seq_sum_database, quality_table)
-#' }
 #'
 quality_stats <- function(my_data){
 
@@ -21,13 +18,15 @@ quality_stats <- function(my_data){
   assertthat::assert_that(my_data %has_name% "mean_qscore_template", msg = "The data frame is missing the 'mean_qscore_template' column")
   assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
 
+  n50_value <- calculate_n50(my_data)
+
   qtab1 <- my_data %>%
     dplyr::summarise(
       "sample id" = dplyr::first(sample_id),
       "all reads" = nrow(my_data),
       "passed reads" = sum(passes_filtering),
       #"failed reads" = "all reads" - "passed reads",
-      "n50 value" = Biostrings::N50(sequence_length_template),
+      "n50 value" = n50_value,
       "mean qscore" = mean(mean_qscore_template),
       "longest read" = max(sequence_length_template),
       "passed meanlength" = mean(
@@ -36,8 +35,4 @@ quality_stats <- function(my_data){
     )
 
   return(qtab1)
-  #qtab1_database <- lapply(seqsum_database, quality_stats)
-  #joinedqtab <- dplyr::bind_rows(qtab1_database)
-  #return(joinedqtab)
-
 }

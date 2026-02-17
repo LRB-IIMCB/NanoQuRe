@@ -7,16 +7,11 @@
 plot_read_lengths(my_data)
 }
 \arguments{
-\item{my_data}{}
+\item{my_data}{A dataframe containing the sequencing summary}
 }
 \value{
 ggplot2 object
 }
 \description{
 Generates a plot with number of bases sequenced of each length in bases sorted by pass/fail filtering status.Two vertical lines represent calculated mean read length of the reads in bases and N 50 value calculated with the function calculate_n50.
-}
-\examples{
-\dontrun {
- plot_length <- lapply(seq_sum_database, plot_read_lengths)
-}
 }

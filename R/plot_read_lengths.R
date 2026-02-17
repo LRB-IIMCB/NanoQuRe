@@ -2,7 +2,7 @@
 #'
 #'Generates a plot with number of bases sequenced of each length in bases sorted by pass/fail filtering status.Two vertical lines represent calculated mean read length of the reads in bases and N 50 value calculated with the function calculate_n50.
 #'
-#' @param my_data
+#' @param my_data A dataframe containing the sequencing summary
 #'
 #' @returns ggplot2 object
 #' @import ggplot2
@@ -11,9 +11,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun {
-#'  plot_length <- lapply(seq_sum_database, plot_read_lengths)
-#' }
+#'
 plot_read_lengths <- function(my_data){
 
   assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
@@ -21,7 +19,6 @@ plot_read_lengths <- function(my_data){
 
   max_y_mean <- max(count_seq$n, na.rm = TRUE)
   mean_length = mean(my_data$sequence_length_template)
-  #n50_SR <- Biostrings::N50(my_data$sequence_length_template)
   n50_SR <- calculate_n50(my_data)
   max_y_n50 <- max(count_seq$n, na.rm = TRUE)
   count_seq <- my_data %>% dplyr::count(sequence_length_template)
