@@ -2,8 +2,7 @@
 % Please edit documentation in R/calculate_n50.R
 \name{calculate_n50}
 \alias{calculate_n50}
-\title{Calculate N50
-Calculates N50 value is the length which 50% of all reads are the same length or longer than its value}
+\title{Calculate N50}
 \usage{
 calculate_n50(my_data)
 }
@@ -14,6 +13,8 @@ calculate_n50(my_data)
 n50 value
 }
 \description{
-Calculate N50
 Calculates N50 value is the length which 50% of all reads are the same length or longer than its value
+}
+\examples{
+NULL
 }

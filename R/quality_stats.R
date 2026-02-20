@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' NULL
 quality_stats <- function(my_data){
 
   assertthat::assert_that(my_data %has_name% "sample_id", msg = "The data frame is missing the 'sample_id' column")

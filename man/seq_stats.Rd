@@ -15,3 +15,6 @@ returns joined table with rudimentary data for all sequencing summaries in datab
 \description{
 From sequencing summary's database creates a joined table containing general metrics regarding each run - each sequencing summary. Information in the table contains: sample id, run id, duration in hours, number of reads, total bases sequenced in GB gigabases and passed_reads in percentage.
 }
+\examples{
+NULL
+}

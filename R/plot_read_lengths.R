@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' NULL
 plot_read_lengths <- function(my_data){
 
   assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")

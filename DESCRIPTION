@@ -20,7 +20,8 @@ RoxygenNote: 7.3.3
 Imports: 
     assertthat,
     dplyr,
-    ggplot2
+    ggplot2,
+    readr
 Suggests:
   testthat
 Config/testthat/edition: 3

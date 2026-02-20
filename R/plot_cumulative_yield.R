@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' NULL
 plot_cumulative_yield <- function(my_data){
 
 

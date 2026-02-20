@@ -15,3 +15,6 @@ ggplot2 object
 \description{
 Generates a plot with number of bases sequenced of each length in bases sorted by pass/fail filtering status.Two vertical lines represent calculated mean read length of the reads in bases and N 50 value calculated with the function calculate_n50.
 }
+\examples{
+NULL
+}

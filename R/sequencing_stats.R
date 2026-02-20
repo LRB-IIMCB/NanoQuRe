@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-#'
+#' NULL
 seq_stats <- function(my_data){
   assertthat::assert_that(my_data %has_name% "sample_id", msg = "The data frame is missing the 'sample_id' column")
   assertthat::assert_that(my_data %has_name% "run_id", msg = "The data frame is missing the 'run_id' column")

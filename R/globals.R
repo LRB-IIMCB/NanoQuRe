@@ -11,5 +11,6 @@ utils::globalVariables(c(
   "h_start_time",
   "bases_gb",
   "pass_status",
-  "n"
+  "n",
+  "n_50_value"
 ))
