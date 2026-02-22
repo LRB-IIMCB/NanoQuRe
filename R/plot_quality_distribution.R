@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' NULL
-quality_distr <- function(my_data){
+plot_quality_distribution <- function(my_data){
 
   assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
   assertthat::assert_that(my_data %has_name% "mean_qscore_template", msg = "The data frame is missing the 'mean_qscore_template' column")

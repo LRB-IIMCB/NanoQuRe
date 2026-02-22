@@ -4,16 +4,16 @@
 \alias{shorter_seqsum}
 \title{Shorter Seq sum}
 \usage{
-shorter_seqsum(my_data)
+shorter_seqsum(file_path)
 }
 \arguments{
-\item{my_data}{}
+\item{file_path}{}
 }
 \value{
 Sequencing summary data frame
 }
 \description{
-Function takes user's sequnecing summary and makes a shorter version of sequncing_summary.txt
+Function takes user's sequencing summary and makes a shorter version of sequencing_summary.txt
 }
 \examples{
 NULL
