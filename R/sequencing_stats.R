@@ -12,7 +12,7 @@
 #'
 #' @examples
 #' NULL
-seqencing_stats <- function(my_data){
+sequencing_stats <- function(my_data){
   assertthat::assert_that(my_data %has_name% "sample_id", msg = "The data frame is missing the 'sample_id' column")
   assertthat::assert_that(my_data %has_name% "run_id", msg = "The data frame is missing the 'run_id' column")
   assertthat::assert_that(my_data %has_name% "start_time", msg = "The data frame is missing the 'start_time' column")

@@ -2,15 +2,20 @@
 title: "qc_report_template"
 output: html_document
 params:
-  data: !r data.frame()
+  data: !r NULL
 ---
 
+```{r setup, include=FALSE}
+library(NanoQuRe)
+library(knitr)
+```
 
-# Sequencing Summary
-Quality Control results:
+
+# Quality Control results:
+
 
 ```{r, echo=FALSE}
-table1 <- sequencing_stats(params$data)
+table1 <- NanoQuRe::sequencing_stats(params$data)
 knitr::kable(table1)
 
 ```

@@ -17,11 +17,11 @@ plot_read_lengths <- function(my_data){
   assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
   assertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
 
+  count_seq <- my_data %>% dplyr::count(sequence_length_template)
   max_y_mean <- max(count_seq$n, na.rm = TRUE)
   mean_length = mean(my_data$sequence_length_template)
   n50_SR <- calculate_n50(my_data)
   max_y_n50 <- max(count_seq$n, na.rm = TRUE)
-  count_seq <- my_data %>% dplyr::count(sequence_length_template)
   sample_name <-  dplyr::first(my_data$sample_id)
 
   data <- ggplot2::ggplot(data = count_seq) + ggplot2::aes(x = sequence_length_template, y = n)

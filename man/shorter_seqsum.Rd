@@ -7,7 +7,7 @@
 shorter_seqsum(file_path)
 }
 \arguments{
-\item{file_path}{}
+\item{file_path}{path to a file}
 }
 \value{
 Sequencing summary data frame
