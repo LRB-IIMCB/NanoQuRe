@@ -23,14 +23,13 @@ sequencing_stats <- function(my_data){
 
   tab1 <- my_data %>%
     dplyr::summarise(
-      "sample id" = dplyr::first(sample_id),
-      "run id" = dplyr::first(run_id),
-      "duration [h]" = max(start_time + duration, na.rm = TRUE) / 3600,
-      "number of reads" = dplyr::n(),
+      "sample id" = first(sample_id),
+      "duration [h]" = round(max(start_time + duration, na.rm = TRUE) / 3600, 2),
+      "number of reads" = n(),
       #1e9 1 billion = 1 gigabases
-      "total bases sequenced [Gb]" = sum(sequence_length_template/1e9),
-      "passed_reads [%]" = sum(passes_filtering)/dplyr::n()*100
-
+      "total bases sequenced [Gb]" = round(sum(sequence_length_template/1e9), 3),
+      "passed reads [%]" = round(sum(passes_filtering)/n()*100, 2),
+      "average speed [bp/s]" = round(sum(sequence_length_template)/sum(duration), 2)
     )
 
   return(tab1)

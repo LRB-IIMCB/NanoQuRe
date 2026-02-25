@@ -21,7 +21,7 @@ fail_cum_ela %>% mutate(start_time = start_time/3600)
 
 
 ```{r}
-plot_cumulative_yield() <- function(my_data){
+plot_cumulative_yield <- function(my_data){
   sample_name <-  first(my_data$sample_id)
   cum_data <- my_data %>% select(c(start_time,duration, passes_filtering, sequence_length_template))
   
@@ -40,24 +40,35 @@ print(pass_cum)
 print(fail_cum) 
 
 pass_fail_tab <- dplyr::bind_rows(pass_cum, fail_cum)
-print(pass_fail_tab)
+
+cum_data <- ggplot(pass_fail_tab, aes(x = h_start_time, y = bases_gb, color = pass_status))
+cum_lines <- geom_line(linewidth = 1)
+cum_labels <- labs(title = paste0("Cumulative Yield ", sample_name), x = "Time (hours)", y = "Yield (Gb)") 
+
+cum_plot <- cum_data + cum_lines + cum_labels
+cum_plot
 
 }
 
 
-pass_fail_tab <- plot_cumulative_yield()(ligase_ela)
+#pass_fail_tab <- plot_cumulative_yield()(ligase_ela)
 ```
 
 
 ```{r}
 cum_data <- ggplot(pass_fail_tab, aes(x = h_start_time, y = bases_gb, color = pass_status))
 cum_lines <- geom_line(linewidth = 1)
-cum_labels <- labs(title = "Cumulative Yield", x = "Time (hours)", y = "Yield (Gb)") 
+cum_labels <- labs(title = "Cumulative Yield ", x = "Time (hours)", y = "Yield (Gb)") 
 
 
 
 cum_plot <- cum_data + cum_lines + cum_labels
 cum_plot
+```
+
+```{r}
+plot3 <- plot_cumulative_yield(sample_data)
+plot3
 ```
 
 

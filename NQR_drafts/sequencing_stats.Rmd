@@ -20,30 +20,29 @@ seq_stats <- function(my_data){
   tab1 <- my_data %>%
       dplyr::summarise(
         "sample id" = first(sample_id),
-        "run id" = first(run_id),
-        "duration [h]" = max(start_time + duration, na.rm = TRUE) / 3600,
+        "duration [h]" = round(max(start_time + duration, na.rm = TRUE) / 3600, 2),
         "number of reads" = n(),
         #1e9 1 billion = 1 gigabases
-        "total bases sequenced [Gb]" = sum(sequence_length_template/1e9),
-        "passed_reads [%]" = sum(passes_filtering)/n()*100
-        
+        "total bases sequenced [Gb]" = round(sum(sequence_length_template/1e9), 3),
+        "passed reads [%]" = round(sum(passes_filtering)/n()*100, 2),
+        "average speed [bp/s]" = round(sum(sequence_length_template)/sum(duration), 2)
         )
   
 }
 ```
 
+
+
 ```{r}
- 
-tab1_database <- lapply(seqsum_database, seq_stats)
-print(tab1_database)
+tab1 <- seq_stats(ligase_ela)
+tab1
 ```
 
-```{r}
-joinedtab <- dplyr::bind_rows(tab1_database)
-print(joinedtab)
-```
+
+
 
 ```{r}
 
-
+tab2 <- seq_stats(sample_data)
+tab2
 ```

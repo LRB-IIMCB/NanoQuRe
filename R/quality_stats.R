@@ -26,12 +26,12 @@ quality_stats <- function(my_data){
       "all reads" = nrow(my_data),
       "passed reads" = sum(passes_filtering),
       #"failed reads" = "all reads" - "passed reads",
-      "n50 value" = n50_value,
-      "mean qscore" = mean(mean_qscore_template),
+      "n50 value" = round(n50_value, 2),
+      "mean qscore" = round(mean(mean_qscore_template), 2),
       "longest read" = max(sequence_length_template),
-      "passed meanlength" = mean(
+      "passed meanlength" = round(mean(
         sequence_length_template[passes_filtering == TRUE],
-        na.rm = TRUE)
+        na.rm = TRUE), 2)
     )
 
   return(qtab1)

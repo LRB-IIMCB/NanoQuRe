@@ -30,32 +30,26 @@ quality_stats <- function(my_data){
         "passed reads" = sum(passes_filtering),
         #"failed reads" = "all reads" - "passed reads",
         "n50 value" = Biostrings::N50(sequence_length_template),
-        "mean qscore" = mean(mean_qscore_template),
+        "mean qscore" = round(mean(mean_qscore_template), 2),
         "longest read" = max(sequence_length_template),
-        "passed meanlength" = mean(
-          sequence_length_template[passes_filtering == TRUE],
-          na.rm = TRUE)
+        "passed mean length" = round(mean(sequence_length_template[passes_filtering == TRUE], na.rm = TRUE), 2)
         )
   
 }
 ```
 
 
-
 ```{r}
-qtab1_database <- lapply(seqsum_database, quality_stats)
-print(qtab1_database)
-
+tab2 <- quality_stats(ligase_ela)
+tab2
 ```
 
 
 
 ```{r}
-joinedqtab <- dplyr::bind_rows(qtab1_database)
-print(joinedqtab)
+tab1 <- quality_stats(sample_data)
+tab1
 ```
-
-
 
 
 
