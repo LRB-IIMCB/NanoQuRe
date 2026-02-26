@@ -36,3 +36,7 @@ quality_stats <- function(my_data){
 
   return(qtab1)
 }
+
+
+#tab2 <- quality_stats(sample_data)
+#tab2

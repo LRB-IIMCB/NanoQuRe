@@ -36,4 +36,5 @@ sequencing_stats <- function(my_data){
 
 }
 
-
+#tab1 <- sequencing_stats(sample_data)
+#tab1

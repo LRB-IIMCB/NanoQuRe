@@ -44,9 +44,16 @@ plot_cumulative_yield <- function(my_data){
 
 cum_data <- ggplot(pass_fail_tab, aes(x = h_start_time, y = bases_gb, color = pass_status))
 cum_lines <- geom_line(linewidth = 1)
-cum_labels <- labs(title = "Cumulative Yield", x = "Time (hours)", y = "Yield (Gb)")
+cum_labels <- labs(title = "Cumulative Yield", x = "Time [h]", y = "Yield [Gb]")
 
 cum_plot <- cum_data + cum_lines + cum_labels
 return(cum_plot)
 
 }
+
+#plot1 <- plot_cumulative_yield(ligase_ela)
+#plot1
+
+#plot2 <- plot_cumulative_yield(sample_data)
+#plot2
+

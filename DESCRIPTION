@@ -21,6 +21,7 @@ Imports:
     assertthat,
     dplyr,
     ggplot2,
+    knitr,
     readr
 Suggests:
   testthat

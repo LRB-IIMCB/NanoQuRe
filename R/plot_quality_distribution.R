@@ -27,11 +27,19 @@ plot_quality_distribution <- function(my_data){
   data <- ggplot2::ggplot(data = sorted_lenq) + ggplot2::aes(x = mean_qscore_template, fill = passes_filtering)
   pass_fail <- ggplot2::geom_histogram(binwidth = 0.09, color = "black", position = "stack")
   qscore_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = 7), color = "orange")
-  axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 15), ylim = c(0, 40000))
-  plot_lable <-  ggplot2::labs(title = paste0("Quality distribuion ", sample_name), x = "Mean Q score of read", y = "No of reads")
+  y_axis <- nrow(my_data)*0.05
+  axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 15), ylim = c(0, y_axis))
+  plot_lable <-  ggplot2::labs(title = paste0("Quality distribution ", sample_name), x = "Mean Q score of read", y = "Number of reads")
 
-  n50_label <- ggplot2::annotate(geom = "text", x = 7, y = 39999, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
+  n50_label <- ggplot2::annotate(geom = "text", x = 8.2, y = y_axis*0.95, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
 
   length_plot <- data + pass_fail + qscore_line + axis_limit + plot_lable + n50_label
   return(length_plot)
 }
+
+
+#plot1 <- plot_quality_distribution(ligase_ela)
+#plot1
+
+#plot2 <- plot_quality_distribution(sample_data)
+#plot2

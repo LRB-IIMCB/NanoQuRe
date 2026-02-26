@@ -12,5 +12,6 @@ utils::globalVariables(c(
   "bases_gb",
   "pass_status",
   "n",
-  "n_50_value"
+  "n_50_value",
+  "number of reads"
 ))
