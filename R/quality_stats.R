@@ -12,24 +12,30 @@
 #' NULL
 quality_stats <- function(my_data){
 
-  assertthat::assert_that(my_data %has_name% "sample_id", msg = "The data frame is missing the 'sample_id' column")
-  assertthat::assert_that(my_data %has_name% "run_id", msg = "The data frame is missing the 'run_id' column")
-  assertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
-  assertthat::assert_that(my_data %has_name% "mean_qscore_template", msg = "The data frame is missing the 'mean_qscore_template' column")
-  assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty")
+
+  assertthat::assert_that(is.numeric(my_data$mean_qscore_template), msg = "Column 'mean_qscore_template' must be numeric")
+  assertthat::assert_that(is.numeric(my_data$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
+
+
+  assertthat::assert_that(assertthat::has_name(my_data, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "run_id"), msg = "The data frame is missing the 'run_id' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "mean_qscore_template"), msg = "The data frame is missing the 'mean_qscore_template' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
 
   n50_value <- calculate_n50(my_data)
 
   qtab1 <- my_data %>%
     dplyr::summarise(
       "sample id" = dplyr::first(sample_id),
-      "all reads" = nrow(my_data),
+      "all reads" = dplyr::n(my_data),
       "passed reads" = sum(passes_filtering),
       #"failed reads" = "all reads" - "passed reads",
       "n50 value" = round(n50_value, 2),
       "mean qscore" = round(mean(mean_qscore_template), 2),
       "longest read" = max(sequence_length_template),
-      "passed meanlength" = round(mean(
+      "passed mean length" = round(mean(
         sequence_length_template[passes_filtering == TRUE],
         na.rm = TRUE), 2)
     )
