@@ -15,9 +15,14 @@
 #' NULL
 plot_quality_distribution <- function(my_data){
 
-  assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
-  assertthat::assert_that(my_data %has_name% "mean_qscore_template", msg = "The data frame is missing the 'mean_qscore_template' column")
-  assertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
+  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty.")
+
+  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "sample_id"), msg = "Missing 'sample_id' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "mean_qscore_template"), msg = "The data frame is missing the 'mean_qscore_template' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
+
+  assertthat::assert_that(is.numeric(my_data$mean_qscore_template), msg = "Q-score column must be numeric")
 
 
   sample_name <-  dplyr::first(my_data$sample_id)
@@ -31,7 +36,7 @@ plot_quality_distribution <- function(my_data){
   axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 15), ylim = c(0, y_axis))
   plot_lable <-  ggplot2::labs(title = paste0("Quality distribution ", sample_name), x = "Mean Q score of read", y = "Number of reads")
 
-  n50_label <- ggplot2::annotate(geom = "text", x = 8.2, y = y_axis*0.95, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
+  qscore_label <- ggplot2::annotate(geom = "text", x = 8.2, y = y_axis*0.95, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
 
   length_plot <- data + pass_fail + qscore_line + axis_limit + plot_lable + n50_label
   return(length_plot)

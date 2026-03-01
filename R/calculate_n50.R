@@ -15,7 +15,11 @@
 #' NULL
 calculate_n50 <- function(my_data){
 
-  assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
+
+  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty")
+
+  assertthat::assert_that(is.numeric(my_data$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
 
   total_bases <- sum(my_data$sequence_length_template)
   half_data <- total_bases/2

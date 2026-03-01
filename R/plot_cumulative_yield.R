@@ -1,5 +1,3 @@
-
-
 #'Plot Cumulative Yield
 #'
 #'Generates a cumulative plot containing the number of sequenced bases in Gb over time in hours sorted by pass/fail filtering status.
@@ -18,33 +16,37 @@
 plot_cumulative_yield <- function(my_data){
 
 
-  assertthat::assert_that(my_data %has_name% "start_time", msg = "The data frame is missing the 'start_time' column")
-  assertthat::assert_that(my_data %has_name% "duration", msg = "The data frame is missing the 'duration' column")
-  assertthat::assert_that(my_data %has_name% "passes_filtering", msg = "The data frame is missing the 'passes_filtering' column")
-  assertthat::assert_that(my_data %has_name% "sequence_length_template", msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty")
+  assertthat::assert_that(is.logical(my_data$passes_filtering), msg = "Column 'passes_filtering' must be logical")
+  assertthat::assert_that(is.numeric(my_data$start_time), msg = "Column 'start_time' must be numeric")
+
+  assertthat::assert_that(assertthat::has_name(my_data, "start_time"), msg = "The data frame is missing the 'start_time' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "duration"), msg = "The data frame is missing the 'duration' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
 
 
 
-  sample_name <-  first(my_data$sample_id)
-  cum_data <- my_data %>% select(c(start_time,duration, passes_filtering, sequence_length_template))
+  sample_name <-  dplyr::first(my_data$sample_id)
+  cum_data <- my_data %>% dplyr::select(c(start_time,duration, passes_filtering, sequence_length_template))
 
-  pass_cum <- cum_data %>% filter(passes_filtering==TRUE) %>% arrange(start_time)
-  fail_cum <- cum_data %>% filter(passes_filtering==FALSE) %>% arrange(start_time)
+  pass_cum <- cum_data %>% dplyr::filter(passes_filtering==TRUE) %>% dplyr::arrange(start_time)
+  fail_cum <- cum_data %>% dplyr::filter(passes_filtering==FALSE) %>% dplyr::arrange(start_time)
 
-  pass_cum <- pass_cum %>% mutate(h_start_time = start_time/3600,
+  pass_cum <- pass_cum %>% dplyr::mutate(h_start_time = start_time/3600,
                                   bases_gb = cumsum(as.numeric(sequence_length_template)) / 1e9,
                                   pass_status = "pass")
 
-  fail_cum <- fail_cum %>% mutate(h_start_time = start_time/3600,
+  fail_cum <- fail_cum %>% dplyr::mutate(h_start_time = start_time/3600,
                                   bases_gb = cumsum(as.numeric(sequence_length_template)) / 1e9,
                                   pass_status = "fail")
 
   pass_fail_tab <- dplyr::bind_rows(pass_cum, fail_cum)
 
 
-cum_data <- ggplot(pass_fail_tab, aes(x = h_start_time, y = bases_gb, color = pass_status))
-cum_lines <- geom_line(linewidth = 1)
-cum_labels <- labs(title = "Cumulative Yield", x = "Time [h]", y = "Yield [Gb]")
+cum_data <- ggplot2::ggplot(pass_fail_tab, aes(x = h_start_time, y = bases_gb, color = pass_status))
+cum_lines <- ggplot2::geom_line(linewidth = 1)
+cum_labels <- ggplot2::labs(title = "Cumulative Yield", x = "Time [h]", y = "Yield [Gb]")
 
 cum_plot <- cum_data + cum_lines + cum_labels
 return(cum_plot)
