@@ -15,6 +15,13 @@ library(knitr)
 
 
 ```{r, echo=FALSE}
+shorter_seqsum(params$data)
+
+```
+
+
+
+```{r, echo=FALSE}
 table1 <- NanoQuRe::sequencing_stats(params$data)
 knitr::kable(table1)
 

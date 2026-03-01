@@ -34,12 +34,10 @@ plot_cumulative_yield <- function(my_data){
   fail_cum <- cum_data %>% dplyr::filter(passes_filtering==FALSE) %>% dplyr::arrange(start_time)
 
   pass_cum <- pass_cum %>% dplyr::mutate(h_start_time = start_time/3600,
-                                  bases_gb = cumsum(as.numeric(sequence_length_template)) / 1e9,
-                                  pass_status = "pass")
+        bases_gb = cumsum(as.numeric(sequence_length_template)) / 1e9, pass_status = "pass")
 
   fail_cum <- fail_cum %>% dplyr::mutate(h_start_time = start_time/3600,
-                                  bases_gb = cumsum(as.numeric(sequence_length_template)) / 1e9,
-                                  pass_status = "fail")
+        bases_gb = cumsum(as.numeric(sequence_length_template)) / 1e9, pass_status = "fail")
 
   pass_fail_tab <- dplyr::bind_rows(pass_cum, fail_cum)
 
