@@ -51,8 +51,8 @@ return(cum_plot)
 
 }
 
-#plot1 <- plot_cumulative_yield(ligase_ela)
-#plot1
+plot1 <- plot_cumulative_yield(ligase_induro)
+plot1
 
 #plot2 <- plot_cumulative_yield(sample_data)
 #plot2
