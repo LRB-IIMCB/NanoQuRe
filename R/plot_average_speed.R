@@ -49,5 +49,5 @@ return(av_speed_plot)
 }
 
 
-#plot6 <- plot_average_speed(ligase_induro)
-#plot6
+plot6 <- plot_average_speed(ligase_induro)
+plot6
