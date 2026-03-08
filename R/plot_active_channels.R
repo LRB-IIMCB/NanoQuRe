@@ -1,5 +1,30 @@
-
+#' Plot Active Channels
+#' 
+#' Generates a plot showing number of active channels during sequencing time. 
+#' 
+#' @param my_data A dataframe containing the sequencing summary
+#'
+#' @returns ggplot2 object
+#' @import dplyr
+#' @import ggplot2
+#' @importFrom assertthat assert_that
+#'
+#' @export
+#'
+#' @examples
+#' NULL
 plot_active_channels <- function(my_data){
+  
+  
+  assertthat::assert_that(assertthat::has_name(my_data, "start_time"), msg = "The data frame is missing the 'start_time' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "duration"), msg = "The data frame is missing the 'duration' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "channel"), msg = "The data frame is missing the 'channel' column")
+  assertthat::assert_that(assertthat::has_name(my_data, "sample_id"), msg = "The data frame is missing 'sample_id' column")
+  
+  
+  assertthat::assert_that(is.numeric(my_data$start_time), msg = "Column 'start_time' must be numeric")
+  assertthat::assert_that(is.numeric(my_data$duration), msg = "Column 'duration' must be numeric")
+  
 
   sample_name <- dplyr::first(my_data$sample_id)
 
