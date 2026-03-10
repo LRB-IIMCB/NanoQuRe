@@ -4,10 +4,10 @@
 \alias{shorter_seqsum}
 \title{Shorter Seq sum}
 \usage{
-shorter_seqsum(my_data)
+shorter_seqsum(seq_summary)
 }
 \arguments{
-\item{my_data}{path to a file}
+\item{seq_summary}{path to a file}
 }
 \value{
 Sequencing summary data frame

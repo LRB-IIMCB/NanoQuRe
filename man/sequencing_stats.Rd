@@ -4,10 +4,10 @@
 \alias{sequencing_stats}
 \title{Sequencing Stats}
 \usage{
-sequencing_stats(my_data)
+sequencing_stats(seq_summary)
 }
 \arguments{
-\item{my_data}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
 returns joined table with rudimentary data for all sequencing summaries in database

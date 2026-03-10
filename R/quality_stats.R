@@ -1,7 +1,7 @@
 #' Quality Stats
 #'Generates a joined table from sequencing summaries that contains most import quality metrics - number of all reads, number of passed reads, n50 value, mean q-score, longest read length, mean length of passed reads.
 #'
-#' @param my_data A dataframe containing the sequencing summary
+#' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @return joined table with quality data for all sequencing summaries in database
 #' @import dplyr
@@ -10,26 +10,26 @@
 #'
 #' @examples
 #' NULL
-quality_stats <- function(my_data){
+quality_stats <- function(seq_summary){
 
-  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty")
+  assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty")
 
-  assertthat::assert_that(is.numeric(my_data$mean_qscore_template), msg = "Column 'mean_qscore_template' must be numeric")
-  assertthat::assert_that(is.numeric(my_data$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
+  assertthat::assert_that(is.numeric(seq_summary$mean_qscore_template), msg = "Column 'mean_qscore_template' must be numeric")
+  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
 
 
-  assertthat::assert_that(assertthat::has_name(my_data, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "run_id"), msg = "The data frame is missing the 'run_id' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "mean_qscore_template"), msg = "The data frame is missing the 'mean_qscore_template' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "run_id"), msg = "The data frame is missing the 'run_id' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "mean_qscore_template"), msg = "The data frame is missing the 'mean_qscore_template' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
 
-  n50_value <- calculate_n50(my_data)
+  n50_value <- calculate_n50(seq_summary)
 
-  qtab1 <- my_data %>%
+  qtab1 <- seq_summary %>%
     dplyr::summarise(
       "sample id" = dplyr::first(sample_id),
-      "all reads" = dplyr::n(my_data),
+      "all reads" = dplyr::n(),
       "passed reads" = sum(passes_filtering),
       #"failed reads" = "all reads" - "passed reads",
       "n50 value" = round(n50_value, 2),
@@ -44,5 +44,5 @@ quality_stats <- function(my_data){
 }
 
 
-#tab2 <- quality_stats(sample_data)
-#tab2
+tab2 <- quality_stats(ligase_induro)
+tab2

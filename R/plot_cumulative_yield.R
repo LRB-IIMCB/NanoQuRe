@@ -3,32 +3,31 @@
 #'Generates a cumulative plot containing the number of sequenced bases in Gb over time in hours sorted by pass/fail filtering status.
 #'
 #'
-#' @param my_data A dataframe containing the sequencing summary
+#' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @returns ggplot2 object
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
 #' NULL
-plot_cumulative_yield <- function(my_data){
+plot_cumulative_yield <- function(seq_summary){
 
-  ssertthat::assert_that(assertthat::has_name(my_data, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "start_time"), msg = "The data frame is missing the 'start_time' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "duration"), msg = "The data frame is missing the 'duration' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"), msg = "The data frame is missing the 'start_time' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "duration"), msg = "The data frame is missing the 'duration' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
   
-  assertthat::assert_that(is.numeric(my_data$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
-  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty")
-  assertthat::assert_that(is.logical(my_data$passes_filtering), msg = "Column 'passes_filtering' must be logical")
-  assertthat::assert_that(is.numeric(my_data$start_time), msg = "Column 'start_time' must be numeric")
+  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
+  assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty")
+  assertthat::assert_that(is.logical(seq_summary$passes_filtering), msg = "Column 'passes_filtering' must be logical")
+  assertthat::assert_that(is.numeric(seq_summary$start_time), msg = "Column 'start_time' must be numeric")
   
 
-  sample_name <-  dplyr::first(my_data$sample_id)
-  cum_data <- my_data %>% dplyr::select(c(start_time,duration, passes_filtering, sequence_length_template))
+  sample_name <-  dplyr::first(seq_summary$sample_id)
+  cum_data <- seq_summary %>% dplyr::select(c(start_time,duration, passes_filtering, sequence_length_template))
 
   pass_cum <- cum_data %>% dplyr::filter(passes_filtering==TRUE) %>% dplyr::arrange(start_time)
   fail_cum <- cum_data %>% dplyr::filter(passes_filtering==FALSE) %>% dplyr::arrange(start_time)
@@ -51,9 +50,4 @@ return(cum_plot)
 
 }
 
-#plot1 <- plot_cumulative_yield(ligase_induro)
-#plot1
-
-#plot2 <- plot_cumulative_yield(sample_data)
-#plot2
 

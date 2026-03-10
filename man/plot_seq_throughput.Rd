@@ -4,10 +4,10 @@
 \alias{plot_seq_throughput}
 \title{Plot Seq Throughput}
 \usage{
-plot_seq_throughput(my_data)
+plot_seq_throughput(seq_summary)
 }
 \arguments{
-\item{my_data}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
 ggplot2 object

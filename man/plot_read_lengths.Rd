@@ -4,10 +4,10 @@
 \alias{plot_read_lengths}
 \title{Plot Read Lengths}
 \usage{
-plot_read_lengths(my_data)
+plot_read_lengths(seq_summary)
 }
 \arguments{
-\item{my_data}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
 ggplot2 object

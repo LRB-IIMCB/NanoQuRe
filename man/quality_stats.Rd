@@ -5,10 +5,10 @@
 \title{Quality Stats
 Generates a joined table from sequencing summaries that contains most import quality metrics - number of all reads, number of passed reads, n50 value, mean q-score, longest read length, mean length of passed reads.}
 \usage{
-quality_stats(my_data)
+quality_stats(seq_summary)
 }
 \arguments{
-\item{my_data}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
 joined table with quality data for all sequencing summaries in database

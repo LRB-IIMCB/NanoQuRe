@@ -2,7 +2,7 @@
 #'
 #'Generates a plot with number of bases sequenced of each length in bases sorted by pass/fail filtering status.Two vertical lines represent calculated mean read length of the reads in bases and N 50 value calculated with the function calculate_n50.
 #'
-#' @param my_data A dataframe containing the sequencing summary
+#' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @returns ggplot2 object
 #' @import ggplot2
@@ -12,22 +12,22 @@
 #'
 #' @examples
 #' NULL
-plot_read_lengths <- function(my_data){
+plot_read_lengths <- function(seq_summary){
 
 
-  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty.")
+  assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty.")
 
-  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
-assertthat::assert_that(assertthat::has_name(my_data, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
-assertthat::assert_that(is.numeric(my_data$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
+assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
+assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
 
 
-  count_seq <- my_data %>% dplyr::count(sequence_length_template)
+  count_seq <- seq_summary %>% dplyr::count(sequence_length_template)
   max_y_mean <- max(count_seq$n, na.rm = TRUE)
-  mean_length = mean(my_data$sequence_length_template)
-  n50_SR <- calculate_n50(my_data)
+  mean_length = mean(seq_summary$sequence_length_template)
+  n50_SR <- calculate_n50(seq_summary)
   max_y_n50 <- max(count_seq$n, na.rm = TRUE)
-  sample_name <-  dplyr::first(my_data$sample_id)
+  sample_name <-  dplyr::first(seq_summary$sample_id)
 
 
 
@@ -50,10 +50,3 @@ assertthat::assert_that(is.numeric(my_data$sequence_length_template), msg = "Col
   return(length_plot)
 
 }
-
-
-#plot1 <- plot_read_lengths(ligase_ela)
-#plot1
-
-#plot2 <- plot_read_lengths(sample_data)
-#plot2

@@ -13,5 +13,5 @@ utils::globalVariables(c(
   "pass_status",
   "n",
   "n_50_value",
-  "number of reads"
+  "number_of_reads"
 ))

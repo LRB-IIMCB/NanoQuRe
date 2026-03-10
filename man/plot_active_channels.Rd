@@ -4,10 +4,10 @@
 \alias{plot_active_channels}
 \title{Plot Active Channels}
 \usage{
-plot_active_channels(my_data)
+plot_active_channels(seq_summary)
 }
 \arguments{
-\item{my_data}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
 ggplot2 object

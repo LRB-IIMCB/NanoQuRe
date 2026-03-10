@@ -1,0 +1,49 @@
+---
+title: "NanoQuRe Sequencing QC Report"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+params:
+  data: NULL
+---
+
+
+```{r}
+# nie wywala errorow
+knitr::opts_chunk$set(
+echo = FALSE,
+message = FALSE,
+warning = FALSE,
+autodep = TRUE,
+cache = TRUE,
+cache.lazy = FALSE
+)
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+
+
+
+```{r, echo=FALSE}
+
+
+```
+
+
+```{r, echo=FALSE}
+plot(plot_read_lengths())
+```
+
+
+```{r}
+
+```
+

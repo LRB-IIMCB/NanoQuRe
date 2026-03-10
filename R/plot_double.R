@@ -2,7 +2,7 @@
 #' 
 #' Generates a plot containing minimum, maximum and average read length over sequencing time and a plot containing minimum, maximum and average value of qscore through sequencing.
 #'
-#' @param my_data A dataframe containing the sequencing summary
+#' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @returns ggplot2 object
 #' @import dplyr
@@ -13,25 +13,25 @@
 #'
 #' @examples
 #' NULL
-plot_double <- function(my_data){
+plot_double <- function(seq_summary){
   
   
   
-  assertthat::assert_that(nrow(my_data) > 0, msg = "The input data frame is empty")
-  assertthat::assert_that(is.logical(my_data$passes_filtering), msg = "Column 'passes_filtering' must be logical")
-  assertthat::assert_that(is.numeric(my_data$start_time), msg = "Column 'start_time' must be numeric")
+  assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty")
+  assertthat::assert_that(is.logical(seq_summary$passes_filtering), msg = "Column 'passes_filtering' must be logical")
+  assertthat::assert_that(is.numeric(seq_summary$start_time), msg = "Column 'start_time' must be numeric")
   
-  assertthat::assert_that(assertthat::has_name(my_data, "start_time"), msg = "The data frame is missing the 'start_time' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "duration"), msg = "The data frame is missing the 'duration' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"), msg = "The data frame is missing the 'start_time' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "duration"), msg = "The data frame is missing the 'duration' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
   
   
   # length - mean, max, average
   # qscore - mean, max, average
   
-  sample_name <-  dplyr::first(my_data$sample_id)
-  double_data <- my_data %>% dplyr::select(c(start_time, duration, sequence_length_template, mean_qscore_template))
+  sample_name <-  dplyr::first(seq_summary$sample_id)
+  double_data <- seq_summary %>% dplyr::select(c(start_time, duration, sequence_length_template, mean_qscore_template))
   
   
   double_data <- double_data %>% dplyr::arrange(start_time)
@@ -67,8 +67,6 @@ return(double_1_plot)
 
 
 
-
-
 double_2 <- ggplot(summary_qscore, aes(x = hour))
 #aes(x= hour, y=c(max_length, min_length, av_length))
 line_4 <- geom_line(aes(y = max_qscore), color = "orange")
@@ -83,11 +81,6 @@ return(double_2_plot)
 
 }
 
-
-
-
-plot7 <- plot_double(ligase_induro)
-plot7
 
 
 

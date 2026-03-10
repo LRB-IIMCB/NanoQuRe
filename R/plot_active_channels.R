@@ -2,7 +2,7 @@
 #' 
 #' Generates a plot showing number of active channels during sequencing time. 
 #' 
-#' @param my_data A dataframe containing the sequencing summary
+#' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @returns ggplot2 object
 #' @import dplyr
@@ -13,22 +13,22 @@
 #'
 #' @examples
 #' NULL
-plot_active_channels <- function(my_data){
+plot_active_channels <- function(seq_summary){
   
   
-  assertthat::assert_that(assertthat::has_name(my_data, "start_time"), msg = "The data frame is missing the 'start_time' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "duration"), msg = "The data frame is missing the 'duration' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "channel"), msg = "The data frame is missing the 'channel' column")
-  assertthat::assert_that(assertthat::has_name(my_data, "sample_id"), msg = "The data frame is missing 'sample_id' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"), msg = "The data frame is missing the 'start_time' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "duration"), msg = "The data frame is missing the 'duration' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "channel"), msg = "The data frame is missing the 'channel' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing 'sample_id' column")
   
   
-  assertthat::assert_that(is.numeric(my_data$start_time), msg = "Column 'start_time' must be numeric")
-  assertthat::assert_that(is.numeric(my_data$duration), msg = "Column 'duration' must be numeric")
+  assertthat::assert_that(is.numeric(seq_summary$start_time), msg = "Column 'start_time' must be numeric")
+  assertthat::assert_that(is.numeric(seq_summary$duration), msg = "Column 'duration' must be numeric")
   
 
-  sample_name <- dplyr::first(my_data$sample_id)
+  sample_name <- dplyr::first(seq_summary$sample_id)
 
-  sorted_by_channel <- my_data %>% group_by(channel)
+  sorted_by_channel <- seq_summary %>% group_by(channel)
 
   sorted_by_channel <- sorted_by_channel %>% dplyr::summarise(
     last_activity = max(start_time + duration, na.rm = TRUE) / 3600)
@@ -48,5 +48,3 @@ plot_active_channels <- function(my_data){
 
 }
 
-#plot4 <- plot_active_channels(ligase_induro)
-#plot4

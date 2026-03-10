@@ -4,10 +4,10 @@
 \alias{plot_average_speed}
 \title{Plot Average Speed}
 \usage{
-plot_average_speed(my_data)
+plot_average_speed(seq_summary)
 }
 \arguments{
-\item{my_data}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
 ggplot2 object

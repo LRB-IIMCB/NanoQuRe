@@ -4,10 +4,10 @@
 \alias{calculate_n50}
 \title{Calculate N50}
 \usage{
-calculate_n50(my_data)
+calculate_n50(seq_summary)
 }
 \arguments{
-\item{my_data}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
 n50 value
