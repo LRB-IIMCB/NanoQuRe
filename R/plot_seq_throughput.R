@@ -56,10 +56,8 @@ plot_seq_throughput <- function(seq_summary){
   channel_labels <- labs(title = paste0("Throughput ", sample_name), x = "Time [h]", y = "Yield per hour")
   
   
-  throughput_plot <- throughput + channel_lines + channel_labels
+  throughput_plot <- throughput + channel_lines + channel_labels + nanoqure_theme()
   return(throughput_plot)
   
 }
 
-plot9 <- plot_seq_throughput(ligase_induro)
-plot9

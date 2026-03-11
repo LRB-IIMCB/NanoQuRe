@@ -2,48 +2,73 @@
 title: "NanoQuRe Sequencing QC Report"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 2
-    number_sections: true
+  html_document:
+    theme: sandstone      # Clean, modern, professional theme
+    highlight: tango    # Nice code highlighting
+    toc: true           # Table of contents
+    toc_float: true     # TOC stays on the side as you scroll
+    code_folding: hide
 params:
   data: NULL
 ---
 
 
-```{r}
-# nie wywala errorow
-knitr::opts_chunk$set(
-echo = FALSE,
-message = FALSE,
-warning = FALSE,
-autodep = TRUE,
-cache = TRUE,
-cache.lazy = FALSE
-)
-```
-
-
-```{r}
+```{r setup, include=FALSE}
+library(NanoQuRe)
 library(dplyr)
 library(ggplot2)
 ```
 
-
-
-
 ```{r, echo=FALSE}
 
+DT::datatable(sequencing_stats(params$data), caption = 'Table 1: Sequencing Summary Statistics')
 
 ```
 
 
 ```{r, echo=FALSE}
-plot(plot_read_lengths())
+DT::datatable(quality_stats(params$data), caption = 'Table 1: Sequencing Summary Quality Statistics')
 ```
 
 
-```{r}
+Number of bases of each length sequenced. Mean length and N50 value included. 
 
+```{r, echo=FALSE}
+plot_read_lengths(params$data)
+```
+
+
+
+Cumulative yield of sequencing run, sorted by status. 
+
+```{r, echo=FALSE}
+plot_cumulative_yield(params$data)
+```
+
+Distribution of reads of every length. 
+
+```{r, echo=FALSE}
+plot_quality_distribution(params$data)
+```
+
+
+Average speed of a read travelling through pore. 
+
+```{r, echo=FALSE}
+plot_average_speed(params$data)
+```
+
+
+Yield per hour distribution during the sequencing run, sorted by status.
+
+```{r, echo=FALSE}
+plot_seq_throughput(params$data)
+```
+
+
+Number of active channels during the sequencing run. 
+
+```{r, echo=FALSE}
+plot_active_channels(params$data)
 ```
 

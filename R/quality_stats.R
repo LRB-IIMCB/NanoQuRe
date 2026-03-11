@@ -42,7 +42,3 @@ quality_stats <- function(seq_summary){
 
   return(qtab1)
 }
-
-
-tab2 <- quality_stats(ligase_induro)
-tab2

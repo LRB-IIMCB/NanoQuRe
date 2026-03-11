@@ -38,7 +38,7 @@ plot_quality_distribution <- function(seq_summary){
 
   qscore_label <- ggplot2::annotate(geom = "text", x = 8.2, y = y_axis*0.95, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
 
-  length_plot <- data + pass_fail + qscore_line + axis_limit + plot_label + qscore_label
+  length_plot <- data + pass_fail + qscore_line + axis_limit + plot_label + qscore_label + nanoqure_theme()
   return(length_plot)
 }
 

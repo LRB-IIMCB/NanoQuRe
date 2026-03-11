@@ -57,7 +57,7 @@ channel_lines <- geom_line(linewidth = 1)
 channel_labels <- labs(title = paste0("Average speed ", sample_name), x = "Time [h]", y = "Speed")
 
 
-av_speed_plot <- av_speed + channel_lines + channel_labels
+av_speed_plot <- av_speed + channel_lines + channel_labels + nanoqure_theme()
 return(av_speed_plot)
 
 }

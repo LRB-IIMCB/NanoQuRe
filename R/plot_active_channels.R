@@ -43,7 +43,7 @@ plot_active_channels <- function(seq_summary){
   channel_labels <- labs(title = paste0("Number of active channels ", sample_name), x = "Time [h]", y = "Number of active channels")
 
 
-  channel_plot <- channel_data + channel_lines + channel_labels
+  channel_plot <- channel_data + channel_lines + channel_labels + nanoqure_theme()
   return(channel_plot)
 
 }
