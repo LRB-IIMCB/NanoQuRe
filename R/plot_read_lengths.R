@@ -30,21 +30,25 @@ assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = 
 
 
   plot_data <- ggplot2::ggplot(data = count_seq) + ggplot2::aes(x = sequence_length_template, y = n)
-  bar_color <- ggplot2::geom_col(color = "skyblue")
-  mean_length_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = mean_length), color = "purple")
-  n50_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = n50_SR), color = "darkgreen")
-  #y_axis <- max_y_mean*1.2
-  axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 4000), ylim = c(0, max_y_mean*1.1))
+bar_color <- ggplot2::geom_col(color = "#56B4E9")
+  
+  
+mean_length_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = mean_length, color = "Mean Length"), linewidth = 1)
+  
+n50_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = n50_SR, color = "N50"), linewidth = 1)
+  
+legend_colors <- ggplot2::scale_color_manual(name = NULL, values = c("Mean Length" = "#CC79A7", "N50" = "#009E73"))
+  
+ 
+
+  axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 2000), ylim = c(0, max_y_mean*1.1))
   plot_label <-  ggplot2::labs(title =paste0("Length plot  ", sample_name), x = "Sequence length [nt]", y = "Number of bases sequenced")
 
 
-  mean_label <- ggplot2::annotate(geom = "text", x = mean_length* 2.5, y = max_y_mean * 0.65, label = paste("Mean Length"), color = "purple", fontface = "bold", size = 4)
+length_plot <- plot_data + mean_length_line + bar_color + n50_line + legend_colors + axis_limit + plot_label + nanoqure_theme()
 
-  n50_label <- ggplot2::annotate(geom = "text", x = n50_SR* 2.5, y = max_y_n50 * 0.65, label = paste("N50"), color = "darkgreen", fontface = "bold", size = 4)
-
-
-  length_plot <- plot_data + bar_color + mean_length_line + n50_line + axis_limit + plot_label + mean_label + n50_label + nanoqure_theme()
 
   return(length_plot)
 
 }
+

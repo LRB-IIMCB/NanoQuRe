@@ -30,8 +30,8 @@ plot_quality_distribution <- function(seq_summary){
   sorted_lenq <- length_qscore %>% dplyr::arrange(length_qscore$mean_qscore_template)
 
   data <- ggplot2::ggplot(data = sorted_lenq) + ggplot2::aes(x = mean_qscore_template, fill = passes_filtering)
-  pass_fail <- ggplot2::geom_histogram(binwidth = 0.09, color = "black", position = "stack")
-  qscore_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = 7), color = "orange")
+  pass_fail <- ggplot2::geom_histogram(binwidth = 0.15, color = "#000000", position = "stack")
+  qscore_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = 7), color = "#E69F00")
   y_axis <- nrow(seq_summary)*0.05
   axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 15), ylim = c(0, y_axis))
   plot_label <-  ggplot2::labs(title = paste0("Quality distribution ", sample_name), x = "Mean Q score of read", y = "Number of reads")
