@@ -4,10 +4,12 @@
 \alias{plot_read_lengths}
 \title{Plot Read Lengths}
 \usage{
-plot_read_lengths(seq_summary)
+plot_read_lengths(seq_summary, upper_limit = 4000)
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
+
+\item{upper_limit}{limit of x axis, default option is 4000}
 }
 \value{
 ggplot2 object

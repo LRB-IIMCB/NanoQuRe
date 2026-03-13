@@ -5,10 +5,12 @@
 \title{Plot Quality Distribution
 Generates a plot with number of reads of each length and their average quality score Q score sorted by pass/fail filtering status. Vertical line represents Q score cut-off which is by default equal to 7.}
 \usage{
-plot_quality_distribution(seq_summary)
+plot_quality_distribution(seq_summary, qscore_cutoff = 7)
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
+
+\item{qscore_cutoff}{Numeric parameter of Qscore cut-off}
 }
 \value{
 ggplot2 object

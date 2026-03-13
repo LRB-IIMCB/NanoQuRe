@@ -4,6 +4,7 @@
 #'
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
+#' @param qscore_cutoff Numeric parameter of Qscore cut-off
 #'
 #' @returns ggplot2 object
 #' @import ggplot2
@@ -13,17 +14,18 @@
 #'
 #' @examples
 #' NULL
-plot_quality_distribution <- function(seq_summary){
+plot_quality_distribution <- function(seq_summary, qscore_cutoff=7){
 
+  qscore_cutoff <- as.numeric(qscore_cutoff)
   assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty.")
 
   assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "Missing 'sample_id' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "mean_qscore_template"), msg = "The data frame is missing the 'mean_qscore_template' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
-
   assertthat::assert_that(is.numeric(seq_summary$mean_qscore_template), msg = "Q-score column must be numeric")
 
+  assertthat::assert_that(!is.na(qscore_cutoff), msg = "qscore_cutoff must be a number")
 
   sample_name <-  dplyr::first(seq_summary$sample_id)
   length_qscore <- seq_summary %>% dplyr::select(c(sequence_length_template, mean_qscore_template, passes_filtering))
@@ -31,7 +33,7 @@ plot_quality_distribution <- function(seq_summary){
 
   data <- ggplot2::ggplot(data = sorted_lenq) + ggplot2::aes(x = mean_qscore_template, fill = passes_filtering)
   pass_fail <- ggplot2::geom_histogram(binwidth = 0.15, color = "#000000", position = "stack")
-  qscore_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = 7), color = "#E69F00")
+  qscore_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = qscore_cutoff), color = "#E69F00")
   y_axis <- nrow(seq_summary)*0.05
   axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 15), ylim = c(0, y_axis))
   plot_label <-  ggplot2::labs(title = paste0("Quality distribution ", sample_name), x = "Mean Q score of read", y = "Number of reads")
@@ -41,4 +43,5 @@ plot_quality_distribution <- function(seq_summary){
   length_plot <- data + pass_fail + qscore_line + axis_limit + plot_label + qscore_label + nanoqure_theme()
   return(length_plot)
 }
+
 

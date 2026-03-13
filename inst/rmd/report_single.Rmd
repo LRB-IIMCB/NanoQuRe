@@ -72,3 +72,12 @@ Number of active channels during the sequencing run.
 plot_active_channels(params$data)
 ```
 
+
+```{r, echo=FALSE}
+double_results <- plot_double(params$data)
+double_results$length
+double_results$qscore
+```
+
+
+

@@ -52,36 +52,29 @@ summary_qscore <- double_data %>%
 
 
 
+double_1_plot <- ggplot(summary_length, aes(x = hour)) +
+  geom_line(aes(y = max_length, color = "Max"), linewidth = 1) +
+  geom_line(aes(y = av_length, color = "Average"), linewidth = 1) +
+  geom_line(aes(y = min_length, color = "Min"), linewidth = 1) +
+  scale_color_manual(name = NULL, values = c("Max" = "#E69F00", "Average" = "#009E73", "Min" = "#0072B2"), breaks = c("Max", "Average", "Min")) +
+  scale_y_log10(labels = scales::label_comma()) +
+  labs(title = paste0("Length: ", sample_name), x = "Time [h]", y = "Length [bp]") +
+  nanoqure_theme()
 
-double_1 <- ggplot(summary_length, aes(x = hour))
-#aes(x= hour, y=c(max_length, min_length, av_length))
-line_1 <- geom_line(aes(y = max_length), color = "orange")
-line_2 <- geom_line(aes(y = av_length), color = "green")
-line_3 <- geom_line(aes(y = min_length), color = "blue")
-
-labels_1 <- labs(title = paste0("Length ", sample_name), x = "Time [h]", y = "min, average, max")
-
-double_1_plot <- double_1 + line_1 + line_2 + line_3 + labels_1 + scale_y_log10(labels = scales::label_comma()) + scale_x_continuous(breaks = seq(0, max(summary_length$hour), by = 5))
-return(double_1_plot)
+double_2_plot <- ggplot(summary_qscore, aes(x = hour)) +
+  geom_line(aes(y = max_qscore, color = "Max"), linewidth = 1) +
+  geom_line(aes(y = av_qscore, color = "Average"), linewidth = 1) +
+  geom_line(aes(y = min_qscore, color = "Min"), linewidth = 1) +
+  scale_color_manual(name = NULL, values = c("Max" = "#E69F00", "Average" = "#009E73", "Min" = "#0072B2"), breaks = c("Max", "Average", "Min")) +
+  labs(title = paste0("Q-score: ", sample_name), x = "Time [h]", y = "Q-score") +
+  nanoqure_theme()
 
 
-
-
-double_2 <- ggplot(summary_qscore, aes(x = hour))
-#aes(x= hour, y=c(max_length, min_length, av_length))
-line_4 <- geom_line(aes(y = max_qscore), color = "orange")
-line_5 <- geom_line(aes(y = av_qscore), color = "green")
-line_6 <- geom_line(aes(y = min_qscore), color = "blue")
-
-labels_2 <- labs(title = paste0("Qscore ", sample_name), x = "Time [h]", y = "min, average, max")
-
-double_2_plot <- double_2 + line_4 + line_5 + line_6 + labels_2 + scale_x_continuous(breaks = seq(0, max(summary_length$hour), by = 5))
-return(double_2_plot)
-
+return(list(
+  length_plot = double_1_plot,
+  qscore_plot = double_2_plot
+))
 
 }
-
-
-
 
 
