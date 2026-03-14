@@ -38,10 +38,9 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff=7){
   axis_limit <- ggplot2::coord_cartesian(xlim = c(0, 15), ylim = c(0, y_axis))
   plot_label <-  ggplot2::labs(title = paste0("Quality distribution ", sample_name), x = "Mean Q score of read", y = "Number of reads")
 
-  qscore_label <- ggplot2::annotate(geom = "text", x = 8.2, y = y_axis*0.95, label = paste("Q score cut-off"), color = "orange", fontface = "bold", size = 4)
+  qscore_label <- ggplot2::annotate(geom = "text", x = 8, y = y_axis*0.95, label = paste("Q score cut-off"), color = "#E69F00", fontface = "bold", size = 4)
 
   length_plot <- data + pass_fail + qscore_line + axis_limit + plot_label + qscore_label + nanoqure_theme()
   return(length_plot)
 }
-
 

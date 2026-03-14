@@ -3,10 +3,12 @@ title: "NanoQuRe Sequencing QC Report"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   html_document:
-    theme: sandstone      # Clean, modern, professional theme
-    highlight: tango    # Nice code highlighting
-    toc: true           # Table of contents
-    toc_float: true     # TOC stays on the side as you scroll
+    theme: sandstone      
+    highlight: tango    
+    toc: true           #Table of content
+    toc_float:
+      collapsed: false  # This keeps the menu open so you see all plots
+      smooth_scroll: true # Makes the transition "glide" when clicked
     code_folding: hide
 params:
   data: NULL
@@ -19,60 +21,74 @@ library(dplyr)
 library(ggplot2)
 ```
 
+
+
+
+## Sequencing Statistics Table
 ```{r, echo=FALSE}
-
 DT::datatable(sequencing_stats(params$data), caption = 'Table 1: Sequencing Summary Statistics')
-
 ```
 
 
+
+
+## Quality Statistics Table
 ```{r, echo=FALSE}
 DT::datatable(quality_stats(params$data), caption = 'Table 1: Sequencing Summary Quality Statistics')
 ```
 
 
-Number of bases of each length sequenced. Mean length and N50 value included. 
 
+
+## Read Lengths
 ```{r, echo=FALSE}
 plot_read_lengths(params$data)
 ```
 
 
 
-Cumulative yield of sequencing run, sorted by status. 
 
+## Cumulative Yield
 ```{r, echo=FALSE}
 plot_cumulative_yield(params$data)
 ```
 
-Distribution of reads of every length. 
 
+
+
+## Quality Distribution
 ```{r, echo=FALSE}
 plot_quality_distribution(params$data)
 ```
 
 
-Average speed of a read travelling through pore. 
 
+
+## Average Speed
 ```{r, echo=FALSE}
 plot_average_speed(params$data)
 ```
 
 
-Yield per hour distribution during the sequencing run, sorted by status.
 
+
+## Sequencing Throughput
 ```{r, echo=FALSE}
 plot_seq_throughput(params$data)
 ```
 
 
-Number of active channels during the sequencing run. 
 
+
+## Channel Activity
 ```{r, echo=FALSE}
 plot_active_channels(params$data)
 ```
 
 
+
+
+## Length and Qscore
 ```{r, echo=FALSE}
 double_results <- plot_double(params$data)
 double_results$length
