@@ -40,9 +40,10 @@ plot_active_channels <- function(seq_summary){
 
   channel_data <- ggplot(sorted_by_channel, aes(x= last_activity, y=active_channels))
   channel_lines <- geom_line(linewidth = 1)
-  channel_labels <- labs(title = paste0("Number of active channels ", sample_name), x = "Time [h]", y = "Number of active channels")
+  channel_labels <- labs(title = (sample_name), x = "Time [h]", y = "Number of active channels")
 
-
+  #channel_labels <- labs(title = paste0("Number of active channels ", sample_name), x = "Time [h]", y = "Number of active channels")
+  
   channel_plot <- channel_data + channel_lines + channel_labels + nanoqure_theme()
   return(channel_plot)
 

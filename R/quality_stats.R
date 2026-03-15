@@ -31,7 +31,6 @@ quality_stats <- function(seq_summary){
       "sample id" = dplyr::first(sample_id),
       "all reads" = dplyr::n(),
       "passed reads" = sum(passes_filtering),
-      #"failed reads" = "all reads" - "passed reads",
       "n50 value" = round(n50_value, 2),
       "mean qscore" = round(mean(mean_qscore_template), 2),
       "longest read" = max(sequence_length_template),

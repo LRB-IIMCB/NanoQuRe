@@ -56,17 +56,17 @@ double_1_plot <- ggplot(summary_length, aes(x = hour)) +
   geom_line(aes(y = max_length, color = "Max"), linewidth = 1) +
   geom_line(aes(y = av_length, color = "Average"), linewidth = 1) +
   geom_line(aes(y = min_length, color = "Min"), linewidth = 1) +
-  scale_color_manual(name = NULL, values = c("Max" = "#E69F00", "Average" = "#009E73", "Min" = "#0072B2"), breaks = c("Max", "Average", "Min")) +
+  scale_color_manual(name = NULL, values = c("Max" = "#E69F00", "Average" = "#009E73", "Min" = "#56B4E9"), breaks = c("Max", "Average", "Min")) +
   scale_y_log10(labels = scales::label_comma()) +
-  labs(title = paste0("Length: ", sample_name), x = "Time [h]", y = "Length [bp]") +
+  labs(title = paste0("Length ", sample_name), x = "Time [h]", y = "Length [bp]") +
   nanoqure_theme()
 
 double_2_plot <- ggplot(summary_qscore, aes(x = hour)) +
   geom_line(aes(y = max_qscore, color = "Max"), linewidth = 1) +
   geom_line(aes(y = av_qscore, color = "Average"), linewidth = 1) +
   geom_line(aes(y = min_qscore, color = "Min"), linewidth = 1) +
-  scale_color_manual(name = NULL, values = c("Max" = "#E69F00", "Average" = "#009E73", "Min" = "#0072B2"), breaks = c("Max", "Average", "Min")) +
-  labs(title = paste0("Q-score: ", sample_name), x = "Time [h]", y = "Q-score") +
+  scale_color_manual(name = NULL, values = c("Max" = "#E69F00", "Average" = "#009E73", "Min" = "#56B4E9"), breaks = c("Max", "Average", "Min")) +
+  labs(title = paste0("Q-score ", sample_name), x = "Time [h]", y = "Q-score") +
   nanoqure_theme()
 
 

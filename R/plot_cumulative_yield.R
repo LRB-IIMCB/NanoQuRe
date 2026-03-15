@@ -43,7 +43,7 @@ plot_cumulative_yield <- function(seq_summary){
 
 cum_data <- ggplot2::ggplot(pass_fail_tab, aes(x = h_start_time, y = bases_gb, color = pass_status))
 cum_lines <- ggplot2::geom_line(linewidth = 1)
-cum_labels <- ggplot2::labs(title = paste0("Cumulative Yield ", sample_name), x = "Time [h]", y = "Yield [Gb]")
+cum_labels <- ggplot2::labs(title = (sample_name), x = "Time [h]", y = "Yield [Gb]")
 
 cum_plot <- cum_data + cum_lines + cum_labels + nanoqure_theme()
 return(cum_plot)

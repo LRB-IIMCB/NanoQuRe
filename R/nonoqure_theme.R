@@ -9,13 +9,14 @@ nanoqure_theme <- function() {
   ggplot2::theme_minimal(base_size = 12, base_family = "sans") + 
     ggplot2::theme(
       panel.grid.minor = ggplot2::element_blank(),
-      plot.title = ggplot2::element_text(face = "bold", size = 14, hjust = 0.5),
+      plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
       legend.position = "right"
     )
 }
 
 #' @title NanoQuRe Color Scale
-#' @export
-scale_fill_nanoqure <- function(...) {
+#' @param scale_fill Arguments passed to ggplot2::scale_fill_manual
+#' @export 
+scale_fill_nanoqure <- function(scale_fill) {
   ggplot2::scale_fill_manual(values = okabe_ito_palette, ...)
 }

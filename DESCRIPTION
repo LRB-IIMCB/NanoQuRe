@@ -21,8 +21,11 @@ Imports:
     assertthat,
     dplyr,
     ggplot2,
-    knitr,
-    readr
+    readr, 
+    rmarkdown,
+    scales, 
+    DT
 Suggests:
-  testthat
+  testthat, 
+  knitr
 Config/testthat/edition: 3

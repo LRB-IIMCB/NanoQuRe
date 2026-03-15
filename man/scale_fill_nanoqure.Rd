@@ -4,7 +4,10 @@
 \alias{scale_fill_nanoqure}
 \title{NanoQuRe Color Scale}
 \usage{
-scale_fill_nanoqure(...)
+scale_fill_nanoqure(scale_fill)
+}
+\arguments{
+\item{scale_fill}{Arguments passed to ggplot2::scale_fill_manual}
 }
 \description{
 NanoQuRe Color Scale

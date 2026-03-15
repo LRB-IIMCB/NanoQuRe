@@ -54,7 +54,7 @@ data_by_hour <- bind_rows(pass_speed, fail_speed)
 
 av_speed <- ggplot(data_by_hour, aes(x= hour, y=speed, color=pass_status))
 channel_lines <- geom_line(linewidth = 1)
-channel_labels <- labs(title = paste0("Average speed [bp/s]", sample_name), x = "Time [h]", y = "Speed")
+channel_labels <- labs(title = (sample_name), x = "Time [h]", y = "Speed")
 
 
 av_speed_plot <- av_speed + channel_lines + channel_labels + nanoqure_theme()

@@ -43,7 +43,7 @@ legend_colors <- ggplot2::scale_color_manual(name = NULL, values = c("Mean Lengt
  
 
   axis_limit <- ggplot2::coord_cartesian(xlim = c(0, upper_limit), ylim = c(0, max_y_mean*1.1))
-  plot_label <-  ggplot2::labs(title =paste0("Length plot  ", sample_name), x = "Sequence length [nt]", y = "Number of bases sequenced")
+  plot_label <-  ggplot2::labs(title = (sample_name), x = "Sequence length [nt]", y = "Number of bases sequenced")
 
 
 length_plot <- plot_data + bar_color + mean_length_line + n50_line + legend_colors + axis_limit + plot_label + nanoqure_theme()

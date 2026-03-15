@@ -53,7 +53,7 @@ plot_seq_throughput <- function(seq_summary){
   
   throughput <- ggplot(data_by_hour, aes(x= hour, y=yield_per_hour, color=pass_status))
   channel_lines <- geom_line(linewidth = 1)
-  channel_labels <- labs(title = paste0("Throughput ", sample_name), x = "Time [h]", y = "Yield per hour")
+  channel_labels <- labs(title = (sample_name), x = "Time [h]", y = "Yield per hour")
   
   
   throughput_plot <- throughput + channel_lines + channel_labels + nanoqure_theme()

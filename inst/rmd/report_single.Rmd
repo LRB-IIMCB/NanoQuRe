@@ -1,10 +1,10 @@
 ---
-title: "NanoQuRe Sequencing QC Report"
+title: "`r paste0('NanoQuRe Sequencing QC Report ', dplyr::first(params$data$sample_id))`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   html_document:
-    theme: sandstone      
-    highlight: tango    
+    theme: paper      
+    highlight: pygments    
     toc: true           #Table of content
     toc_float:
       collapsed: false  # This keeps the menu open so you see all plots
@@ -13,6 +13,26 @@ output:
 params:
   data: NULL
 ---
+
+<style>
+  /* 1. Only the main title (h1) in purple */
+  h1.title { color: #612a78 !important; font-weight: bold; }
+  
+  /* 2. The subtitle (sample name) stays dark/neutral */
+  h4.author, h4.date, .subtitle { color: #333333; font-weight: normal; }
+
+  /* 3. Headers (h2, h3) stay neutral/dark for a minimalist look */
+  h2, h3 { color: #2c3e50; font-weight: bold; }
+
+  /* 4. Only the active (selected) item in the Table of Contents is purple */
+  .list-group-item.active, 
+  .list-group-item.active:focus, 
+  .list-group-item.active:hover {
+    background-color: #612a78 !important;
+    border-color: #612a78 !important;
+    color: white !important;
+  }
+</style>
 
 
 ```{r setup, include=FALSE}
@@ -64,7 +84,7 @@ plot_quality_distribution(params$data)
 
 
 
-## Average Speed
+## Translocation Speed
 ```{r, echo=FALSE}
 plot_average_speed(params$data)
 ```
