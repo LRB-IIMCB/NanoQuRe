@@ -1,4 +1,3 @@
-
 #' Plot Quality Distribution
 #' Generates a plot with number of reads of each length and their average quality score Q score sorted by pass/fail filtering status. Vertical line represents Q score cut-off which is by default equal to 7.
 #'

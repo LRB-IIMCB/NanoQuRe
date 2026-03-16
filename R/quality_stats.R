@@ -14,9 +14,6 @@ quality_stats <- function(seq_summary){
 
   assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty")
 
-  assertthat::assert_that(is.numeric(seq_summary$mean_qscore_template), msg = "Column 'mean_qscore_template' must be numeric")
-  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
-
 
   assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "run_id"), msg = "The data frame is missing the 'run_id' column")
@@ -24,6 +21,10 @@ quality_stats <- function(seq_summary){
   assertthat::assert_that(assertthat::has_name(seq_summary, "mean_qscore_template"), msg = "The data frame is missing the 'mean_qscore_template' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
 
+  assertthat::assert_that(is.numeric(seq_summary$mean_qscore_template), msg = "Column 'mean_qscore_template' must be numeric")
+  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
+  
+  
   n50_value <- calculate_n50(seq_summary)
 
   qtab1 <- seq_summary %>%

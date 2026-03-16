@@ -1,4 +1,3 @@
-
 #' Sequencing Stats
 #'
 #' From sequencing summary's database creates a joined table containing general metrics regarding each run - each sequencing summary. Information in the table contains: sample id, run id, duration in hours, number of reads, total bases sequenced in GB gigabases and passed_reads in percentage.
@@ -16,7 +15,7 @@ sequencing_stats <- function(seq_summary){
 
   assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty")
 
-  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
+
 
   assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "run_id"), msg = "The data frame is missing the 'run_id' column")
@@ -25,6 +24,7 @@ sequencing_stats <- function(seq_summary){
   assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "passes_filtering"), msg = "The data frame is missing the 'passes_filtering' column")
 
+  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
 
   tab1 <- seq_summary %>%
     dplyr::summarise(

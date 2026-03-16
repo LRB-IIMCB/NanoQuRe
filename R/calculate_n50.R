@@ -21,7 +21,7 @@ calculate_n50 <- function(seq_summary){
 
   assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
 
-  total_bases <- sum(seq_summary$sequence_length_template)
+  total_bases <- sum(seq_summary$sequence_length_template, na.rm = TRUE)
   half_data <- total_bases/2
   descend_seq <- seq_summary %>%
     dplyr::select(sequence_length_template) %>%

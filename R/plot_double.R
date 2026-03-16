@@ -35,7 +35,6 @@ plot_double <- function(seq_summary){
   
   
   double_data <- double_data %>% dplyr::arrange(start_time)
-  double_data <- double_data %>% dplyr::mutate(hour = start_time/3600)
   double_data <- double_data %>% dplyr::mutate(hour = floor(start_time / 3600))
   double_data <- double_data %>% group_by(hour)
   

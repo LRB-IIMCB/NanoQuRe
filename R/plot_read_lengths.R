@@ -15,17 +15,18 @@
 #' NULL
 plot_read_lengths <- function(seq_summary, upper_limit=4000){
   
-  upper_limit <- as.numeric(upper_limit)
 
   assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
 assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
 assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
 
+upper_limit <- as.numeric(upper_limit)
 assertthat::assert_that(!is.na(upper_limit), msg = "upper_limit must be a number")
+
 
   count_seq <- seq_summary %>% dplyr::count(sequence_length_template)
   max_y_mean <- max(count_seq$n, na.rm = TRUE)
-  mean_length = mean(seq_summary$sequence_length_template)
+  mean_length <- mean(seq_summary$sequence_length_template, na.rm = TRUE)
   n50_SR <- calculate_n50(seq_summary)
   sample_name <-  dplyr::first(seq_summary$sample_id)
 
