@@ -61,6 +61,7 @@ DT::datatable(quality_stats(params$data), caption = 'Table 1: Sequencing Summary
 
 
 ## Read Lengths
+This plot visualizes the distribution of sequenced bases relative to read lengths, indicating both the mean read length (pink line) and the N50 metric (green line). These metrics reflect the library's structural integrity and help quantify how much the sample has been fragmented.
 ```{r, echo=FALSE}
 plot_read_lengths(params$data)
 ```
@@ -69,6 +70,7 @@ plot_read_lengths(params$data)
 
 
 ## Cumulative Yield
+This plot displays the cumulative data yield in Gigabases (Gb) throughout the sequencing process. The distinction between 'pass' and 'fail' statuses allows for a clear evaluation of the ratio between high-quality data and reads that do not meet the established quality criteria. The kinetic profile of the curves shows a progressive decrease in sequencing efficiency over time. The observed plateauing effect (visible as the curves flatten) suggests a decline in pore activity or sample depletion. The strong dominance of the 'pass' curve over the 'fail' curve confirms a successful run with high-quality library integrity and minimal presence of degraded or fragmented sequences.
 ```{r, echo=FALSE}
 plot_cumulative_yield(params$data)
 ```
@@ -77,6 +79,7 @@ plot_cumulative_yield(params$data)
 
 
 ## Quality Distribution
+This plot illustrates the distribution of read counts relative to their mean Q-score. The orange vertical line indicates a cut-off (set to Q7), while the color coding differentiates reads based on the manufacturer’s internal 'passed filtering' criteria (Pass/Fail). The secondary peak observed at lower values is characteristic of background noise, adapter dimers, or low-quality fragmentary sequences that failed basecalling thresholds.
 ```{r, echo=FALSE}
 plot_quality_distribution(params$data)
 ```
@@ -85,6 +88,7 @@ plot_quality_distribution(params$data)
 
 
 ## Translocation Speed
+This plot illustrates the average translocation speed of nucleic acid molecules through the nanopores over the course of the experiment. The speed is measured in bases per second (bp/s). The stability of this metric serves as an indicator of the motor protein's performance (helicase) and the overall consistency of the sequencing environment (e.g., temperature and buffer stability). The data is stratified by quality status.
 ```{r, echo=FALSE}
 plot_average_speed(params$data)
 ```
@@ -93,6 +97,7 @@ plot_average_speed(params$data)
 
 
 ## Sequencing Throughput
+This plot illustrates the hourly rate of data acquisition (Yield per hour in Gb/h) throughout the sequencing run. Stratifying the throughput by 'pass' and 'fail' quality status provides a real-time diagnostic tool to monitor run performance and determine the optimal point of diminishing returns. As the run progresses, the acquisition rate declines significantly due to the gradual inactivation of pores. By the 6th hour, the productivity of both 'pass' and 'fail' reads converges near zero, suggesting that continuing the run beyond this point would yield negligible high-quality data.
 ```{r, echo=FALSE}
 plot_seq_throughput(params$data)
 ```
@@ -101,6 +106,7 @@ plot_seq_throughput(params$data)
 
 
 ## Channel Activity
+This plot tracks the number of active sequencing channels over time, providing a direct measure of flow cell longevity and hardware performance. For a standard MinION flow cell, the initial availability of active channels close to 512 confirms the excellent initial quality of the flow cell. The steady, downward slope of the curve represents the natural rate of pore exhaustion and degradation throughout the run. Monitoring this decay helps determine the optimal time to terminate the experiment to conserve computational resources and storage space once channel availability drops below a productive threshold.
 ```{r, echo=FALSE}
 plot_active_channels(params$data)
 ```
@@ -109,10 +115,11 @@ plot_active_channels(params$data)
 
 
 ## Length and Qscore
+These plots monitor the temporal stability of read lengths and quality scores (Q-scores) throughout the sequencing run. By tracking the maximum, average, and minimum values, the charts highlight fluctuations in library performance and basecalling accuracy over time. The Length plot (top) utilizes a logarithmic scale to capture the broad range of fragment sizes, while the Q-score plot (bottom) illustrates the consistent performance of the sequencing chemistry.
 ```{r, echo=FALSE}
 double_results <- plot_double(params$data)
-double_results$length
-double_results$qscore
+double_results$length_plot
+double_results$qscore_plot
 ```
 
 

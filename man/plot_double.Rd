@@ -10,10 +10,12 @@ plot_double(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-ggplot2 object
+plotly subplot object
 }
 \description{
-Generates a plot containing minimum, maximum and average read length over sequencing time and a plot containing minimum, maximum and average value of qscore through sequencing.
+Generates an interactive combined plot containing minimum, maximum and
+average read length over sequencing time (log10 scale) and minimum, maximum
+and average Q score over sequencing time, displayed side by side.
 }
 \examples{
 NULL

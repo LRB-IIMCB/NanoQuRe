@@ -10,10 +10,11 @@ plot_active_channels(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-ggplot2 object
+plotly object
 }
 \description{
-Generates a plot showing number of active channels during sequencing time.
+Generates an interactive plot showing number of active channels during
+sequencing time.
 }
 \examples{
 NULL

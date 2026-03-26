@@ -13,44 +13,89 @@
 #'
 #' @examples
 #' NULL
-plot_read_lengths <- function(seq_summary, upper_limit=4000){
+plot_read_lengths <- function(seq_summary, upper_limit = 4000) {
   
-
-  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"), msg = "The data frame is missing the 'sequence_length_template' column")
-assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"), msg = "The data frame is missing the 'sample_id' column")
-assertthat::assert_that(is.numeric(seq_summary$sequence_length_template), msg = "Column 'sequence_length_template' must be numeric")
-
-upper_limit <- as.numeric(upper_limit)
-assertthat::assert_that(!is.na(upper_limit), msg = "upper_limit must be a number")
-
-
-  count_seq <- seq_summary %>% dplyr::count(sequence_length_template)
-  max_y_mean <- max(count_seq$n, na.rm = TRUE)
+  # --- Validation ---
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"),
+                          msg = "The data frame is missing the 'sequence_length_template' column")
+  assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"),
+                          msg = "The data frame is missing the 'sample_id' column")
+  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template),
+                          msg = "Column 'sequence_length_template' must be numeric")
+  
+  upper_limit <- as.numeric(upper_limit)
+  assertthat::assert_that(!is.na(upper_limit), msg = "upper_limit must be a number")
+  
+  # --- Data prep ---
+  count_seq   <- seq_summary %>% dplyr::count(sequence_length_template)
   mean_length <- mean(seq_summary$sequence_length_template, na.rm = TRUE)
-  n50_SR <- calculate_n50(seq_summary)
-  sample_name <-  dplyr::first(seq_summary$sample_id)
-
-
-
-  plot_data <- ggplot2::ggplot(data = count_seq) + ggplot2::aes(x = sequence_length_template, y = n)
-bar_color <- ggplot2::geom_col(color = "#56B4E9", alpha = 0.8)
+  n50_SR      <- calculate_n50(seq_summary)
+  sample_name <- dplyr::first(seq_summary$sample_id)
+  max_y       <- max(count_seq$n, na.rm = TRUE)
   
-mean_length_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = mean_length, color = "Mean Length"), linewidth = 1)
+  # --- Plot ---
+  length_plot <- plotly::plot_ly() %>%
+    # Bars
+    plotly::add_bars(
+      data          = count_seq,
+      x             = ~sequence_length_template,
+      y             = ~n,
+      name          = "Read counts",
+      marker        = list(color = "#404040", opacity = 0.85,
+                           line = list(color = "#404040", width = 0.5)),
+      hovertemplate = "Length: %{x} nt<br>Count: %{y}<extra></extra>"
+    ) %>%
+    # Mean line — two points within y range, locked by layout range below
+    plotly::add_lines(
+      x             = c(mean_length, mean_length),
+      y             = c(0, max_y),
+      name          = paste0("Mean: ", round(mean_length, 0), " nt"),
+      line          = list(color = "#CC79A7", width = 2.5),
+      hovertemplate = paste0("Mean: ", round(mean_length, 0), " nt<extra></extra>")
+    ) %>%
+    # N50 line
+    plotly::add_lines(
+      x             = c(n50_SR, n50_SR),
+      y             = c(0, max_y),
+      name          = paste0("N50: ", round(n50_SR, 0), " nt"),
+      line          = list(color = "#009E73", width = 2.5),
+      hovertemplate = paste0("N50: ", round(n50_SR, 0), " nt<extra></extra>")
+    ) %>%
+    plotly::layout(
+      title = list(
+        text = paste0("<b>", sample_name, "</b>"),
+        x    = 0.5,
+        font = list(size = 15, color = "#333333", family = "Arial")
+      ),
+      xaxis = list(
+        title     = list(text = "<b>Sequence length [nt]</b>",
+                         font = list(size = 13, family = "Arial")),
+        range     = c(0, upper_limit),
+        showgrid  = TRUE,
+        gridcolor = "#e0e0e0",
+        tickfont  = list(size = 11, family = "Arial", color = "#333333")
+      ),
+      yaxis = list(
+        title     = list(text = "<b>Number of reads</b>",
+                         font = list(size = 13, family = "Arial")),
+        range     = c(0, max_y * 1.1),  # fixed range — lines can't expand it
+        showgrid  = TRUE,
+        gridcolor = "#e0e0e0",
+        tickfont  = list(size = 11, family = "Arial", color = "#333333")
+      ),
+      bargap        = 0,
+      plot_bgcolor  = "#f9f9f9",
+      paper_bgcolor = "#f9f9f9",
+      legend = list(
+        bgcolor     = "#ffffff",
+        bordercolor = "#cccccc",
+        borderwidth = 1,
+        font        = list(size = 11, family = "Arial"),
+        x           = 0.75,
+        y           = 0.95
+      )
+    )
   
-n50_line <- ggplot2::geom_vline(ggplot2::aes(xintercept = n50_SR, color = "N50"), linewidth = 1)
-  
-legend_colors <- ggplot2::scale_color_manual(name = NULL, values = c("Mean Length" = "#CC79A7", "N50" = "#009E73"))
-  
- 
-
-  axis_limit <- ggplot2::coord_cartesian(xlim = c(0, upper_limit), ylim = c(0, max_y_mean*1.1))
-  plot_label <-  ggplot2::labs(title = (sample_name), x = "Sequence length [nt]", y = "Number of bases sequenced")
-
-
-length_plot <- plot_data + bar_color + mean_length_line + n50_line + legend_colors + axis_limit + plot_label + nanoqure_theme()
-
-
   return(length_plot)
-
 }
 
