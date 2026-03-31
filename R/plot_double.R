@@ -1,19 +1,3 @@
-#' Plot Double
-#'
-#' Generates an interactive combined plot containing minimum, maximum and
-#' average read length over sequencing time (log10 scale) and minimum, maximum
-#' and average Q score over sequencing time, displayed side by side.
-#'
-#' @param seq_summary A dataframe containing the sequencing summary
-#'
-#' @returns plotly subplot object
-#' @import dplyr
-#' @importFrom plotly plot_ly add_lines subplot layout
-#' @importFrom assertthat assert_that
-#' @export
-#'
-#' @examples
-#' NULL
 plot_double <- function(seq_summary) {
   
   # --- Validation ---
@@ -42,13 +26,15 @@ plot_double <- function(seq_summary) {
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour)
   
+  # Single summarise — no duplicate
   summary_length <- double_data %>%
     dplyr::summarise(
       max_length = max(sequence_length_template),
       min_length = min(sequence_length_template),
       av_length  = mean(sequence_length_template),
       .groups    = "drop"
-    )
+    ) %>%
+    dplyr::mutate(min_length = pmax(min_length, 50))
   
   summary_qscore <- double_data %>%
     dplyr::summarise(
@@ -58,7 +44,7 @@ plot_double <- function(seq_summary) {
       .groups    = "drop"
     )
   
-  # --- Length plot (log10 y axis) ---
+  # --- Length plot ---
   length_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
       data          = summary_length,
@@ -98,13 +84,14 @@ plot_double <- function(seq_summary) {
         tickfont  = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
-        title     = list(text = "<b>Length [bp]</b>",
-                         font = list(size = 13, family = "Arial")),
-        type      = "log",         # plotly log10 axis
+        title      = list(text = "<b>Length [bp]</b>",
+                          font = list(size = 13, family = "Arial")),
+        type       = "log",
+        dtick      = "D2",
         tickformat = ",.0f",
-        showgrid  = TRUE,
-        gridcolor = "#e0e0e0",
-        tickfont  = list(size = 11, family = "Arial", color = "#333333")
+        showgrid   = TRUE,
+        gridcolor  = "#e0e0e0",
+        tickfont   = list(size = 11, family = "Arial", color = "#333333")
       ),
       plot_bgcolor  = "#f9f9f9",
       paper_bgcolor = "#f9f9f9",
@@ -116,7 +103,7 @@ plot_double <- function(seq_summary) {
       )
     )
   
-  # --- Q score plot (linear y axis) ---
+  # --- Q score plot ---
   qscore_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
       data          = summary_qscore,
@@ -125,7 +112,7 @@ plot_double <- function(seq_summary) {
       name          = "Max",
       line          = list(color = "#E69F00", width = 2),
       hovertemplate = "Time: %{x} h<br>Max Q: %{y:.2f}<extra></extra>",
-      showlegend    = FALSE        # legend already shown in left plot
+      showlegend    = FALSE
     ) %>%
     plotly::add_lines(
       data          = summary_qscore,
@@ -169,10 +156,8 @@ plot_double <- function(seq_summary) {
       paper_bgcolor = "#f9f9f9"
     )
   
-  # --- Combine side by side ---
   return(list(
     length_plot = length_plot,
     qscore_plot = qscore_plot
   ))
-  
 }
