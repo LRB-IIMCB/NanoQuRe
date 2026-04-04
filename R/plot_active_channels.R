@@ -16,6 +16,8 @@
 plot_active_channels <- function(seq_summary) {
   
   # --- Validation ---
+  assertthat::assert_that(nrow(seq_summary) > 0, msg = "The input data frame is empty")
+  
   assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"),
                           msg = "The data frame is missing the 'start_time' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "duration"),

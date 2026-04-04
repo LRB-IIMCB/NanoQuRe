@@ -19,7 +19,7 @@ plot_average_speed <- function(seq_summary) {
   assertthat::assert_that(nrow(seq_summary) > 0,
                           msg = "The input data frame is empty")
   assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"),
-                          msg = "The data frame is missing 'sample_id'column")
+                          msg = "The data frame is missing the 'sample_id' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"),
                           msg = "The data frame is missing the 'start_time' column")
   assertthat::assert_that(assertthat::has_name(seq_summary, "duration"),
