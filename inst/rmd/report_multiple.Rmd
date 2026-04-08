@@ -1,30 +1,23 @@
 ---
-title: "`r paste0('NanoQuRe Sequencing QC Report ', dplyr::first(params$data$sample_id))`"
+title: "`r paste0('NanoQuRe Sequencing QC Report - Multiple Samples')`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   html_document:
     theme: paper      
     highlight: pygments    
-    toc: true           #Table of content
+    toc: true
     toc_float:
-      collapsed: false  # This keeps the menu open so you see all plots
-      smooth_scroll: true # Makes the transition "glide" when clicked
+      collapsed: false
+      smooth_scroll: true
     code_folding: hide
 params:
-  data_list: NULL
+  data: NULL
 ---
 
 <style>
-  /* 1. Only the main title (h1) in purple */
   h1.title { color: #612a78 !important; font-weight: bold; }
-  
-  /* 2. The subtitle (sample name) stays dark/neutral */
   h4.author, h4.date, .subtitle { color: #333333; font-weight: normal; }
-
-  /* 3. Headers (h2, h3) stay neutral/dark for a minimalist look */
   h2, h3 { color: #2c3e50; font-weight: bold; }
-
-  /* 4. Only the active (selected) item in the Table of Contents is purple */
   .list-group-item.active, 
   .list-group-item.active:focus, 
   .list-group-item.active:hover {
@@ -34,13 +27,65 @@ params:
   }
 </style>
 
-
-```{r}
+```{r setup, include=FALSE}
 library(NanoQuRe)
 library(dplyr)
 library(ggplot2)
+library(htmltools) # Required to render lists of interactive HTML widgets
+
+samples_split <- split(params$data, params$data$sample_id)
+```
+
+## Sequencing Statistics Table
+```{r, echo=FALSE}
+lapply(samples_split, sequencing_stats) %>%
+  dplyr::bind_rows() %>%
+  DT::datatable(caption = 'Table 1: Sequencing Summary Statistics')
 ```
 
 
+## Quality Statistics Table
+```{r, echo=FALSE}
+lapply(samples_split, quality_stats) %>%
+  dplyr::bind_rows() %>%
+  DT::datatable(caption = 'Table 2: Sequencing Summary Quality Statistics')
+```
 
+## Read Lengths
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, plot_read_lengths))
+```
+
+## Cumulative Yield
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, plot_cumulative_yield))
+```
+
+## Quality Distribution
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, plot_quality_distribution))
+```
+
+## Translocation Speed
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, plot_average_speed))
+```
+
+## Sequencing Throughput
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, plot_seq_throughput))
+```
+
+## Channel Activity
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, plot_active_channels))
+```
+
+## Length and Qscore
+```{r, echo=FALSE}
+htmltools::tagList(lapply(samples_split, function(s) {
+  double_results <- plot_double(s)
+  htmltools::tagList(double_results$length_plot, double_results$qscore_plot)
+}))
+```
 
