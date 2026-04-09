@@ -4,7 +4,7 @@
 \alias{plot_read_lengths}
 \title{Plot Read Lengths}
 \usage{
-plot_read_lengths(seq_summary, upper_limit = 4000)
+plot_read_lengths(seq_summary, upper_limit = 4000, y_limit = NULL)
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}

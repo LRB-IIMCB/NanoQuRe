@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' NULL
-plot_read_lengths <- function(seq_summary, upper_limit = 4000) {
+plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
   
   # --- Validation ---
   assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"),
@@ -27,11 +27,21 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000) {
   assertthat::assert_that(!is.na(upper_limit), msg = "upper_limit must be a number")
   
   # --- Data prep ---
-  count_seq   <- seq_summary %>% dplyr::count(sequence_length_template)
-  mean_length <- mean(seq_summary$sequence_length_template, na.rm = TRUE)
+  lengths     <- seq_summary$sequence_length_template
+  sample_name <- seq_summary$sample_id[[1]]
+  mean_length <- mean(lengths, na.rm = TRUE)
   n50_SR      <- calculate_n50(seq_summary)
-  sample_name <- dplyr::first(seq_summary$sample_id)
-  max_y       <- max(count_seq$n, na.rm = TRUE)
+  
+  count_seq   <- as.data.frame(table(lengths))
+  count_seq$lengths <- as.numeric(as.character(count_seq$lengths))
+  names(count_seq)  <- c("sequence_length_template", "n")
+  count_seq$n       <- as.integer(count_seq$n)
+  max_y             <- max(count_seq$n, na.rm = TRUE)
+  
+  # --- Auto y limit ---
+  if (is.null(y_limit)) {
+    y_limit <- quantile(count_seq$n, 0.999, na.rm = TRUE) * 1.1
+  }
   
   # --- Plot ---
   length_plot <- plotly::plot_ly() %>%
@@ -78,7 +88,7 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000) {
       yaxis = list(
         title     = list(text = "<b>Number of reads</b>",
                          font = list(size = 13, family = "Arial")),
-        range     = c(0, max_y * 1.1),  # fixed range — lines can't expand it
+        range     = c(0, y_limit),
         showgrid  = TRUE,
         gridcolor = "#e0e0e0",
         tickfont  = list(size = 11, family = "Arial", color = "#333333")
@@ -98,4 +108,3 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000) {
   
   return(length_plot)
 }
-
