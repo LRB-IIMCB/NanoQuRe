@@ -10,10 +10,11 @@ plot_average_speed(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-ggplot2 object
+plotly object
 }
 \description{
-Generates a plot with average speed of bases going through the pore, filtered by pass status.
+Generates an interactive plot with average speed of bases going through
+the pore per hour, filtered by pass/fail status.
 }
 \examples{
 NULL

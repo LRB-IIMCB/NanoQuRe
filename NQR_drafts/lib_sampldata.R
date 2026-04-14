@@ -3,7 +3,7 @@ library(usethis)
 library(devtools)
 library(roxygen2)
 library(tidyverse)
-library(ggplot2)
+library(plotly)
 #library()
 
 
@@ -21,3 +21,9 @@ sample_data <- read_tsv("/mnt/nanopore/raw_data/mouse_hypothalamus/251104_SO//20
 
 
 sequencing_summary_FBD46295_d491e57f_1269a463.txt
+
+
+short_ela <- shorter_seqsum(ligase_ela)
+
+
+

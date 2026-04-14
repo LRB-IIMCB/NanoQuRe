@@ -10,10 +10,11 @@ plot_seq_throughput(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-ggplot2 object
+plotly object
 }
 \description{
-Generates a plot with sequence throughput during time filtered by pass status
+Generates an interactive plot with sequence throughput during time
+filtered by pass/fail status.
 }
 \examples{
 NULL

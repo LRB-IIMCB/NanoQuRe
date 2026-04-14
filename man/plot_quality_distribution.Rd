@@ -14,11 +14,20 @@ plot_quality_distribution(seq_summary, qscore_cutoff = 7)
 }
 \value{
 ggplot2 object
+
+plotly object
 }
 \description{
 Plot Quality Distribution
 Generates a plot with number of reads of each length and their average quality score Q score sorted by pass/fail filtering status. Vertical line represents Q score cut-off which is by default equal to 7.
 }
 \examples{
+NULL
+Plot Quality Distribution
+
+Generates an interactive plot with number of reads at each Q score sorted
+by pass/fail filtering status. Vertical line represents Q score cut-off
+which is by default equal to 7.
+
 NULL
 }
