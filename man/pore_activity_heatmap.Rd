@@ -9,7 +9,8 @@ pore_activity_heatmap(seq_summary, platform = "minion")
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
 
-\item{platform}{Flowcell used for sequencing ("minion" or "promethion"). Defaults to "minion"}
+\item{platform}{Flowcell used for sequencing: \code{"minion"} or
+\code{"promethion"}. Defaults to \code{"minion"}.}
 }
 \value{
 plotly object
@@ -19,5 +20,5 @@ Generates an interactive heatmap showing channel activity over time and
 channel activity with respect to their disposition on the flowcell.
 }
 \examples{
-NULL
+pore_activity_heatmap(sample_data, platform = "minion")
 }

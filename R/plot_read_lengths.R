@@ -1,35 +1,35 @@
-#'Plot Read Lengths
+#' Plot Read Lengths
 #'
-#'Generates a plot with number of bases sequenced of each length in bases sorted by pass/fail filtering status.Two vertical lines represent calculated mean read length of the reads in bases and N 50 value calculated with the function calculate_n50.
+#' Generates an interactive plot with number of reads of each length in bases.
+#' Two vertical lines represent the mean read length and the N50 value
+#' calculated with \code{\link{calculate_n50}}.
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
-#' @param upper_limit limit of x axis, default option is 4000
+#' @param upper_limit Upper limit of the x axis. Defaults to 4000.
 #' @param y_limit Upper limit of the y axis. If NULL (default), automatically
 #'   set to the 99.9th percentile of read counts multiplied by 1.1.
 #'
-#' @returns ggplot2 object
-#' @import ggplot2
+#' @returns plotly object
 #' @import dplyr
-#' @importFrom assertthat assert_that
+#' @importFrom plotly plot_ly add_bars add_lines layout
 #' @importFrom stats quantile
 #' @export
 #'
 #' @examples
-#' NULL
+#' plot_read_lengths(sample_data)
 plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
   
   # --- Validation ---
-  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"),
-                          msg = "The data frame is missing the 'sequence_length_template' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"),
-                          msg = "The data frame is missing the 'sample_id' column")
-  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template),
-                          msg = "Column 'sequence_length_template' must be numeric")
+  if (!("sequence_length_template" %in% names(seq_summary)))
+    stop("The data frame is missing the 'sequence_length_template' column")
+  if (!("sample_id" %in% names(seq_summary)))
+    stop("The data frame is missing the 'sample_id' column")
+  if (!is.numeric(seq_summary$sequence_length_template))
+    stop("Column 'sequence_length_template' must be numeric")
   
-  # bug fix: suppress the base R coercion warning so assertthat's message is
-  # the only signal reaching the caller
   upper_limit <- suppressWarnings(as.numeric(upper_limit))
-  assertthat::assert_that(!is.na(upper_limit), msg = "upper_limit must be a number")
+  if (is.na(upper_limit))
+    stop("upper_limit must be a number")
   
   # --- Data prep ---
   lengths     <- seq_summary$sequence_length_template
@@ -37,20 +37,17 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
   mean_length <- mean(lengths, na.rm = TRUE)
   n50_SR      <- calculate_n50(seq_summary)
   
-  count_seq   <- as.data.frame(table(lengths))
+  count_seq         <- as.data.frame(table(lengths))
   count_seq$lengths <- as.numeric(as.character(count_seq$lengths))
   names(count_seq)  <- c("sequence_length_template", "n")
   count_seq$n       <- as.integer(count_seq$n)
   max_y             <- max(count_seq$n, na.rm = TRUE)
   
-  # --- Auto y limit ---
-  if (is.null(y_limit)) {
+  if (is.null(y_limit))
     y_limit <- quantile(count_seq$n, 0.999, na.rm = TRUE) * 1.1
-  }
   
   # --- Plot ---
   length_plot <- plotly::plot_ly() %>%
-    # Bars
     plotly::add_bars(
       data          = count_seq,
       x             = ~sequence_length_template,
@@ -60,7 +57,6 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
                            line = list(color = "#404040", width = 0.5)),
       hovertemplate = "Length: %{x} nt<br>Count: %{y}<extra></extra>"
     ) %>%
-    # Mean line — two points within y range, locked by layout range below
     plotly::add_lines(
       x             = c(mean_length, mean_length),
       y             = c(0, max_y),
@@ -68,7 +64,6 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
       line          = list(color = "#CC79A7", width = 2.5),
       hovertemplate = paste0("Mean: ", round(mean_length, 0), " nt<extra></extra>")
     ) %>%
-    # N50 line
     plotly::add_lines(
       x             = c(n50_SR, n50_SR),
       y             = c(0, max_y),
@@ -102,12 +97,13 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
       plot_bgcolor  = "#f9f9f9",
       paper_bgcolor = "#f9f9f9",
       legend = list(
+        x           = 1.02,
+        y           = 1,
+        xanchor     = "left",
         bgcolor     = "#ffffff",
         bordercolor = "#cccccc",
         borderwidth = 1,
-        font        = list(size = 11, family = "Arial"),
-        x           = 0.75,
-        y           = 0.95
+        font        = list(size = 11, family = "Arial")
       )
     )
   

@@ -1,4 +1,4 @@
-##' Plot Double
+#' Plot Double
 #'
 #' Generates two interactive plots showing read length and Q-score over
 #' sequencing time. Each plot displays the maximum, average, and minimum
@@ -6,32 +6,33 @@
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
 #'
-#' @returns A named list with two plotly objects
-#'
+#' @returns A named list with two plotly objects: \code{length_plot} and
+#'   \code{qscore_plot}
 #' @import dplyr
 #' @importFrom plotly plot_ly add_lines layout
-#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
-#' NULL
+#' plots <- plot_double(sample_data)
+#' plots$length_plot
+#' plots$qscore_plot
 plot_double <- function(seq_summary) {
   
   # --- Validation ---
-  assertthat::assert_that(nrow(seq_summary) > 0,
-                          msg = "The input data frame is empty")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"),
-                          msg = "The data frame is missing the 'start_time' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "duration"),
-                          msg = "The data frame is missing the 'duration' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "passes_filtering"),
-                          msg = "The data frame is missing the 'passes_filtering' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"),
-                          msg = "The data frame is missing the 'sequence_length_template' column")
-  assertthat::assert_that(is.logical(seq_summary$passes_filtering),
-                          msg = "Column 'passes_filtering' must be logical")
-  assertthat::assert_that(is.numeric(seq_summary$start_time),
-                          msg = "Column 'start_time' must be numeric")
+  if (nrow(seq_summary) == 0)
+    stop("The input data frame is empty")
+  if (!("start_time" %in% names(seq_summary)))
+    stop("The data frame is missing the 'start_time' column")
+  if (!("duration" %in% names(seq_summary)))
+    stop("The data frame is missing the 'duration' column")
+  if (!("passes_filtering" %in% names(seq_summary)))
+    stop("The data frame is missing the 'passes_filtering' column")
+  if (!("sequence_length_template" %in% names(seq_summary)))
+    stop("The data frame is missing the 'sequence_length_template' column")
+  if (!is.logical(seq_summary$passes_filtering))
+    stop("Column 'passes_filtering' must be logical")
+  if (!is.numeric(seq_summary$start_time))
+    stop("Column 'start_time' must be numeric")
   
   # --- Data prep ---
   sample_name <- dplyr::first(seq_summary$sample_id)
@@ -43,7 +44,6 @@ plot_double <- function(seq_summary) {
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour)
   
-  # Single summarise — no duplicate
   summary_length <- double_data %>%
     dplyr::summarise(
       max_length = max(sequence_length_template),
@@ -60,6 +60,17 @@ plot_double <- function(seq_summary) {
       av_qscore  = mean(mean_qscore_template),
       .groups    = "drop"
     )
+  
+  # shared legend config — shown on length plot only to avoid duplication
+  legend_outside <- list(
+    x           = 1.02,
+    y           = 1,
+    xanchor     = "left",
+    bgcolor     = "#ffffff",
+    bordercolor = "#cccccc",
+    borderwidth = 1,
+    font        = list(size = 11, family = "Arial")
+  )
   
   # --- Length plot ---
   length_plot <- plotly::plot_ly() %>%
@@ -112,15 +123,10 @@ plot_double <- function(seq_summary) {
       ),
       plot_bgcolor  = "#f9f9f9",
       paper_bgcolor = "#f9f9f9",
-      legend = list(
-        bgcolor     = "#ffffff",
-        bordercolor = "#cccccc",
-        borderwidth = 1,
-        font        = list(size = 11, family = "Arial")
-      )
+      legend        = legend_outside
     )
   
-  # --- Q score plot ---
+  # --- Q score plot (legend hidden — same colours as length plot) ---
   qscore_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
       data          = summary_qscore,

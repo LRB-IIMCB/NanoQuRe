@@ -10,11 +10,15 @@ calculate_n50(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-n50 value
+Numeric N50 value in bases
 }
 \description{
-Calculates N50 value is the length which 50% of all reads are the same length or longer than its value
+Calculates the N50 value: the read length at which 50% of all sequenced
+bases are contained in reads of that length or longer.
 }
 \examples{
-NULL
+seq_summary <- data.frame(
+  sequence_length_template = c(1, 2, 3, 4, 10)
+)
+calculate_n50(seq_summary)
 }

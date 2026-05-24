@@ -2,8 +2,7 @@
 % Please edit documentation in R/quality_stats.R
 \name{quality_stats}
 \alias{quality_stats}
-\title{Quality Stats
-Generates a joined table from sequencing summaries that contains most import quality metrics - number of all reads, number of passed reads, n50 value, mean q-score, longest read length, mean length of passed reads.}
+\title{Quality Stats}
 \usage{
 quality_stats(seq_summary)
 }
@@ -11,12 +10,13 @@ quality_stats(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-joined table with quality data for all sequencing summaries in database
+A dataframe with quality metrics for the sequencing run
 }
 \description{
-Quality Stats
-Generates a joined table from sequencing summaries that contains most import quality metrics - number of all reads, number of passed reads, n50 value, mean q-score, longest read length, mean length of passed reads.
+Generates a table containing the most important quality metrics from a
+sequencing summary: number of all reads, number of passed reads, N50 value,
+mean Q-score, longest read length, and mean length of passed reads.
 }
 \examples{
-NULL
+quality_stats(sample_data)
 }

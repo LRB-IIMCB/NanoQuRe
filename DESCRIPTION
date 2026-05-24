@@ -18,9 +18,7 @@ URL: https://github.com/All-ice0/NanoQuRe
 BugReports: https://github.com/All-ice0/NanoQuRe/issues
 RoxygenNote: 7.3.3
 Imports: 
-    assertthat,
     dplyr,
-    ggplot2,
     rmarkdown,
     scales, 
     plotly, 
@@ -28,7 +26,6 @@ Imports:
 Suggests:
   testthat, 
   knitr,
-  rmarkdown,
   pkgdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3

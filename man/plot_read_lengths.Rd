@@ -9,17 +9,19 @@ plot_read_lengths(seq_summary, upper_limit = 4000, y_limit = NULL)
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
 
-\item{upper_limit}{limit of x axis, default option is 4000}
+\item{upper_limit}{Upper limit of the x axis. Defaults to 4000.}
 
 \item{y_limit}{Upper limit of the y axis. If NULL (default), automatically
 set to the 99.9th percentile of read counts multiplied by 1.1.}
 }
 \value{
-ggplot2 object
+plotly object
 }
 \description{
-Generates a plot with number of bases sequenced of each length in bases sorted by pass/fail filtering status.Two vertical lines represent calculated mean read length of the reads in bases and N 50 value calculated with the function calculate_n50.
+Generates an interactive plot with number of reads of each length in bases.
+Two vertical lines represent the mean read length and the N50 value
+calculated with \code{\link{calculate_n50}}.
 }
 \examples{
-NULL
+plot_read_lengths(sample_data)
 }

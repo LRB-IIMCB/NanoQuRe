@@ -17,5 +17,5 @@ Generates an interactive cumulative plot containing the number of sequenced
 bases in Gb over time in hours sorted by pass/fail filtering status.
 }
 \examples{
-NULL
+plot_cumulative_yield(sample_data)
 }

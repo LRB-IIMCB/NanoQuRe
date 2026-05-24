@@ -13,28 +13,27 @@
 #' @returns plotly object
 #' @import dplyr
 #' @importFrom plotly plot_ly add_lines layout
-#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
-#' NULL
+#' plot_active_channels(sample_data)
 plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
   
   # --- Validation ---
-  assertthat::assert_that(nrow(seq_summary) > 0,
-                          msg = "The input data frame is empty")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"),
-                          msg = "The data frame is missing the 'start_time' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "duration"),
-                          msg = "The data frame is missing the 'duration' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "channel"),
-                          msg = "The data frame is missing the 'channel' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"),
-                          msg = "The data frame is missing 'sample_id' column")
-  assertthat::assert_that(is.numeric(seq_summary$start_time),
-                          msg = "Column 'start_time' must be numeric")
-  assertthat::assert_that(is.numeric(seq_summary$duration),
-                          msg = "Column 'duration' must be numeric")
+  if (nrow(seq_summary) == 0)
+    stop("The input data frame is empty")
+  if (!("start_time" %in% names(seq_summary)))
+    stop("The data frame is missing the 'start_time' column")
+  if (!("duration" %in% names(seq_summary)))
+    stop("The data frame is missing the 'duration' column")
+  if (!("channel" %in% names(seq_summary)))
+    stop("The data frame is missing the 'channel' column")
+  if (!("sample_id" %in% names(seq_summary)))
+    stop("The data frame is missing 'sample_id' column")
+  if (!is.numeric(seq_summary$start_time))
+    stop("Column 'start_time' must be numeric")
+  if (!is.numeric(seq_summary$duration))
+    stop("Column 'duration' must be numeric")
   
   # --- Data prep ---
   sample_name <- dplyr::first(seq_summary$sample_id)
@@ -53,7 +52,6 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
       active_channels   = channel_no_start - inactive_channels
     )
   
-  # initial channel count and run boundaries
   initial_channels <- dplyr::first(sorted_by_channel$channel_no_start)
   x_max            <- max(sorted_by_channel$last_activity)
   y_max            <- initial_channels
@@ -70,7 +68,7 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
     )
   
   # --- Threshold lines and annotations ---
-  annotations  <- list()
+  annotations   <- list()
   missed_labels <- c()
   
   for (thr in sort(thresholds, decreasing = TRUE)) {
@@ -82,7 +80,6 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
       dplyr::slice(1) %>%
       dplyr::pull(last_activity)
     
-    # threshold not reached during the run — collect for warning annotation
     if (length(crossing_time) == 0) {
       missed_labels <- c(missed_labels, paste0(thr * 100, "%"))
       next
@@ -90,7 +87,8 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
     
     thr_label <- paste0(
       thr * 100, "% of initial active channels reached at ",
-      round(crossing_time, 2), " h"  )
+      round(crossing_time, 2), " h"
+    )
     
     channel_plot <- channel_plot %>%
       plotly::add_lines(
@@ -108,20 +106,20 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
     missed_str <- paste(missed_labels, collapse = " and ")
     
     annotations <- list(list(
-      x          = x_max * 0.5,       # centred horizontally
-      y          = y_max * 0.15,      # low on the plot, out of the curve's way
-      text       = paste0(
+      x           = x_max * 0.5,
+      y           = y_max * 0.15,
+      text        = paste0(
         "<b>\u26a0 ", missed_str, " threshold(s) not reached during this run.</b><br>",
-        "Channel decay may be atypical — please inspect this sample more closely."
+        "Channel decay may be atypical \u2014 please inspect this sample more closely."
       ),
-      showarrow  = FALSE,
-      font       = list(size = 12, color = "#9e2a2b", family = "Arial"),
-      align      = "center",
-      bgcolor    = "#fff3cd",
+      showarrow   = FALSE,
+      font        = list(size = 12, color = "#9e2a2b", family = "Arial"),
+      align       = "center",
+      bgcolor     = "#fff3cd",
       bordercolor = "#e69f00",
       borderwidth = 1.5,
-      borderpad  = 6,
-      opacity    = 0.92
+      borderpad   = 6,
+      opacity     = 0.92
     ))
   }
   
@@ -151,12 +149,13 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
       plot_bgcolor  = "#f9f9f9",
       paper_bgcolor = "#f9f9f9",
       legend = list(
+        x           = 1.02,
+        y           = 1,
+        xanchor     = "left",
         bgcolor     = "#ffffff",
         bordercolor = "#cccccc",
         borderwidth = 1,
-        font        = list(size = 11, family = "Arial"),
-        x           = 0.75,
-        y           = 0.95
+        font        = list(size = 11, family = "Arial")
       )
     )
   

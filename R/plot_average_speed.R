@@ -8,35 +8,33 @@
 #' @returns plotly object
 #' @import dplyr
 #' @importFrom plotly plot_ly add_lines layout
-#' @importFrom assertthat assert_that
 #' @export
 #'
 #' @examples
-#' NULL
+#' plot_average_speed(sample_data)
 plot_average_speed <- function(seq_summary) {
   
   # --- Validation ---
-  assertthat::assert_that(nrow(seq_summary) > 0,
-                          msg = "The input data frame is empty")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "sample_id"),
-                          msg = "The data frame is missing the 'sample_id' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "start_time"),
-                          msg = "The data frame is missing the 'start_time' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "duration"),
-                          msg = "The data frame is missing the 'duration' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "passes_filtering"),
-                          msg = "The data frame is missing the 'passes_filtering' column")
-  assertthat::assert_that(assertthat::has_name(seq_summary, "sequence_length_template"),
-                          msg = "The data frame is missing the 'sequence_length_template' column")
-  
-  assertthat::assert_that(is.logical(seq_summary$passes_filtering),
-                          msg = "Column 'passes_filtering' must be logical")
-  assertthat::assert_that(is.numeric(seq_summary$start_time),
-                          msg = "Column 'start_time' must be numeric")
-  assertthat::assert_that(is.numeric(seq_summary$duration),
-                          msg = "Column 'duration' must be numeric")
-  assertthat::assert_that(is.numeric(seq_summary$sequence_length_template),
-                          msg = "Column 'sequence_length_template' must be numeric")
+  if (nrow(seq_summary) == 0)
+    stop("The input data frame is empty")
+  if (!("sample_id" %in% names(seq_summary)))
+    stop("The data frame is missing the 'sample_id' column")
+  if (!("start_time" %in% names(seq_summary)))
+    stop("The data frame is missing the 'start_time' column")
+  if (!("duration" %in% names(seq_summary)))
+    stop("The data frame is missing the 'duration' column")
+  if (!("passes_filtering" %in% names(seq_summary)))
+    stop("The data frame is missing the 'passes_filtering' column")
+  if (!("sequence_length_template" %in% names(seq_summary)))
+    stop("The data frame is missing the 'sequence_length_template' column")
+  if (!is.logical(seq_summary$passes_filtering))
+    stop("Column 'passes_filtering' must be logical")
+  if (!is.numeric(seq_summary$start_time))
+    stop("Column 'start_time' must be numeric")
+  if (!is.numeric(seq_summary$duration))
+    stop("Column 'duration' must be numeric")
+  if (!is.numeric(seq_summary$sequence_length_template))
+    stop("Column 'sequence_length_template' must be numeric")
   
   # --- Data prep ---
   sample_name <- dplyr::first(seq_summary$sample_id)
@@ -101,12 +99,13 @@ plot_average_speed <- function(seq_summary) {
       plot_bgcolor  = "#f9f9f9",
       paper_bgcolor = "#f9f9f9",
       legend = list(
+        x           = 1.02,
+        y           = 1,
+        xanchor     = "left",
         bgcolor     = "#ffffff",
         bordercolor = "#cccccc",
         borderwidth = 1,
-        font        = list(size = 11, family = "Arial"),
-        x           = 0.75,
-        y           = 0.95
+        font        = list(size = 11, family = "Arial")
       )
     )
   

@@ -21,5 +21,5 @@ which is by default equal to 7. The basecaller threshold line is only drawn
 when failing reads are present in the data.
 }
 \examples{
-NULL
+plot_quality_distribution(sample_data)
 }

@@ -9,16 +9,19 @@ generate_report(..., output_file = "NanoQuRe_Report.html")
 \arguments{
 \item{...}{One or more dataframes containing sequencing summaries}
 
-\item{output_file}{Name of the output HTML file, default is "NanoQuRe_Report.html"}
+\item{output_file}{Name of the output HTML file,
+default is "NanoQuRe_Report.html"}
 }
 \value{
 Path to the rendered HTML report
 }
 \description{
 Generates an HTML QC report from one or more sequencing summary dataframes.
-Automatically selects a single-sample or multi-sample template
-based on the number of unique sample IDs present in the data.
+Automatically selects a single-sample or multi-sample template based on
+the number of unique sample IDs present in the data.
 }
 \examples{
-NULL
+\dontrun{
+generate_report(sample_data, output_file = "QC_Report.html")
+}
 }

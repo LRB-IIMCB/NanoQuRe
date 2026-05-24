@@ -17,5 +17,5 @@ Generates an interactive plot with sequence throughput during time
 filtered by pass/fail status.
 }
 \examples{
-NULL
+plot_seq_throughput(sample_data)
 }

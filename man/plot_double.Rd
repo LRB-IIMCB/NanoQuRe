@@ -10,7 +10,8 @@ plot_double(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-A named list with two plotly objects
+A named list with two plotly objects: \code{length_plot} and
+  \code{qscore_plot}
 }
 \description{
 Generates two interactive plots showing read length and Q-score over
@@ -18,5 +19,7 @@ sequencing time. Each plot displays the maximum, average, and minimum
 values per hour.
 }
 \examples{
-NULL
+plots <- plot_double(sample_data)
+plots$length_plot
+plots$qscore_plot
 }

@@ -10,11 +10,13 @@ sequencing_stats(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-returns joined table with rudimentary data for all sequencing summaries in database
+A dataframe with general run metrics
 }
 \description{
-From sequencing summary's database creates a joined table containing general metrics regarding each run - each sequencing summary. Information in the table contains: sample id, run id, duration in hours, number of reads, total bases sequenced in GB gigabases and passed_reads in percentage.
+Generates a table containing general run metrics from a sequencing summary:
+sample ID, duration in hours, number of reads, total bases sequenced in Gb,
+percentage of passed reads, and average sequencing speed in bp/s.
 }
 \examples{
-NULL
+sequencing_stats(sample_data)
 }

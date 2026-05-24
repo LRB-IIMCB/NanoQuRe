@@ -17,5 +17,5 @@ Generates an interactive plot with average speed of bases going through
 the pore per hour, filtered by pass/fail status.
 }
 \examples{
-NULL
+plot_average_speed(sample_data)
 }
