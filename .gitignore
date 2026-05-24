@@ -8,3 +8,5 @@ inst/rmd/*.html
 *.html
 docs
 inst/doc
+/doc/
+/Meta/

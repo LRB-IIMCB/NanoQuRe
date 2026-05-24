@@ -27,6 +27,7 @@ params:
   }
 </style>
 
+
 ```{r setup, include=FALSE}
 library(NanoQuRe)
 library(dplyr)
@@ -118,7 +119,5 @@ utils:::print.sessionInfo(sessionInfo()[-7], locale=FALSE)
 ```
 
 </details>
-
-
 
 

@@ -8,5 +8,160 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  message  = FALSE,
+  warning  = FALSE
+)
+```
+
+## Overview
+
+While `generate_report()` bundles everything into one HTML file, every plot
+and table in NanoQuRe is also available as a standalone function. This is
+useful when you want to embed a specific plot in your own R Markdown report,
+tweak parameters, or inspect a single metric interactively.
+
+```{r load-data}
+library(NanoQuRe)
+
+data(sample_data)
+```
+
+---
+
+## Summary tables
+
+### `sequencing_stats()`
+
+Returns a one-row summary of the run: duration, total bases sequenced,
+pass rate, and average translocation speed.
+
+```{r sequencing-stats}
+sequencing_stats(sample_data)
+```
+
+### `quality_stats()`
+
+Returns key quality metrics: total and passed read counts, N50, mean Q score,
+longest read, and mean length of passed reads.
+
+```{r quality-stats}
+quality_stats(sample_data)
+```
+
+---
+
+## Yield plots
+
+### `plot_cumulative_yield()`
+
+Shows how total sequenced bases accumulate over the run, split by pass/fail
+status. A flattening curve indicates the run is winding down.
+
+```{r cumulative-yield}
+plot_cumulative_yield(sample_data)
+```
+
+### `plot_seq_throughput()`
+
+Shows yield per hour rather than cumulative yield — useful for spotting
+periods of low pore activity or blockages during the run.
+
+```{r seq-throughput}
+plot_seq_throughput(sample_data)
+```
+
+---
+
+## Speed
+
+### `plot_average_speed()`
+
+Shows the average translocation speed of DNA through the pore in bases per
+second, split by pass/fail. A drop in speed can indicate pore aging or
+buffer issues.
+
+```{r average-speed}
+plot_average_speed(sample_data)
+```
+
+---
+
+## Read length distribution
+
+### `plot_read_lengths()`
+
+Plots the read length distribution with vertical lines for the mean read
+length and the N50 value. The `upper_limit` parameter controls the x axis
+maximum — useful when a small number of very long reads would compress
+the rest of the distribution.
+
+```{r read-lengths}
+# default upper limit is 4000 bp
+plot_read_lengths(sample_data)
+```
+
+```{r read-lengths-custom, eval = FALSE}
+# zoom out to see the full long-read tail
+plot_read_lengths(sample_data, upper_limit = 20000)
+```
+
+---
+
+## Quality distribution
+
+### `plot_quality_distribution()`
+
+Plots the Q score distribution split by pass/fail. Two vertical lines are
+shown: the basecaller's own pass/fail threshold (derived from the data) and
+a user-defined cutoff for downstream analysis.
+
+```{r quality-distribution}
+# default user-defined cutoff is Q7
+plot_quality_distribution(sample_data, qscore_cutoff = 7)
+```
+
+---
+
+## Channel activity
+
+### `plot_active_channels()`
+
+Shows how many pore channels remain active over the course of the run.
+A steep early drop suggests many pores became blocked or inactive quickly.
+
+```{r active-channels}
+plot_active_channels(sample_data)
+```
+
+### `pore_activity_heatmap()`
+
+Shows two complementary views of pore activity: a time × channel heatmap
+and a spatial heatmap overlaid on the flowcell layout. Darker colour means
+more bases sequenced through that channel.
+
+```{r pore-heatmap}
+pore_activity_heatmap(sample_data, platform = "minion")
+```
+
+---
+
+## N50 directly
+
+### `calculate_n50()`
+
+If you just need the N50 value without any plot:
+
+```{r n50}
+calculate_n50(sample_data)
+```
+
+---
+
+## Session info
+
+```{r session-info}
+sessionInfo()
 ```

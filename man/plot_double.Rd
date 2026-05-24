@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_double.R
 \name{plot_double}
 \alias{plot_double}
-\title{Plot Double}
+\title{Plot Length and Q-score Over Time}
 \usage{
 plot_double(seq_summary)
 }
@@ -10,16 +10,13 @@ plot_double(seq_summary)
 \item{seq_summary}{A dataframe containing the sequencing summary}
 }
 \value{
-A named list with two plotly objects: \code{length_plot} and
-  \code{qscore_plot}
+A named list with two plotly objects:
+\describe{
+  \item{length_plot}{Read length (min, mean, max) per hour}
+  \item{qscore_plot}{Mean Q score (min, mean, max) per hour}
+}
 }
 \description{
-Generates two interactive plots showing read length and Q-score over
-sequencing time. Each plot displays the maximum, average, and minimum
-values per hour.
-}
-\examples{
-plots <- plot_double(sample_data)
-plots$length_plot
-plots$qscore_plot
+Generates two interactive plots showing how read length and mean Q score
+change over the course of a sequencing run. Returns both as a named list.
 }

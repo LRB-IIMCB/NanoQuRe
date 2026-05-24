@@ -1,4 +1,82 @@
-url: ~
+url: https://All-ice0.github.io/NanoQuRe/
+
 template:
   bootstrap: 5
+  bootswatch: flatly
+  theme: arrow-light
+  bslib:
+    primary: "#612a78"
+    link-color: "#612a78"
+    navbar-bg: "#612a78"
+    heading-color: "#612a78"
 
+home:
+  title: "NanoQuRe — Quality Control for Oxford Nanopore Sequencing"
+  description: >
+    An R package for quality control of Oxford Nanopore sequencing data.
+    Generates interactive plots, summary tables, and self-contained HTML
+    reports from ONT sequencing summary files.
+
+navbar:
+  bg: primary
+  structure:
+    left: [intro, reference, articles]
+    right: [github]
+  components:
+    intro:
+      text: "Get Started"
+      href: articles/getting-started.html
+    articles:
+      text: "Vignettes"
+      menu:
+        - text: "Getting Started"
+          href: articles/getting-started.html
+        - text: "Using Individual Functions"
+          href: articles/individual-functions.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/All-ice0/NanoQuRe
+      aria-label: GitHub
+
+reference:
+  - title: "Report Generation"
+    desc: "Generate a full HTML QC report"
+    contents:
+      - generate_report
+
+  - title: "Summary Tables"
+    desc: "Functions that return summary data frames"
+    contents:
+      - sequencing_stats
+      - quality_stats
+      - calculate_n50
+
+  - title: "Yield & Throughput Plots"
+    desc: "Plots showing sequencing output over time"
+    contents:
+      - plot_cumulative_yield
+      - plot_seq_throughput
+      - plot_average_speed
+
+  - title: "Quality & Length Plots"
+    desc: "Plots showing read quality and length distributions"
+    contents:
+      - plot_read_lengths
+      - plot_quality_distribution
+
+  - title: "Channel Activity Plots"
+    desc: "Plots showing pore and channel behaviour"
+    contents:
+      - plot_active_channels
+      - pore_activity_heatmap
+      - plot_double
+
+  - title: "Example Data"
+    desc: "Bundled dataset for examples and vignettes"
+    contents:
+      - sample_data
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with

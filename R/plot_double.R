@@ -1,21 +1,19 @@
-#' Plot Double
+#' Plot Length and Q-score Over Time
 #'
-#' Generates two interactive plots showing read length and Q-score over
-#' sequencing time. Each plot displays the maximum, average, and minimum
-#' values per hour.
+#' Generates two interactive plots showing how read length and mean Q score
+#' change over the course of a sequencing run. Returns both as a named list.
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
 #'
-#' @returns A named list with two plotly objects: \code{length_plot} and
-#'   \code{qscore_plot}
+#' @returns A named list with two plotly objects:
+#' \describe{
+#'   \item{length_plot}{Read length (min, mean, max) per hour}
+#'   \item{qscore_plot}{Mean Q score (min, mean, max) per hour}
+#' }
 #' @import dplyr
 #' @importFrom plotly plot_ly add_lines layout
+#' @importFrom assertthat assert_that
 #' @export
-#'
-#' @examples
-#' plots <- plot_double(sample_data)
-#' plots$length_plot
-#' plots$qscore_plot
 plot_double <- function(seq_summary) {
   
   # --- Validation ---

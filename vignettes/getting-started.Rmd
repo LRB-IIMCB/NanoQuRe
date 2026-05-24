@@ -8,5 +8,106 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  message  = FALSE,
+  warning  = FALSE
+)
+```
+
+## Overview
+
+NanoQuRe provides quality control tools for Oxford Nanopore sequencing data.
+Starting from a sequencing summary file produced by ONT basecallers (Guppy or
+Dorado), NanoQuRe generates interactive plots and summary tables — and can bundle
+everything into a self-contained HTML report with a single function call.
+
+## Installation
+
+```{r install, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("All-ice0/NanoQuRe")
+```
+
+## Input data
+
+NanoQuRe expects a data frame with the columns produced by ONT basecallers.
+The minimum required columns are:
+
+| Column | Type | Description |
+|---|---|---|
+| `sample_id` | character | Sample identifier |
+| `run_id` | character | Run identifier |
+| `channel` | integer | Pore channel number |
+| `start_time` | numeric | Read start time in seconds |
+| `duration` | numeric | Read duration in seconds |
+| `sequence_length_template` | numeric | Read length in bases |
+| `mean_qscore_template` | numeric | Mean Q score of the read |
+| `passes_filtering` | logical | Whether the read passed basecaller filters |
+
+Loading your own file is straightforward:
+
+```{r load-real, eval = FALSE}
+seq_summary <- read.csv("sequencing_summary.txt", sep = "\t")
+
+# passes_filtering comes in as a string from some basecallers — coerce if needed
+seq_summary$passes_filtering <- as.logical(seq_summary$passes_filtering)
+```
+
+For this vignette we use the example dataset bundled with the package:
+
+```{r load-data}
+library(NanoQuRe)
+
+data(sample_data)
+```
+
+## Generating a full QC report
+
+The main entry point is `generate_report()`. It inspects how many unique
+`sample_id` values are in your data and automatically picks the right template
+— single-sample or multi-sample — then renders a self-contained HTML file.
+
+```{r generate-report, eval = FALSE}
+generate_report(sample_data, output_file = "my_QC_report.html")
+```
+
+The rendered file will open in your browser automatically and contains all
+plots and summary tables covering read quality, yield, throughput, and pore
+activity.
+
+## Multi-sample reports
+
+If you have multiple samples, bind their data frames together before calling
+`generate_report()`. The function detects more than one unique `sample_id`
+and switches to the multi-sample template automatically:
+
+```{r multi-sample, eval = FALSE}
+generate_report(sample_data_A, sample_data_B, output_file = "multi_QC_report.html")
+```
+
+## What the report contains
+
+The report bundles the output of all individual NanoQuRe functions.
+If you want to explore or customise any single plot, the
+[Using Individual Functions](individual-functions.html) vignette covers each
+one in detail.
+
+| Function | What it shows |
+|---|---|
+| `sequencing_stats()` | Run-level summary table |
+| `quality_stats()` | Quality metrics table (N50, mean Q, longest read) |
+| `plot_cumulative_yield()` | Cumulative bases over time, pass vs fail |
+| `plot_seq_throughput()` | Yield per hour over time |
+| `plot_average_speed()` | Translocation speed (bp/s) over time |
+| `plot_read_lengths()` | Read length distribution with mean and N50 lines |
+| `plot_quality_distribution()` | Q score distribution with pass/fail split |
+| `plot_active_channels()` | Channel activity decay over time |
+| `pore_activity_heatmap()` | Per-channel activity heatmap on flowcell layout |
+
+## Session info
+
+```{r session-info}
+sessionInfo()
 ```
