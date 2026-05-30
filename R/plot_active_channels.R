@@ -63,7 +63,7 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
       x             = ~last_activity,
       y             = ~active_channels,
       name          = "Active channels",
-      line          = list(color = "#404040", width = 2.5),
+      line          = list(color = "#612a78", width = 2.5),
       hovertemplate = "Time: %{x:.2f} h<br>Active channels: %{y}<extra></extra>"
     )
   
@@ -86,8 +86,7 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
     }
     
     thr_label <- paste0(
-      thr * 100, "% of initial active channels reached at ",
-      round(crossing_time, 2), " h"
+      thr * 100, "% of initial active channels"
     )
     
     channel_plot <- channel_plot %>%
@@ -95,7 +94,7 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
         x             = c(crossing_time, crossing_time),
         y             = c(0, y_max),
         name          = thr_label,
-        line          = list(color = "#612a78", width = 1.8, dash = "dash"),
+        line          = list(color = "#CC79A7", width = 1.8, dash = "dash"),
         hovertemplate = paste0(thr_label, "<extra></extra>")
       )
   }
