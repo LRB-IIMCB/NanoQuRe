@@ -10,5 +10,7 @@ docs
 inst/doc
 /doc/
 /Meta/
+HEAD
 *.rds
 *.tsv
+18b05ca60c14a9aac5e10462f20025840a3c0b08

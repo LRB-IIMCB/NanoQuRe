@@ -4,7 +4,11 @@
 \alias{plot_cumulative_yield}
 \title{Plot Cumulative Yield}
 \usage{
+<<<<<<< HEAD
 plot_cumulative_yield(seq_summary, max_points = 2000L)
+=======
+plot_cumulative_yield(seq_summary)
+>>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
