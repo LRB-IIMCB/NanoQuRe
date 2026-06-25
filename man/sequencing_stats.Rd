@@ -18,5 +18,7 @@ sample ID, duration in hours, number of reads, total bases sequenced in Gb,
 percentage of passed reads, and average sequencing speed in bp/s.
 }
 \examples{
+\dontrun{
 sequencing_stats(sample_data)
+}
 }

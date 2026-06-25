@@ -4,13 +4,16 @@
 \alias{pore_activity_heatmap}
 \title{Pore Activity Heatmap}
 \usage{
-pore_activity_heatmap(seq_summary, platform = "minion")
+pore_activity_heatmap(seq_summary, platform = "minion", bin_width = 1)
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
 
 \item{platform}{Flowcell used for sequencing: \code{"minion"} or
 \code{"promethion"}. Defaults to \code{"minion"}.}
+
+\item{bin_width}{Width of each time bin in hours for the channel-by-time
+heatmap. Defaults to 1. Increase for very long runs to limit matrix size.}
 }
 \value{
 plotly object
@@ -19,6 +22,13 @@ plotly object
 Generates an interactive heatmap showing channel activity over time and
 channel activity with respect to their disposition on the flowcell.
 }
+\details{
+Function contains helpers originally provided by Barbara Ottolini,
+from Oxford Nanopore Technologies.
+For reference see: https://github.com/sagrudd/nanopoRe/blob/master/R/FlowcellLayout.R
+}
 \examples{
+\dontrun{
 pore_activity_heatmap(sample_data, platform = "minion")
+}
 }

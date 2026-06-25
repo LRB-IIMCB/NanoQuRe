@@ -18,8 +18,10 @@ plotly object
 Generates an interactive plot with number of reads at each Q score sorted
 by pass/fail filtering status. Vertical line represents Q score cut-off
 which is by default equal to 7. The basecaller threshold line is only drawn
-when failing reads are present in the data.
+when both passing and failing reads are present in the data.
 }
 \examples{
+\dontrun{
 plot_quality_distribution(sample_data)
+}
 }

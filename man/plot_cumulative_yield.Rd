@@ -4,14 +4,14 @@
 \alias{plot_cumulative_yield}
 \title{Plot Cumulative Yield}
 \usage{
-<<<<<<< HEAD
 plot_cumulative_yield(seq_summary, max_points = 2000L)
-=======
-plot_cumulative_yield(seq_summary)
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
+
+\item{max_points}{Maximum number of points plotted per pass/fail trace.
+Reads are binned by time so very large runs stay performant in the
+browser. Defaults to 2000L.}
 }
 \value{
 plotly object
@@ -21,5 +21,7 @@ Generates an interactive cumulative plot containing the number of sequenced
 bases in Gb over time in hours sorted by pass/fail filtering status.
 }
 \examples{
+\dontrun{
 plot_cumulative_yield(sample_data)
+}
 }

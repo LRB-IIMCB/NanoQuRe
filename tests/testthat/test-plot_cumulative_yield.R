@@ -1,10 +1,10 @@
 testthat::test_that("plot_cumulative_yield returns a valid plotly object", {
   
   test_df <- data.frame(
-    sample_id                = "Cum_Sample",
-    start_time               = c(0, 3600, 7200, 0),
-    duration                 = c(10, 10, 10, 10),
-    passes_filtering         = c(TRUE, TRUE, TRUE, FALSE),
+    sample_id = "Cum_Sample",
+    start_time = c(0, 3600, 7200, 0),
+    duration = c(10, 10, 10, 10),
+    passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 0.5e9)
   )
   
@@ -16,18 +16,18 @@ testthat::test_that("plot_cumulative_yield returns a valid plotly object", {
 testthat::test_that("plot_cumulative_yield has correct title and axis labels", {
   
   test_df <- data.frame(
-    sample_id                = "Cum_Sample",
-    start_time               = c(0, 3600, 7200, 0),
-    duration                 = c(10, 10, 10, 10),
-    passes_filtering         = c(TRUE, TRUE, TRUE, FALSE),
+    sample_id = "Cum_Sample",
+    start_time = c(0, 3600, 7200, 0),
+    duration = c(10, 10, 10, 10),
+    passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 0.5e9)
   )
   
-  plt    <- plot_cumulative_yield(test_df)
-  built  <- plotly::plotly_build(plt)
+  plt <- plot_cumulative_yield(test_df)
+  built <- plotly::plotly_build(plt)
   layout <- built$x$layout
   
-  testthat::expect_equal(layout$title$text,       "<b>Cum_Sample</b>")
+  testthat::expect_equal(layout$title$text, "<b>Cum_Sample</b>")
   testthat::expect_equal(layout$xaxis$title$text, "<b>Time [h]</b>")
   testthat::expect_equal(layout$yaxis$title$text, "<b>Yield [Gb]</b>")
 })
@@ -37,14 +37,14 @@ testthat::test_that("plot_cumulative_yield calculates cumulative yield correctly
   # Pass reads: 1e9 + 1e9 + 1e9 = 3 Gb cumulative
   # Fail reads: 0.5e9 = 0.5 Gb cumulative
   test_df <- data.frame(
-    sample_id                = "Cum_Sample",
-    start_time               = c(0, 3600, 7200, 0),
-    duration                 = c(10, 10, 10, 10),
-    passes_filtering         = c(TRUE, TRUE, TRUE, FALSE),
+    sample_id = "Cum_Sample",
+    start_time = c(0, 3600, 7200, 0),
+    duration = c(10, 10, 10, 10),
+    passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 0.5e9)
   )
   
-  plt   <- plot_cumulative_yield(test_df)
+  plt <- plot_cumulative_yield(test_df)
   built <- plotly::plotly_build(plt)
   
   # trace 1 = Pass, trace 2 = Fail
@@ -55,7 +55,7 @@ testthat::test_that("plot_cumulative_yield calculates cumulative yield correctly
   testthat::expect_equal(fail_trace$name, "Fail")
   
   # final cumulative pass yield should be 3 Gb
-  testthat::expect_equal(max(pass_trace$y), 3,   ignore_attr = TRUE)
+  testthat::expect_equal(max(pass_trace$y), 3, ignore_attr = TRUE)
   
   # final cumulative fail yield should be 0.5 Gb
   testthat::expect_equal(max(fail_trace$y), 0.5, ignore_attr = TRUE)

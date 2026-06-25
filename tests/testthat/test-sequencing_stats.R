@@ -1,12 +1,12 @@
 testthat::test_that("sequencing_stats returns correct table structure", {
   
   test_df <- data.frame(
-    sample_id                = "SampleA",
-    run_id                   = "Run1",
-    start_time               = c(0, 3600),
-    duration                 = c(10, 10),
+    sample_id = "SampleA",
+    run_id = "Run1",
+    start_time = c(0, 3600),
+    duration = c(10, 10),
     sequence_length_template = c(1e9, 1e9),
-    passes_filtering         = c(TRUE, FALSE)
+    passes_filtering = c(TRUE, FALSE)
   )
   
   output <- sequencing_stats(test_df)
@@ -27,34 +27,34 @@ testthat::test_that("sequencing_stats calculates all metrics correctly", {
   # passed reads [%]         : 1 pass / 2 total = 50.00 %
   # average speed [bp/s]     : (1e9 + 1e9) / (10 + 10) = 1e8 bp/s
   test_df <- data.frame(
-    sample_id                = "SampleA",
-    run_id                   = "Run1",
-    start_time               = c(0, 3600),
-    duration                 = c(10, 10),
+    sample_id = "SampleA",
+    run_id = "Run1",
+    start_time = c(0, 3600),
+    duration = c(10, 10),
     sequence_length_template = c(1e9, 1e9),
-    passes_filtering         = c(TRUE, FALSE)
+    passes_filtering = c(TRUE, FALSE)
   )
   
   output <- sequencing_stats(test_df)
   
-  testthat::expect_equal(output$`sample id`,                  "SampleA")
-  testthat::expect_equal(output$`duration [h]`,               1.00)
-  testthat::expect_equal(output$`number of reads`,            2)
+  testthat::expect_equal(output$`sample id`, "SampleA")
+  testthat::expect_equal(output$`duration [h]`, 1.00)
+  testthat::expect_equal(output$`number of reads`, 2)
   testthat::expect_equal(output$`total bases sequenced [Gb]`, 2.000)
-  testthat::expect_equal(output$`passed reads [%]`,           50.00)
-  testthat::expect_equal(output$`average speed [bp/s]`,       1e8)
+  testthat::expect_equal(output$`passed reads [%]`, 50.00)
+  testthat::expect_equal(output$`average speed [bp/s]`, 1e8)
 })
 
 testthat::test_that("sequencing_stats handles NA in sequence_length_template", {
   
   # sum() without na.rm = TRUE will return NA when NAs are present
   test_df <- data.frame(
-    sample_id                = "SampleA",
-    run_id                   = "Run1",
-    start_time               = 0,
-    duration                 = 10,
+    sample_id = "SampleA",
+    run_id = "Run1",
+    start_time = 0,
+    duration = 10,
     sequence_length_template = NA_real_,
-    passes_filtering         = TRUE
+    passes_filtering = TRUE
   )
   
   output <- sequencing_stats(test_df)

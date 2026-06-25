@@ -51,7 +51,7 @@ data(sample_data)
 ## Generating a full QC report
 
 The main entry point is
-[`generate_report()`](https://All-ice0.github.io/NanoQuRe/reference/generate_report.md).
+[`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md).
 It inspects how many unique `sample_id` values are in your data and
 automatically picks the right template — single-sample or multi-sample —
 then renders a self-contained HTML file.
@@ -68,7 +68,7 @@ and pore activity.
 
 If you have multiple samples, bind their data frames together before
 calling
-[`generate_report()`](https://All-ice0.github.io/NanoQuRe/reference/generate_report.md).
+[`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md).
 The function detects more than one unique `sample_id` and switches to
 the multi-sample template automatically:
 
@@ -80,20 +80,20 @@ generate_report(sample_data_A, sample_data_B, output_file = "multi_QC_report.htm
 
 The report bundles the output of all individual NanoQuRe functions. If
 you want to explore or customise any single plot, the [Using Individual
-Functions](https://All-ice0.github.io/NanoQuRe/articles/individual-functions.md)
+Functions](https://LRB-IIMCB.github.io/NanoQuRe/articles/individual-functions.md)
 vignette covers each one in detail.
 
 | Function | What it shows |
 |----|----|
-| [`sequencing_stats()`](https://All-ice0.github.io/NanoQuRe/reference/sequencing_stats.md) | Run-level summary table |
-| [`quality_stats()`](https://All-ice0.github.io/NanoQuRe/reference/quality_stats.md) | Quality metrics table (N50, mean Q, longest read) |
-| [`plot_cumulative_yield()`](https://All-ice0.github.io/NanoQuRe/reference/plot_cumulative_yield.md) | Cumulative bases over time, pass vs fail |
-| [`plot_seq_throughput()`](https://All-ice0.github.io/NanoQuRe/reference/plot_seq_throughput.md) | Yield per hour over time |
-| [`plot_average_speed()`](https://All-ice0.github.io/NanoQuRe/reference/plot_average_speed.md) | Translocation speed (bp/s) over time |
-| [`plot_read_lengths()`](https://All-ice0.github.io/NanoQuRe/reference/plot_read_lengths.md) | Read length distribution with mean and N50 lines |
-| [`plot_quality_distribution()`](https://All-ice0.github.io/NanoQuRe/reference/plot_quality_distribution.md) | Q score distribution with pass/fail split |
-| [`plot_active_channels()`](https://All-ice0.github.io/NanoQuRe/reference/plot_active_channels.md) | Channel activity decay over time |
-| [`pore_activity_heatmap()`](https://All-ice0.github.io/NanoQuRe/reference/pore_activity_heatmap.md) | Per-channel activity heatmap on flowcell layout |
+| [`sequencing_stats()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/sequencing_stats.md) | Run-level summary table |
+| [`quality_stats()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/quality_stats.md) | Quality metrics table (N50, mean Q, longest read) |
+| [`plot_cumulative_yield()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_cumulative_yield.md) | Cumulative bases over time, pass vs fail |
+| [`plot_seq_throughput()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_seq_throughput.md) | Yield per hour over time |
+| [`plot_average_speed()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_average_speed.md) | Translocation speed (bp/s) over time |
+| [`plot_read_lengths()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_read_lengths.md) | Read length distribution with mean and N50 lines |
+| [`plot_quality_distribution()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_quality_distribution.md) | Q score distribution with pass/fail split |
+| [`plot_active_channels()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_active_channels.md) | Channel activity decay over time |
+| [`pore_activity_heatmap()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/pore_activity_heatmap.md) | Per-channel activity heatmap on flowcell layout |
 
 ## Session info
 
@@ -122,25 +122,25 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] NanoQuRe_0.1.0
+#> [1] NanoQuRe_0.1.1
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        
+#>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.1.4        
 #>  [4] compiler_4.4.2      tidyselect_1.2.1    dichromat_2.0-0.1  
-#>  [7] assertthat_0.2.1    tidyr_1.3.2         jquerylib_0.1.4    
-#> [10] scales_1.4.0        systemfonts_1.3.1   textshaping_1.0.4  
-#> [13] yaml_2.3.12         fastmap_1.2.0       ggplot2_4.0.3      
-#> [16] R6_2.6.1            generics_0.1.4      knitr_1.51         
-#> [19] htmlwidgets_1.6.4   tibble_3.3.1        desc_1.4.3         
-#> [22] RColorBrewer_1.1-3  bslib_0.10.0        pillar_1.11.1      
-#> [25] rlang_1.2.0         cachem_1.1.0        xfun_0.57          
-#> [28] S7_0.2.2            fs_2.1.0            sass_0.4.10        
-#> [31] lazyeval_0.2.3      otel_0.2.0          viridisLite_0.4.3  
-#> [34] plotly_4.12.0       cli_3.6.6           pkgdown_2.2.0      
-#> [37] magrittr_2.0.5      digest_0.6.39       grid_4.4.2         
-#> [40] rstudioapi_0.18.0   lifecycle_1.0.5     vctrs_0.7.3        
-#> [43] evaluate_1.0.5      glue_1.8.1          data.table_1.18.2.1
-#> [46] farver_2.1.2        ragg_1.5.0          purrr_1.2.2        
-#> [49] httr_1.4.8          rmarkdown_2.31      tools_4.4.2        
+#>  [7] tidyr_1.3.1         jquerylib_0.1.4     scales_1.4.0       
+#> [10] systemfonts_1.3.1   textshaping_1.0.4   yaml_2.3.12        
+#> [13] fastmap_1.2.0       ggplot2_4.0.1       R6_2.6.1           
+#> [16] generics_0.1.4      knitr_1.51          htmlwidgets_1.6.4  
+#> [19] tibble_3.3.1        desc_1.4.3          RColorBrewer_1.1-3 
+#> [22] bslib_0.10.0        pillar_1.11.1       rlang_1.1.7        
+#> [25] DT_0.34.0           cachem_1.1.0        xfun_0.56          
+#> [28] S7_0.2.1            fs_1.6.6            sass_0.4.10        
+#> [31] lazyeval_0.2.2      otel_0.2.0          viridisLite_0.4.2  
+#> [34] plotly_4.10.4       cli_3.6.5           pkgdown_2.2.0      
+#> [37] magrittr_2.0.4      digest_0.6.39       grid_4.4.2         
+#> [40] rstudioapi_0.18.0   lifecycle_1.0.5     vctrs_0.7.1        
+#> [43] evaluate_1.0.5      glue_1.8.0          data.table_1.18.2.1
+#> [46] farver_2.1.2        ragg_1.5.0          purrr_1.2.1        
+#> [49] httr_1.4.7          rmarkdown_2.30      tools_4.4.2        
 #> [52] pkgconfig_2.0.3     htmltools_0.5.9
 ```

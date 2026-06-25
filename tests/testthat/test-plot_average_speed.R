@@ -1,10 +1,10 @@
 testthat::test_that("plot_average_speed returns a valid plotly object", {
   
   test_df <- data.frame(
-    sample_id                = "Speed_Sample",
-    start_time               = c(0, 3600, 0),
-    duration                 = c(2, 4, 10),
-    passes_filtering         = c(TRUE, TRUE, FALSE),
+    sample_id = "Speed_Sample",
+    start_time = c(0, 3600, 0),
+    duration = c(2, 4, 10),
+    passes_filtering = c(TRUE, TRUE, FALSE),
     sequence_length_template = c(1000, 2000, 500)
   )
   
@@ -16,18 +16,18 @@ testthat::test_that("plot_average_speed returns a valid plotly object", {
 testthat::test_that("plot_average_speed has correct title and axis labels", {
   
   test_df <- data.frame(
-    sample_id                = "Speed_Sample",
-    start_time               = c(0, 3600, 0),
-    duration                 = c(2, 4, 10),
-    passes_filtering         = c(TRUE, TRUE, FALSE),
+    sample_id = "Speed_Sample",
+    start_time = c(0, 3600, 0),
+    duration = c(2, 4, 10),
+    passes_filtering = c(TRUE, TRUE, FALSE),
     sequence_length_template = c(1000, 2000, 500)
   )
   
-  plt    <- plot_average_speed(test_df)
-  built  <- plotly::plotly_build(plt)
+  plt <- plot_average_speed(test_df)
+  built <- plotly::plotly_build(plt)
   layout <- built$x$layout
   
-  testthat::expect_equal(layout$title$text,       "<b>Speed_Sample</b>")
+  testthat::expect_equal(layout$title$text, "<b>Speed_Sample</b>")
   testthat::expect_equal(layout$xaxis$title$text, "<b>Time [h]</b>")
   testthat::expect_equal(layout$yaxis$title$text, "<b>Speed [bp/s]</b>")
 })
@@ -38,14 +38,14 @@ testthat::test_that("plot_average_speed calculates speed correctly", {
   #             hour 1 → 2000bp / 4s = 500 bp/s
   # Fail reads: hour 0 → 500bp  / 10s = 50 bp/s
   test_df <- data.frame(
-    sample_id                = "Speed_Sample",
-    start_time               = c(0, 3600, 0),
-    duration                 = c(2, 4, 10),
-    passes_filtering         = c(TRUE, TRUE, FALSE),
+    sample_id = "Speed_Sample",
+    start_time = c(0, 3600, 0),
+    duration = c(2, 4, 10),
+    passes_filtering = c(TRUE, TRUE, FALSE),
     sequence_length_template = c(1000, 2000, 500)
   )
   
-  plt   <- plot_average_speed(test_df)
+  plt <- plot_average_speed(test_df)
   built <- plotly::plotly_build(plt)
   
   # trace 1 = Pass, trace 2 = Fail
@@ -57,7 +57,7 @@ testthat::test_that("plot_average_speed calculates speed correctly", {
   
   # ignore_attr = TRUE skips plotly's internal apiSrc attribute
   testthat::expect_equal(pass_trace$y, c(500, 500), ignore_attr = TRUE)
-  testthat::expect_equal(fail_trace$y, 50,           ignore_attr = TRUE)
+  testthat::expect_equal(fail_trace$y, 50, ignore_attr = TRUE)
 })
 
 testthat::test_that("plot_average_speed throws correct error messages", {

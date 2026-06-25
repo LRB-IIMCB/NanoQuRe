@@ -1,7 +1,7 @@
 testthat::test_that("plot_read_lengths returns a valid plotly object", {
   
   test_df <- data.frame(
-    sample_id                = "Sample_A",
+    sample_id = "Sample_A",
     sequence_length_template = c(100, 200, 300, 400, 500)
   )
   
@@ -13,15 +13,15 @@ testthat::test_that("plot_read_lengths returns a valid plotly object", {
 testthat::test_that("plot_read_lengths has correct title and axis labels", {
   
   test_df <- data.frame(
-    sample_id                = "Sample_A",
+    sample_id = "Sample_A",
     sequence_length_template = c(100, 200, 300, 400, 500)
   )
   
-  plt    <- plot_read_lengths(test_df, upper_limit = 1000)
-  built  <- plotly::plotly_build(plt)
+  plt <- plot_read_lengths(test_df, upper_limit = 1000)
+  built <- plotly::plotly_build(plt)
   layout <- built$x$layout
   
-  testthat::expect_equal(layout$title$text,       "<b>Sample_A</b>")
+  testthat::expect_equal(layout$title$text, "<b>Sample_A</b>")
   testthat::expect_equal(layout$xaxis$title$text, "<b>Sequence length [nt]</b>")
   testthat::expect_equal(layout$yaxis$title$text, "<b>Number of reads</b>")
 })
@@ -29,12 +29,12 @@ testthat::test_that("plot_read_lengths has correct title and axis labels", {
 testthat::test_that("plot_read_lengths applies upper_limit to x axis", {
   
   test_df <- data.frame(
-    sample_id                = "Sample_A",
+    sample_id = "Sample_A",
     sequence_length_template = c(100, 200, 300, 400, 500)
   )
   
-  plt    <- plot_read_lengths(test_df, upper_limit = 1000)
-  built  <- plotly::plotly_build(plt)
+  plt <- plot_read_lengths(test_df, upper_limit = 1000)
+  built <- plotly::plotly_build(plt)
   layout <- built$x$layout
   
   # x axis range should be c(0, upper_limit)
@@ -45,17 +45,17 @@ testthat::test_that("plot_read_lengths has correct trace names and vertical line
   
   # Lengths: 10, 4, 3, 2, 1 → mean = 4, N50 = 10
   test_df <- data.frame(
-    sample_id                = "Sample_A",
+    sample_id = "Sample_A",
     sequence_length_template = c(1, 2, 3, 4, 10)
   )
   
-  plt   <- plot_read_lengths(test_df)
+  plt <- plot_read_lengths(test_df)
   built <- plotly::plotly_build(plt)
   
   # trace 1 = bars, trace 2 = mean line, trace 3 = N50 line
   bars_trace <- built$x$data[[1]]
   mean_trace <- built$x$data[[2]]
-  n50_trace  <- built$x$data[[3]]
+  n50_trace <- built$x$data[[3]]
   
   testthat::expect_equal(bars_trace$name, "Read counts")
   
@@ -63,14 +63,14 @@ testthat::test_that("plot_read_lengths has correct trace names and vertical line
   testthat::expect_equal(mean_trace$x, c(4, 4), ignore_attr = TRUE)
   
   # N50 of c(1,2,3,4,10) = 10
-  testthat::expect_equal(n50_trace$x,  c(10, 10), ignore_attr = TRUE)
+  testthat::expect_equal(n50_trace$x, c(10, 10), ignore_attr = TRUE)
 })
 
 testthat::test_that("plot_read_lengths accepts numeric string for upper_limit", {
   
   # as.numeric("5000") should work — no error expected
   test_df <- data.frame(
-    sample_id                = "S1",
+    sample_id = "S1",
     sequence_length_template = 100
   )
   

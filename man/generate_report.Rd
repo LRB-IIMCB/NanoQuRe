@@ -4,13 +4,25 @@
 \alias{generate_report}
 \title{Generate Report}
 \usage{
-generate_report(..., output_file = "NanoQuRe_Report.html")
+generate_report(
+  ...,
+  output_file = "NanoQuRe_Report.html",
+  output_dir = getwd(),
+  platform = "minion"
+)
 }
 \arguments{
 \item{...}{One or more dataframes containing sequencing summaries}
 
 \item{output_file}{Name of the output HTML file,
 default is "NanoQuRe_Report.html"}
+
+\item{output_dir}{Directory the rendered report is written to. Defaults
+to the current working directory.}
+
+\item{platform}{Flowcell platform forwarded to
+\code{\link{pore_activity_heatmap}}: \code{"minion"} or
+\code{"promethion"}. Defaults to \code{"minion"}.}
 }
 \value{
 Path to the rendered HTML report

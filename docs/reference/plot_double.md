@@ -27,3 +27,13 @@ A named list with two plotly objects:
 - qscore_plot:
 
   Mean Q score (min, mean, max) per hour
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+result <- plot_double(sample_data)
+result$length_plot
+result$qscore_plot
+} # }
+```

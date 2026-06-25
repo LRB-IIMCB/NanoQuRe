@@ -1,4 +1,4 @@
-url: https://All-ice0.github.io/NanoQuRe/
+url: https://LRB-IIMCB.github.io/NanoQuRe/
 
 template:
   bootstrap: 5
@@ -9,6 +9,47 @@ template:
     link-color: "#612a78"
     navbar-bg: "#612a78"
     heading-color: "#612a78"
+  includes:
+    in_header: |
+      <style>
+      /* Unify fonts: system font stack throughout */
+      body, .contents, .contents p, .contents li,
+      .contents table, .contents th, .contents td {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                     "Helvetica Neue", Arial, sans-serif;
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      /* Consistent table styling */
+      .contents table {
+        font-size: 0.95rem;
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+
+      .contents th, .contents td {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #dee2e6;
+        vertical-align: top;
+      }
+
+      .contents th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+      }
+
+      /* Consistent code styling */
+      .contents code {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas,
+                     "Liberation Mono", "Courier New", monospace;
+        font-size: 0.875em;
+        padding: 0.125rem 0.25rem;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+      }
+      </style>
 
 home:
   title: "NanoQuRe — Quality Control for Oxford Nanopore Sequencing"
@@ -16,12 +57,14 @@ home:
     An R package for quality control of Oxford Nanopore sequencing data.
     Generates interactive plots, summary tables, and self-contained HTML
     reports from ONT sequencing summary files.
+  sidebar:
+    structure: [links, license, citation, authors, dev]
 
 navbar:
   bg: primary
   structure:
     left: [intro, reference, articles]
-    right: [github]
+    right: [search, github]
   components:
     intro:
       text: "Get Started"
@@ -35,7 +78,7 @@ navbar:
           href: articles/individual-functions.html
     github:
       icon: fab fa-github
-      href: https://github.com/All-ice0/NanoQuRe
+      href: https://github.com/LRB-IIMCB/NanoQuRe
       aria-label: GitHub
 
 reference:
@@ -76,7 +119,15 @@ reference:
     contents:
       - sample_data
 
+  - title: "Package"
+    contents:
+      - NanoQuRe-package
+
 footer:
   structure:
     left: developed_by
     right: built_with
+
+news:
+  one_page: true
+  cran_dates: false

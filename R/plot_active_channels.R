@@ -12,18 +12,16 @@
 #'
 #' @returns plotly object
 #' @import dplyr
-#' @importFrom plotly plot_ly add_lines layout
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' plot_active_channels(sample_data)
-plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
-<<<<<<< HEAD
+#' }
+plot_active_channels <- function(seq_summary,
+                                 thresholds = c(0.50, 0.25)) {
 
-=======
-  
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
-  # --- Validation ---
+  # Assertion
   if (nrow(seq_summary) == 0)
     stop("The input data frame is empty")
   if (!("start_time" %in% names(seq_summary)))
@@ -38,17 +36,10 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
     stop("Column 'start_time' must be numeric")
   if (!is.numeric(seq_summary$duration))
     stop("Column 'duration' must be numeric")
-<<<<<<< HEAD
 
-  # --- Data prep ---
+  # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
 
-=======
-  
-  # --- Data prep ---
-  sample_name <- dplyr::first(seq_summary$sample_id)
-  
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
   sorted_by_channel <- seq_summary %>%
     dplyr::group_by(channel) %>%
     dplyr::summarise(
@@ -57,168 +48,116 @@ plot_active_channels <- function(seq_summary, thresholds = c(0.50, 0.25)) {
     ) %>%
     dplyr::arrange(last_activity) %>%
     dplyr::mutate(
-      channel_no_start  = dplyr::n(),
-      event             = 1,
-      inactive_channels = cumsum(event),
-      active_channels   = channel_no_start - inactive_channels
+      channel_no_start = dplyr::n(),
+      inactive_channels = seq_len(dplyr::n()),
+      active_channels = channel_no_start - inactive_channels
     )
-<<<<<<< HEAD
 
   initial_channels <- dplyr::first(sorted_by_channel$channel_no_start)
-  x_max            <- max(sorted_by_channel$last_activity)
-  y_max            <- initial_channels
+  x_max <- max(sorted_by_channel$last_activity)
+  y_max <- initial_channels
 
-=======
-  
-  initial_channels <- dplyr::first(sorted_by_channel$channel_no_start)
-  x_max            <- max(sorted_by_channel$last_activity)
-  y_max            <- initial_channels
-  
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
-  # --- Base plot ---
+  # Base plot
   channel_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
-      data          = sorted_by_channel,
-      x             = ~last_activity,
-      y             = ~active_channels,
-      name          = "Active channels",
-      line          = list(color = "#612a78", width = 2.5),
+      data = sorted_by_channel,
+      x = ~last_activity,
+      y = ~active_channels,
+      name = "Active channels",
+      line = list(color = "#612a78", width = 2.5),
       hovertemplate = "Time: %{x:.2f} h<br>Active channels: %{y}<extra></extra>"
     )
-<<<<<<< HEAD
 
-  # --- Threshold lines and annotations ---
-  annotations   <- list()
+  # Threshold lines and annotations
+  annotations <- list()
   missed_labels <- c()
 
   for (thr in sort(thresholds, decreasing = TRUE)) {
 
     thr_count <- round(initial_channels * thr)
 
-=======
-  
-  # --- Threshold lines and annotations ---
-  annotations   <- list()
-  missed_labels <- c()
-  
-  for (thr in sort(thresholds, decreasing = TRUE)) {
-    
-    thr_count <- round(initial_channels * thr)
-    
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
     crossing_time <- sorted_by_channel %>%
       dplyr::filter(active_channels <= thr_count) %>%
       dplyr::slice(1) %>%
       dplyr::pull(last_activity)
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
     if (length(crossing_time) == 0) {
       missed_labels <- c(missed_labels, paste0(thr * 100, "%"))
       next
     }
-<<<<<<< HEAD
 
     thr_label <- paste0(
       thr * 100, "% of initial active channels"
     )
 
-=======
-    
-    thr_label <- paste0(
-      thr * 100, "% of initial active channels"
-    )
-    
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
     channel_plot <- channel_plot %>%
       plotly::add_lines(
-        x             = c(crossing_time, crossing_time),
-        y             = c(0, y_max),
-        name          = thr_label,
-        line          = list(color = "#CC79A7", width = 1.8, dash = "dash"),
+        x = c(crossing_time, crossing_time),
+        y = c(0, y_max),
+        name = thr_label,
+        line = list(color = "#CC79A7", width = 1.8, dash = "dash"),
         hovertemplate = paste0(thr_label, "<extra></extra>")
       )
   }
-<<<<<<< HEAD
 
-  # --- Warning annotation if any threshold was not reached ---
+  # Warning annotation if any threshold was not reached
   if (length(missed_labels) > 0) {
 
     missed_str <- paste(missed_labels, collapse = " and ")
 
-=======
-  
-  # --- Warning annotation if any threshold was not reached ---
-  if (length(missed_labels) > 0) {
-    
-    missed_str <- paste(missed_labels, collapse = " and ")
-    
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
     annotations <- list(list(
-      x           = x_max * 0.5,
-      y           = y_max * 0.15,
-      text        = paste0(
+      x = x_max * 0.5,
+      y = y_max * 0.15,
+      text = paste0(
         "<b>\u26a0 ", missed_str, " threshold(s) not reached during this run.</b><br>",
         "Channel decay may be atypical \u2014 please inspect this sample more closely."
       ),
-      showarrow   = FALSE,
-      font        = list(size = 12, color = "#9e2a2b", family = "Arial"),
-      align       = "center",
-      bgcolor     = "#fff3cd",
+      showarrow = FALSE,
+      font = list(size = 12, color = "#9e2a2b", family = "Arial"),
+      align = "center",
+      bgcolor = "#fff3cd",
       bordercolor = "#e69f00",
       borderwidth = 1.5,
-      borderpad   = 6,
-      opacity     = 0.92
+      borderpad = 6,
+      opacity = 0.92
     ))
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
-  # --- Layout ---
+  # Layout
   channel_plot <- channel_plot %>%
     plotly::layout(
       title = list(
         text = paste0("<b>", sample_name, "</b>"),
-        x    = 0.5,
+        x = 0.5,
         font = list(size = 15, color = "#333333", family = "Arial")
       ),
       xaxis = list(
-        title     = list(text = "<b>Time [h]</b>",
+        title = list(text = "<b>Time [h]</b>",
                          font = list(size = 13, family = "Arial")),
-        showgrid  = TRUE,
+        showgrid = TRUE,
         gridcolor = "#e0e0e0",
-        tickfont  = list(size = 11, family = "Arial", color = "#333333")
+        tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
-        title     = list(text = "<b>Number of active channels</b>",
+        title = list(text = "<b>Number of active channels</b>",
                          font = list(size = 13, family = "Arial")),
-        showgrid  = TRUE,
+        showgrid = TRUE,
         gridcolor = "#e0e0e0",
-        tickfont  = list(size = 11, family = "Arial", color = "#333333")
+        tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
-      annotations   = annotations,
-      plot_bgcolor  = "#f9f9f9",
+      annotations = annotations,
+      plot_bgcolor = "#f9f9f9",
       paper_bgcolor = "#f9f9f9",
       legend = list(
-        x           = 1.02,
-        y           = 1,
-        xanchor     = "left",
-        bgcolor     = "#ffffff",
+        x = 1.02,
+        y = 1,
+        xanchor = "left",
+        bgcolor = "#ffffff",
         bordercolor = "#cccccc",
         borderwidth = 1,
-        font        = list(size = 11, family = "Arial")
+        font = list(size = 11, family = "Arial")
       )
     )
-<<<<<<< HEAD
 
   return(channel_plot)
 }
-=======
-  
-  return(channel_plot)
-}
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08

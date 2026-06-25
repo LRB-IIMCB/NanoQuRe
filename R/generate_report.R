@@ -7,20 +7,30 @@
 #' @param ... One or more dataframes containing sequencing summaries
 #' @param output_file Name of the output HTML file,
 #'   default is "NanoQuRe_Report.html"
+#' @param output_dir Directory the rendered report is written to. Defaults
+#'   to the current working directory.
+#' @param platform Flowcell platform forwarded to
+#'   \code{\link{pore_activity_heatmap}}: \code{"minion"} or
+#'   \code{"promethion"}. Defaults to \code{"minion"}.
 #'
 #' @returns Path to the rendered HTML report
-#' @import rmarkdown
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' generate_report(sample_data, output_file = "QC_Report.html")
 #' }
-generate_report <- function(..., output_file = "NanoQuRe_Report.html") {
-  
-<<<<<<< HEAD
+generate_report <- function(...,
+                            output_file = "NanoQuRe_Report.html",
+                            output_dir = getwd(),
+                            platform = "minion") {
+
+  #Assertions
+  if (!(platform %in% c("minion", "promethion")))
+    stop("platform must be either 'minion' or 'promethion'")
+
   inputs <- list(...)
-  
+
   # Accept either a file path (string) or an in-memory data frame
   parsed <- lapply(inputs, function(x) {
     if (is.character(x) && length(x) == 1) {
@@ -34,48 +44,36 @@ generate_report <- function(..., output_file = "NanoQuRe_Report.html") {
       stop("Each input must be either a file path (string) or a data frame.")
     }
   })
-  
+
   seq_summary <- dplyr::bind_rows(parsed)
-  
+
   if (nrow(seq_summary) == 0) {
     stop("The input data frame is empty.")
   }
-  
+
   if (!"sample_id" %in% names(seq_summary)) {
     stop("The data frame is missing the 'sample_id' column.")
   }
-=======
-  seq_summary <- dplyr::bind_rows(...)
-  
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sample_id' column")
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
-  
+
   n_samples <- dplyr::n_distinct(seq_summary$sample_id)
-  
+
   template <- if (n_samples == 1) {
     system.file("rmd", "report_single.Rmd", package = "NanoQuRe")
   } else {
     system.file("rmd", "report_multiple.Rmd", package = "NanoQuRe")
   }
-  
-<<<<<<< HEAD
+
   if (nchar(template) == 0) {
     stop("Report template not found. Make sure the package is installed correctly.")
   }
-=======
-  if (nchar(template) == 0)
-    stop("Report template not found. Make sure the package is installed correctly.")
->>>>>>> 18b05ca60c14a9aac5e10462f20025840a3c0b08
-  
+
   output <- rmarkdown::render(
-    input       = template,
+    input = template,
     output_file = output_file,
-    params      = list(data = seq_summary),
-    envir       = new.env(parent = globalenv())
+    output_dir = output_dir,
+    params = list(data = seq_summary, platform = platform),
+    envir = new.env(parent = globalenv())
   )
-  
+
   return(output)
 }

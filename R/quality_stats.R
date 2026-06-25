@@ -7,14 +7,15 @@
 #' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @returns A dataframe with quality metrics for the sequencing run
-#' @import dplyr
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' quality_stats(sample_data)
+#' }
 quality_stats <- function(seq_summary) {
-  
-  # --- Validation ---
+
+  # Assertions
   if (nrow(seq_summary) == 0)
     stop("The input data frame is empty")
   if (!("sample_id" %in% names(seq_summary)))
@@ -31,22 +32,22 @@ quality_stats <- function(seq_summary) {
     stop("Column 'mean_qscore_template' must be numeric")
   if (!is.numeric(seq_summary$sequence_length_template))
     stop("Column 'sequence_length_template' must be numeric")
-  
-  # --- Compute ---
+
+  # Compute
   n50_value <- calculate_n50(seq_summary)
-  
+
   qtab1 <- seq_summary %>%
     dplyr::summarise(
-      "sample id"          = dplyr::first(sample_id),
-      "all reads"          = dplyr::n(),
-      "passed reads"       = sum(passes_filtering),
-      "n50 value"          = round(n50_value, 2),
-      "mean qscore"        = round(mean(mean_qscore_template), 2),
-      "longest read"       = max(sequence_length_template),
+      "sample id" = dplyr::first(sample_id),
+      "all reads" = dplyr::n(),
+      "passed reads" = sum(passes_filtering),
+      "n50 value" = round(n50_value, 2),
+      "mean qscore" = round(mean(mean_qscore_template), 2),
+      "longest read" = max(sequence_length_template),
       "passed mean length" = round(mean(
         sequence_length_template[passes_filtering == TRUE],
         na.rm = TRUE), 2)
     )
-  
+
   return(qtab1)
 }

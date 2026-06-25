@@ -1,45 +1,45 @@
 Package: NanoQuRe
 Type: Package
 Title: Quality Control for Oxford Nanopore Sequencing
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person(
       "Alicja", "Stachurska",
       email = "ala.stachurska04@gmail.com",
-      role = c("aut", "cre")
+      role = c("aut")
+    ),
+    person(
+      "Natalia", "Gumińska",
+      email = "nguminska@iimcb.gov.pl",
+      role = c("cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Description: Provides quality control tools for Oxford Nanopore Technologies (ONT)
+    sequencing data. Reads sequencing summary files produced by Guppy or Dorado
+    and generates interactive plots and summary tables covering read-length
+    distributions, base quality scores, cumulative yield, sequencing throughput,
+    translocation speed, and pore channel activity. A single call to
+    generate_report() renders a self-contained HTML report from one or more
+    summary files, with automatic single-sample or multi-sample layout selection.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/All-ice0/NanoQuRe
-BugReports: https://github.com/All-ice0/NanoQuRe/issues
+URL: https://LRB-IIMCB.github.io/NanoQuRe, https://github.com/LRB-IIMCB/NanoQuRe
+BugReports: https://github.com/LRB-IIMCB/NanoQuRe/issues
 RoxygenNote: 7.3.3
-HEAD
 Imports:
     dplyr,
-    ggplot2,
     readr,
     rmarkdown,
-    knitr,
     scales,
     DT,
     plotly,
-
-Imports: 
-    dplyr,
-    rmarkdown,
-    scales, 
-    plotly, 
- 18b05ca60c14a9aac5e10462f20025840a3c0b08
     data.table
 Suggests:
-  testthat, 
-  knitr,
-  pkgdown
+    testthat,
+    pkgdown,
+    knitr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-Depends: 
+Depends:
     R (>= 3.5)

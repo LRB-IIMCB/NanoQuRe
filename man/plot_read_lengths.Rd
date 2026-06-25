@@ -23,5 +23,7 @@ Two vertical lines represent the mean read length and the N50 value
 calculated with \code{\link{calculate_n50}}.
 }
 \examples{
+\dontrun{
 plot_read_lengths(sample_data)
+}
 }

@@ -1,10 +1,10 @@
 testthat::test_that("plot_active_channels returns a valid plotly object", {
   
   test_df <- data.frame(
-    sample_id  = "Channel_Test",
-    channel    = c(1, 2, 3),
+    sample_id = "Channel_Test",
+    channel = c(1, 2, 3),
     start_time = c(3500, 7100, 10700),
-    duration   = c(100, 100, 100)
+    duration = c(100, 100, 100)
   )
   
   plt <- plot_active_channels(test_df)
@@ -16,16 +16,16 @@ testthat::test_that("plot_active_channels returns a valid plotly object", {
 testthat::test_that("plot_active_channels has correct title and axis labels", {
   
   test_df <- data.frame(
-    sample_id  = "Channel_Test",
-    channel    = c(1, 2, 3),
+    sample_id = "Channel_Test",
+    channel = c(1, 2, 3),
     start_time = c(3500, 7100, 10700),
-    duration   = c(100, 100, 100)
+    duration = c(100, 100, 100)
   )
   
   plt <- plot_active_channels(test_df)
   
   # plotly_build() forces the full layout to resolve before we inspect it
-  built  <- plotly::plotly_build(plt)
+  built <- plotly::plotly_build(plt)
   layout <- built$x$layout
   
   # Title is wrapped in <b> tags in your function
@@ -39,10 +39,10 @@ testthat::test_that("plot_active_channels calculates channel decay correctly", {
   # 3 channels going inactive at 1h, 2h, 3h
   # so active_channels should go: 2, 1, 0
   test_df <- data.frame(
-    sample_id  = "Channel_Test",
-    channel    = c(1, 2, 3),
+    sample_id = "Channel_Test",
+    channel = c(1, 2, 3),
     start_time = c(3500, 7100, 10700),
-    duration   = c(100, 100, 100)
+    duration = c(100, 100, 100)
   )
   
   plt <- plot_active_channels(test_df)

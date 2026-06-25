@@ -12,6 +12,7 @@ output:
     code_folding: hide
 params:
   data: NULL
+  platform: "minion"
 ---
 
 <style>
@@ -39,7 +40,6 @@ params:
 ```{r setup, include=FALSE}
 library(NanoQuRe)
 library(dplyr)
-library(ggplot2)
 
 ```
 
@@ -56,7 +56,7 @@ DT::datatable(sequencing_stats(params$data), caption = 'Table 1: Sequencing Summ
 
 ## Quality Statistics Table
 ```{r, echo=FALSE}
-DT::datatable(quality_stats(params$data), caption = 'Table 1: Sequencing Summary Quality Statistics')
+DT::datatable(quality_stats(params$data), caption = 'Table 2: Sequencing Summary Quality Statistics')
 ```
 
 
@@ -127,7 +127,7 @@ double_results$qscore_plot
 ## Pore activity heatmap
 This visualization consists of two complementary heatmaps providing a spatial and temporal perspective on flow cell performance. The upper panel displays per-channel sequencing activity over time (in hours), where color intensity represents the total number of bases produced by each channel within a given time window. This allows identification of channels that became inactive — diagnostic of pore blockage, strand stalling, or progressive membrane degradation. The lower panel maps the same per-channel total yield onto the physical layout of the flow cell, reflecting the actual spatial arrangement of nanopores on the membrane. Uneven spatial distribution of activity may indicate local flow cell defects, suboptimal library loading, or air bubble interference during priming.
 ```{r, echo=FALSE}
-pore_activity_heatmap(params$data)
+pore_activity_heatmap(params$data, platform = params$platform)
 ```
 
 

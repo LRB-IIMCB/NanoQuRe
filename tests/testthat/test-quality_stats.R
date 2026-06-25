@@ -1,10 +1,10 @@
 testthat::test_that("quality_stats returns correct table structure", {
   
   test_df <- data.frame(
-    sample_id                = "SampleA",
-    run_id                   = "Run1",
-    passes_filtering         = c(TRUE, FALSE),
-    mean_qscore_template     = c(10, 12),
+    sample_id = "SampleA",
+    run_id = "Run1",
+    passes_filtering = c(TRUE, FALSE),
+    mean_qscore_template = c(10, 12),
     sequence_length_template = c(100, 200)
   )
   
@@ -27,22 +27,22 @@ testthat::test_that("quality_stats calculates all metrics correctly", {
   # passed mean length = 100 (only pass read)
   # N50: total = 300, half = 150 → sorted desc: 200, cumsum 200 >= 150 → N50 = 200
   test_df <- data.frame(
-    sample_id                = "SampleA",
-    run_id                   = "Run1",
-    passes_filtering         = c(TRUE, FALSE),
-    mean_qscore_template     = c(10, 12),
+    sample_id = "SampleA",
+    run_id = "Run1",
+    passes_filtering = c(TRUE, FALSE),
+    mean_qscore_template = c(10, 12),
     sequence_length_template = c(100, 200)
   )
   
   output <- quality_stats(test_df)
   
-  testthat::expect_equal(output$`sample id`,          "SampleA")
-  testthat::expect_equal(output$`all reads`,          2)
-  testthat::expect_equal(output$`passed reads`,       1)
-  testthat::expect_equal(output$`mean qscore`,        11)
-  testthat::expect_equal(output$`longest read`,       200)
+  testthat::expect_equal(output$`sample id`, "SampleA")
+  testthat::expect_equal(output$`all reads`, 2)
+  testthat::expect_equal(output$`passed reads`, 1)
+  testthat::expect_equal(output$`mean qscore`, 11)
+  testthat::expect_equal(output$`longest read`, 200)
   testthat::expect_equal(output$`passed mean length`, 100)
-  testthat::expect_equal(output$`n50 value`,          200)
+  testthat::expect_equal(output$`n50 value`, 200)
 })
 
 testthat::test_that("quality_stats throws correct error messages", {

@@ -6,15 +6,15 @@
 #' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @returns plotly object
-#' @import dplyr
-#' @importFrom plotly plot_ly add_lines layout
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' plot_average_speed(sample_data)
+#' }
 plot_average_speed <- function(seq_summary) {
-  
-  # --- Validation ---
+
+  # Assertions
   if (nrow(seq_summary) == 0)
     stop("The input data frame is empty")
   if (!("sample_id" %in% names(seq_summary)))
@@ -35,13 +35,13 @@ plot_average_speed <- function(seq_summary) {
     stop("Column 'duration' must be numeric")
   if (!is.numeric(seq_summary$sequence_length_template))
     stop("Column 'sequence_length_template' must be numeric")
-  
-  # --- Data prep ---
+
+  # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
-  
+
   cum_data <- seq_summary %>%
     dplyr::select(start_time, duration, passes_filtering, sequence_length_template)
-  
+
   pass_speed <- cum_data %>%
     dplyr::filter(passes_filtering == TRUE) %>%
     dplyr::arrange(start_time) %>%
@@ -49,7 +49,7 @@ plot_average_speed <- function(seq_summary) {
     dplyr::group_by(hour) %>%
     dplyr::summarise(speed = sum(sequence_length_template) / sum(duration),
                      .groups = "drop")
-  
+
   fail_speed <- cum_data %>%
     dplyr::filter(passes_filtering == FALSE) %>%
     dplyr::arrange(start_time) %>%
@@ -57,57 +57,57 @@ plot_average_speed <- function(seq_summary) {
     dplyr::group_by(hour) %>%
     dplyr::summarise(speed = sum(sequence_length_template) / sum(duration),
                      .groups = "drop")
-  
-  # --- Plot ---
+
+  # Plot
   speed_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
-      data          = pass_speed,
-      x             = ~hour,
-      y             = ~speed,
-      name          = "Pass",
-      line          = list(color = "#0072B2", width = 2.5),
+      data = pass_speed,
+      x = ~hour,
+      y = ~speed,
+      name = "Pass",
+      line = list(color = "#0072B2", width = 2.5),
       hovertemplate = "Time: %{x} h<br>Speed: %{y:.1f} bp/s<extra>Pass</extra>"
     ) %>%
     plotly::add_lines(
-      data          = fail_speed,
-      x             = ~hour,
-      y             = ~speed,
-      name          = "Fail",
-      line          = list(color = "#D62728", width = 2.5),
+      data = fail_speed,
+      x = ~hour,
+      y = ~speed,
+      name = "Fail",
+      line = list(color = "#D62728", width = 2.5),
       hovertemplate = "Time: %{x} h<br>Speed: %{y:.1f} bp/s<extra>Fail</extra>"
     ) %>%
     plotly::layout(
       title = list(
         text = paste0("<b>", sample_name, "</b>"),
-        x    = 0.5,
+        x = 0.5,
         font = list(size = 15, color = "#333333", family = "Arial")
       ),
       xaxis = list(
-        title     = list(text = "<b>Time [h]</b>",
+        title = list(text = "<b>Time [h]</b>",
                          font = list(size = 13, family = "Arial")),
-        showgrid  = TRUE,
+        showgrid = TRUE,
         gridcolor = "#e0e0e0",
-        tickfont  = list(size = 11, family = "Arial", color = "#333333")
+        tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
-        title     = list(text = "<b>Speed [bp/s]</b>",
+        title = list(text = "<b>Speed [bp/s]</b>",
                          font = list(size = 13, family = "Arial")),
-        showgrid  = TRUE,
+        showgrid = TRUE,
         gridcolor = "#e0e0e0",
-        tickfont  = list(size = 11, family = "Arial", color = "#333333")
+        tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
-      plot_bgcolor  = "#f9f9f9",
+      plot_bgcolor = "#f9f9f9",
       paper_bgcolor = "#f9f9f9",
       legend = list(
-        x           = 1.02,
-        y           = 1,
-        xanchor     = "left",
-        bgcolor     = "#ffffff",
+        x = 1.02,
+        y = 1,
+        xanchor = "left",
+        bgcolor = "#ffffff",
         bordercolor = "#cccccc",
         borderwidth = 1,
-        font        = list(size = 11, family = "Arial")
+        font = list(size = 11, family = "Arial")
       )
     )
-  
+
   return(speed_plot)
 }

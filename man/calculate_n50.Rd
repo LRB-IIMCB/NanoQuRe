@@ -17,8 +17,10 @@ Calculates the N50 value: the read length at which 50% of all sequenced
 bases are contained in reads of that length or longer.
 }
 \examples{
-seq_summary <- data.frame(
+\dontrun{
+ seq_summary <- data.frame(
   sequence_length_template = c(1, 2, 3, 4, 10)
 )
 calculate_n50(seq_summary)
+}
 }

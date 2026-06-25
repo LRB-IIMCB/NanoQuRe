@@ -22,9 +22,10 @@ Numeric N50 value in bases
 ## Examples
 
 ``` r
-seq_summary <- data.frame(
+if (FALSE) { # \dontrun{
+ seq_summary <- data.frame(
   sequence_length_template = c(1, 2, 3, 4, 10)
 )
 calculate_n50(seq_summary)
-#> [1] 10
+} # }
 ```

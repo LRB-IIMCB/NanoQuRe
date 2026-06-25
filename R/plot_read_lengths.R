@@ -10,43 +10,44 @@
 #'   set to the 99.9th percentile of read counts multiplied by 1.1.
 #'
 #' @returns plotly object
-#' @import dplyr
-#' @importFrom plotly plot_ly add_bars add_lines layout
-#' @importFrom stats quantile
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' plot_read_lengths(sample_data)
+#' }
 plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
-  
-  # --- Validation ---
+
+  # Assertions
+  if (nrow(seq_summary) == 0)
+    stop("The input data frame is empty")
   if (!("sequence_length_template" %in% names(seq_summary)))
     stop("The data frame is missing the 'sequence_length_template' column")
   if (!("sample_id" %in% names(seq_summary)))
     stop("The data frame is missing the 'sample_id' column")
   if (!is.numeric(seq_summary$sequence_length_template))
     stop("Column 'sequence_length_template' must be numeric")
-  
+
   upper_limit <- suppressWarnings(as.numeric(upper_limit))
   if (is.na(upper_limit))
     stop("upper_limit must be a number")
-  
-  # --- Data prep ---
+
+  # Data prep
   lengths     <- seq_summary$sequence_length_template
   sample_name <- seq_summary$sample_id[[1]]
   mean_length <- mean(lengths, na.rm = TRUE)
   n50_SR      <- calculate_n50(seq_summary)
-  
+
   count_seq         <- as.data.frame(table(lengths))
   count_seq$lengths <- as.numeric(as.character(count_seq$lengths))
   names(count_seq)  <- c("sequence_length_template", "n")
   count_seq$n       <- as.integer(count_seq$n)
   max_y             <- max(count_seq$n, na.rm = TRUE)
-  
+
   if (is.null(y_limit))
-    y_limit <- quantile(count_seq$n, 0.999, na.rm = TRUE) * 1.1
-  
-  # --- Plot ---
+    y_limit <- stats::quantile(count_seq$n, 0.999, na.rm = TRUE) * 1.1
+
+  # Plot
   length_plot <- plotly::plot_ly() %>%
     plotly::add_bars(
       data          = count_seq,
@@ -106,6 +107,6 @@ plot_read_lengths <- function(seq_summary, upper_limit = 4000, y_limit = NULL) {
         font        = list(size = 11, family = "Arial")
       )
     )
-  
+
   return(length_plot)
 }

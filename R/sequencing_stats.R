@@ -7,14 +7,15 @@
 #' @param seq_summary A dataframe containing the sequencing summary
 #'
 #' @returns A dataframe with general run metrics
-#' @import dplyr
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' sequencing_stats(sample_data)
+#' }
 sequencing_stats <- function(seq_summary) {
-  
-  # --- Validation ---
+
+  # Assertions
   if (nrow(seq_summary) == 0)
     stop("The input data frame is empty")
   if (!("sample_id" %in% names(seq_summary)))
@@ -31,18 +32,18 @@ sequencing_stats <- function(seq_summary) {
     stop("The data frame is missing the 'passes_filtering' column")
   if (!is.numeric(seq_summary$sequence_length_template))
     stop("Column 'sequence_length_template' must be numeric")
-  
-  # --- Compute ---
+
+  # Compute
   tab1 <- seq_summary %>%
     dplyr::summarise(
-      "sample id"                  = dplyr::first(sample_id),
-      "duration [h]"               = round(max(start_time + duration, na.rm = TRUE) / 3600, 2),
-      "number of reads"            = dplyr::n(),
+      "sample id" = dplyr::first(sample_id),
+      "duration [h]" = round(max(start_time + duration, na.rm = TRUE) / 3600, 2),
+      "number of reads" = dplyr::n(),
       # 1e9 = 1 billion bases = 1 gigabase
       "total bases sequenced [Gb]" = round(sum(sequence_length_template / 1e9), 3),
-      "passed reads [%]"           = round(sum(passes_filtering) / n() * 100, 2),
-      "average speed [bp/s]"       = round(sum(sequence_length_template) / sum(duration), 2)
+      "passed reads [%]" = round(sum(passes_filtering) / n() * 100, 2),
+      "average speed [bp/s]" = round(sum(sequence_length_template) / sum(duration), 2)
     )
-  
+
   return(tab1)
 }

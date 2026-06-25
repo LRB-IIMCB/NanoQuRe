@@ -20,3 +20,10 @@ A named list with two plotly objects:
 Generates two interactive plots showing how read length and mean Q score
 change over the course of a sequencing run. Returns both as a named list.
 }
+\examples{
+\dontrun{
+result <- plot_double(sample_data)
+result$length_plot
+result$qscore_plot
+}
+}

@@ -23,5 +23,7 @@ time in hours. If a threshold is not reached during the run, a warning
 annotation is displayed on the plot prompting closer inspection.
 }
 \examples{
+\dontrun{
 plot_active_channels(sample_data)
+}
 }

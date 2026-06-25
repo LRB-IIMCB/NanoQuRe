@@ -18,5 +18,7 @@ sequencing summary: number of all reads, number of passed reads, N50 value,
 mean Q-score, longest read length, and mean length of passed reads.
 }
 \examples{
+\dontrun{
 quality_stats(sample_data)
+}
 }

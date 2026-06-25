@@ -1,11 +1,11 @@
 # Minimal helper — 3 channels, 2 hours, one run
 make_heatmap_df <- function(platform = "minion") {
   data.frame(
-    sample_id                = "Heatmap_Sample",
-    run_id                   = "Run1",
-    channel                  = c(1L, 2L, 3L),
-    start_time               = c(0, 3600, 7200),
-    duration                 = c(10, 10, 10),
+    sample_id = "Heatmap_Sample",
+    run_id = "Run1",
+    channel = c(1L, 2L, 3L),
+    start_time = c(0, 3600, 7200),
+    duration = c(10, 10, 10),
     sequence_length_template = c(1000L, 2000L, 3000L)
   )
 }
@@ -39,7 +39,7 @@ testthat::test_that("pore_activity_heatmap accepts 'promethion' platform without
 
 testthat::test_that("pore_activity_heatmap uses sample_id as title", {
   
-  plt   <- pore_activity_heatmap(make_heatmap_df(), platform = "minion")
+  plt <- pore_activity_heatmap(make_heatmap_df(), platform = "minion")
   built <- plotly::plotly_build(plt)
   
   # subplot wraps two traces; title lives on the first sub-plot layout
@@ -52,7 +52,7 @@ testthat::test_that("pore_activity_heatmap uses sample_id as title", {
 
 testthat::test_that("pore_activity_heatmap returns a subplot with two heatmap traces", {
   
-  plt   <- pore_activity_heatmap(make_heatmap_df(), platform = "minion")
+  plt <- pore_activity_heatmap(make_heatmap_df(), platform = "minion")
   built <- plotly::plotly_build(plt)
   
   trace_types <- vapply(built$x$data, function(tr) tr$type, character(1))
@@ -127,7 +127,7 @@ testthat::test_that("pore_activity_heatmap errors on invalid platform string", {
 testthat::test_that("pore_activity_heatmap errors when multiple run_ids are present", {
   
   df <- make_heatmap_df()
-  df$run_id <- c("Run1", "Run2", "Run1")   # two distinct run_ids
+  df$run_id <- c("Run1", "Run2", "Run1") # two distinct run_ids
   
   testthat::expect_error(
     pore_activity_heatmap(df),

@@ -1,10 +1,10 @@
 testthat::test_that("plot_seq_throughput returns a valid plotly object", {
   
   test_df <- data.frame(
-    sample_id                = "Sample_123",
-    start_time               = c(0, 3600, 7200, 0),
-    duration                 = c(10, 10, 10, 10),
-    passes_filtering         = c(TRUE, TRUE, TRUE, FALSE),
+    sample_id = "Sample_123",
+    start_time = c(0, 3600, 7200, 0),
+    duration = c(10, 10, 10, 10),
+    passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 1e9)
   )
   
@@ -16,18 +16,18 @@ testthat::test_that("plot_seq_throughput returns a valid plotly object", {
 testthat::test_that("plot_seq_throughput has correct title and axis labels", {
   
   test_df <- data.frame(
-    sample_id                = "Sample_123",
-    start_time               = c(0, 3600, 7200, 0),
-    duration                 = c(10, 10, 10, 10),
-    passes_filtering         = c(TRUE, TRUE, TRUE, FALSE),
+    sample_id = "Sample_123",
+    start_time = c(0, 3600, 7200, 0),
+    duration = c(10, 10, 10, 10),
+    passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 1e9)
   )
   
-  plt    <- plot_seq_throughput(test_df)
-  built  <- plotly::plotly_build(plt)
+  plt <- plot_seq_throughput(test_df)
+  built <- plotly::plotly_build(plt)
   layout <- built$x$layout
   
-  testthat::expect_equal(layout$title$text,       "<b>Sample_123</b>")
+  testthat::expect_equal(layout$title$text, "<b>Sample_123</b>")
   testthat::expect_equal(layout$xaxis$title$text, "<b>Time [h]</b>")
   testthat::expect_equal(layout$yaxis$title$text, "<b>Yield per hour [Gb]</b>")
 })
@@ -37,14 +37,14 @@ testthat::test_that("plot_seq_throughput calculates yield per hour correctly", {
   # Pass reads: hour 0 → 1e9 bp = 1 Gb, hour 1 → 1e9 bp = 1 Gb, hour 2 → 1e9 bp = 1 Gb
   # Fail reads: hour 0 → 1e9 bp = 1 Gb
   test_df <- data.frame(
-    sample_id                = "Sample_123",
-    start_time               = c(0, 3600, 7200, 0),
-    duration                 = c(10, 10, 10, 10),
-    passes_filtering         = c(TRUE, TRUE, TRUE, FALSE),
+    sample_id = "Sample_123",
+    start_time = c(0, 3600, 7200, 0),
+    duration = c(10, 10, 10, 10),
+    passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 1e9)
   )
   
-  plt   <- plot_seq_throughput(test_df)
+  plt <- plot_seq_throughput(test_df)
   built <- plotly::plotly_build(plt)
   
   # trace 1 = Pass, trace 2 = Fail
