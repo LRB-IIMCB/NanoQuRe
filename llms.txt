@@ -1,0 +1,186 @@
+# NanoQuRe
+
+**An R package for quality control of Oxford Nanopore sequencing data**
+
+## Introduction
+
+**NanoQuRe** reads sequencing summary files produced by ONT basecallers
+(Guppy or Dorado) and generates interactive plots, summary tables, and a
+self-contained HTML QC report — all from a single function call.
+
+| What you get | Function |
+|----|----|
+| Full HTML QC report (auto single/multi-sample layout) | [`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md) |
+| Run-level summary table | [`sequencing_stats()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/sequencing_stats.md) |
+| Quality metrics table (N50, mean Q, longest read) | [`quality_stats()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/quality_stats.md) |
+| Cumulative yield / throughput / speed plots | [`plot_cumulative_yield()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_cumulative_yield.md), [`plot_seq_throughput()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_seq_throughput.md), [`plot_average_speed()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_average_speed.md) |
+| Read length & Q-score distribution plots | [`plot_read_lengths()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_read_lengths.md), [`plot_quality_distribution()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_quality_distribution.md) |
+| Channel activity & pore heatmap plots | [`plot_active_channels()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_active_channels.md), [`pore_activity_heatmap()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/pore_activity_heatmap.md), [`plot_double()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_double.md) |
+
+Unlike packages built around external basecallers/ML toolchains,
+NanoQuRe is a pure R package with no compiled code and no external
+system dependencies — install and go.
+
+## Documentation
+
+**Full documentation:** <https://LRB-IIMCB.github.io/NanoQuRe/>
+
+## Installation
+
+NanoQuRe is not currently available on CRAN. Install it using
+`devtools`:
+
+``` r
+
+install.packages("devtools")
+devtools::install_github("LRB-IIMCB/NanoQuRe")
+library(NanoQuRe)
+```
+
+No compilation step and no external tools required — installation should
+take just a few seconds on any platform.
+
+## Usage
+
+The quickest path is a single call on the bundled example dataset:
+
+``` r
+
+library(NanoQuRe)
+data(sample_data)
+
+generate_report(sample_data, output_file = "QC_report.html")
+```
+
+This renders a self-contained HTML report — covering read length and
+quality distributions, cumulative yield, throughput, translocation
+speed, channel activity, and pore occupancy — to your current working
+directory (or wherever you point `output_dir`).
+
+Every plot and table behind the report is also available standalone, if
+you want to embed one in your own analysis or R Markdown document:
+
+``` r
+
+plot_read_lengths(sample_data)
+quality_stats(sample_data)
+```
+
+See the [Getting
+Started](https://LRB-IIMCB.github.io/NanoQuRe/articles/getting-started.html)
+and [Using Individual
+Functions](https://LRB-IIMCB.github.io/NanoQuRe/articles/individual-functions.html)
+vignettes for the full walkthrough.
+
+## Input data
+
+NanoQuRe expects a data frame with the columns produced by ONT
+basecallers: `sample_id`, `run_id`, `channel`, `start_time`, `duration`,
+`sequence_length_template`, `mean_qscore_template`, and
+`passes_filtering`.
+[`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
+accepts this either as an in-memory data frame or as a path to a
+tab-separated summary file.
+
+## Important notes
+
+- [`pore_activity_heatmap()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/pore_activity_heatmap.md)
+  (and
+  [`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md),
+  which calls it) takes a `platform` argument — `"minion"` (512
+  channels, default) or `"promethion"` (3000 channels). Get this wrong
+  for your actual flow cell and channel activity will be silently
+  misrepresented.
+- Multi-sample reports render each sample’s pore heatmap independently;
+  a single problematic sample (e.g. spanning more than one `run_id`) is
+  reported inline rather than failing the whole report.
+
+## Troubleshooting
+
+If you encounter a bug, please [open an
+issue](https://github.com/LRB-IIMCB/NanoQuRe/issues) on GitHub, ideally
+with a minimal reproducible example (a handful of rows of sequencing
+summary data is usually enough).
+
+## Maintainer
+
+Any issues regarding **NanoQuRe** should be addressed to Natalia
+Gumińska (nguminska (at) iimcb.gov.pl).
+
+**NanoQuRe** was developed in the [Laboratory of RNA
+Biology](https://www.iimcb.gov.pl/en/research/41-laboratory-of-rna-biology-era-chairs-group)
+at the [International Institute of Molecular and Cell
+Biology](https://www.iimcb.gov.pl/en/) in Warsaw.
+
+# Package index
+
+## Report Generation
+
+Generate a full HTML QC report
+
+- [`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
+  : Generate Report
+
+## Summary Tables
+
+Functions that return summary data frames
+
+- [`sequencing_stats()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/sequencing_stats.md)
+  : Sequencing Stats
+- [`quality_stats()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/quality_stats.md)
+  : Quality Stats
+- [`calculate_n50()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/calculate_n50.md)
+  : Calculate N50
+
+## Yield & Throughput Plots
+
+Plots showing sequencing output over time
+
+- [`plot_cumulative_yield()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_cumulative_yield.md)
+  : Plot Cumulative Yield
+- [`plot_seq_throughput()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_seq_throughput.md)
+  : Plot Seq Throughput
+- [`plot_average_speed()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_average_speed.md)
+  : Plot Average Speed
+
+## Quality & Length Plots
+
+Plots showing read quality and length distributions
+
+- [`plot_read_lengths()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_read_lengths.md)
+  : Plot Read Lengths
+- [`plot_quality_distribution()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_quality_distribution.md)
+  : Plot Quality Distribution
+
+## Channel Activity Plots
+
+Plots showing pore and channel behaviour
+
+- [`plot_active_channels()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_active_channels.md)
+  : Plot Active Channels
+- [`pore_activity_heatmap()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/pore_activity_heatmap.md)
+  : Pore Activity Heatmap
+- [`plot_double()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_double.md)
+  : Plot Length and Q-score Over Time
+
+## Example Data
+
+Bundled dataset for examples and vignettes
+
+- [`sample_data`](https://LRB-IIMCB.github.io/NanoQuRe/reference/sample_data.md)
+  : Example Sequencing Summary
+
+## Package
+
+- [`NanoQuRe`](https://LRB-IIMCB.github.io/NanoQuRe/reference/NanoQuRe-package.md)
+  [`NanoQuRe-package`](https://LRB-IIMCB.github.io/NanoQuRe/reference/NanoQuRe-package.md)
+  : NanoQuRe: Quality Control for Oxford Nanopore Sequencing
+
+# Articles
+
+### All vignettes
+
+- [Getting Started with
+  NanoQuRe](https://LRB-IIMCB.github.io/NanoQuRe/articles/getting-started.md):
+- [Using Individual
+  Functions](https://LRB-IIMCB.github.io/NanoQuRe/articles/individual-functions.md):
