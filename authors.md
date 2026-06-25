@@ -9,7 +9,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/LRB-IIMCB/NanoQuRe/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/LRB-IIMCB/NanoQuRe/blob/v.1.0.0/DESCRIPTION)
 
 Stachurska A (2026). *NanoQuRe: Quality Control for Oxford Nanopore
 Sequencing*. R package version 1.0,
