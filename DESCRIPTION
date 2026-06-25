@@ -1,7 +1,7 @@
 Package: NanoQuRe
 Type: Package
 Title: Quality Control for Oxford Nanopore Sequencing
-Version: 0.1.1
+Version: 1.0
 Authors@R: c(
     person(
       "Alicja", "Stachurska",

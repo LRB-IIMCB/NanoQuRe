@@ -12,7 +12,7 @@ Source:
 [`DESCRIPTION`](https://github.com/LRB-IIMCB/NanoQuRe/blob/HEAD/DESCRIPTION)
 
 Stachurska A (2026). *NanoQuRe: Quality Control for Oxford Nanopore
-Sequencing*. R package version 0.1.1,
+Sequencing*. R package version 1.0,
 https://github.com/LRB-IIMCB/NanoQuRe,
 <https://LRB-IIMCB.github.io/NanoQuRe>.
 
@@ -20,6 +20,6 @@ https://github.com/LRB-IIMCB/NanoQuRe,
       title = {NanoQuRe: Quality Control for Oxford Nanopore Sequencing},
       author = {Alicja Stachurska},
       year = {2026},
-      note = {R package version 0.1.1, https://github.com/LRB-IIMCB/NanoQuRe},
+      note = {R package version 1.0, https://github.com/LRB-IIMCB/NanoQuRe},
       url = {https://LRB-IIMCB.github.io/NanoQuRe},
     }

@@ -184,7 +184,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] NanoQuRe_0.1.1
+#> [1] NanoQuRe_1.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] plotly_4.10.4       sass_0.4.10         utf8_1.2.6         
