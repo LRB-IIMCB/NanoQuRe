@@ -26,12 +26,10 @@ Encoding: UTF-8
 LazyData: true
 URL: https://LRB-IIMCB.github.io/NanoQuRe, https://github.com/LRB-IIMCB/NanoQuRe
 BugReports: https://github.com/LRB-IIMCB/NanoQuRe/issues
-RoxygenNote: 7.3.3
 Imports:
     dplyr,
     readr,
     rmarkdown,
-    scales,
     DT,
     plotly,
     data.table
@@ -43,3 +41,4 @@ VignetteBuilder: knitr
 Config/testthat/edition: 3
 Depends:
     R (>= 3.5)
+Config/roxygen2/version: 8.0.0

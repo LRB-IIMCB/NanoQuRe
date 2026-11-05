@@ -4,26 +4,45 @@
 \alias{plot_read_lengths}
 \title{Plot Read Lengths}
 \usage{
-plot_read_lengths(seq_summary, upper_limit = 4000, y_limit = NULL)
+plot_read_lengths(
+  seq_summary,
+  upper_limit = NULL,
+  y_limit = NULL,
+  log_x = TRUE,
+  weight = "reads"
+)
 }
 \arguments{
 \item{seq_summary}{A dataframe containing the sequencing summary}
 
-\item{upper_limit}{Upper limit of the x axis. Defaults to 4000.}
+\item{upper_limit}{Upper limit of the x axis in nucleotides. If NULL
+(default), the full length range is shown. Reads beyond the limit are
+counted in an on-plot note.}
 
-\item{y_limit}{Upper limit of the y axis. If NULL (default), automatically
-set to the 99.9th percentile of read counts multiplied by 1.1.}
+\item{y_limit}{Upper limit of the y axis. If NULL (default), the axis is
+scaled automatically.}
+
+\item{log_x}{Logical; plot lengths on a log10 axis. Defaults to TRUE.
+Reads of length 0 cannot be shown on a log axis and are counted in an
+on-plot note.}
+
+\item{weight}{What the bar height counts: \code{"reads"} (default, number
+of reads per bin) or \code{"bases"} (sum of read lengths per bin, i.e.
+where the sequenced bases are).}
 }
 \value{
 plotly object
 }
 \description{
-Generates an interactive plot with number of reads of each length in bases.
-Two vertical lines represent the mean read length and the N50 value
-calculated with \code{\link{calculate_n50}}.
+Generates an interactive histogram of read lengths. Reads are counted in
+fixed bins (50 bins per order of magnitude on the default log axis, 200
+equal bins on a linear axis), so the plot size does not grow with the
+number of reads. Two vertical lines represent the mean read length and the
+N50 value calculated with \code{\link{calculate_n50}}.
 }
 \examples{
 \dontrun{
 plot_read_lengths(sample_data)
+plot_read_lengths(sample_data, weight = "bases")
 }
 }
