@@ -28,10 +28,8 @@ utils::globalVariables(c(
   "passes_filtering",
   # Channel activity decay (plot_active_channels)
   ##############################################################################
-  "last_activity",
-  "channel_no_start",
-  "inactive_channels",
   "active_channels",
+  "time_h",
   # Cumulative yield binning (plot_cumulative_yield)
   ##############################################################################
   "h_start_time",
@@ -45,6 +43,9 @@ utils::globalVariables(c(
   ##############################################################################
   "hour",
   "min_length",
+  # Hourly throughput (plot_seq_throughput)
+  ##############################################################################
+  "yield_per_hour",
   # Pore activity heatmap (pore_activity_heatmap)
   ##############################################################################
   "template_unix",

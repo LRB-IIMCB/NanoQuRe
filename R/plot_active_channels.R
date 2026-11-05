@@ -1,14 +1,23 @@
 #' Plot Active Channels
 #'
-#' Generates an interactive plot showing number of active channels during
-#' sequencing time. Vertical dashed lines mark the time point at which 50%
-#' and 25% of initial channels remain active, annotated with the crossing
-#' time in hours. If a threshold is not reached during the run, a warning
-#' annotation is displayed on the plot prompting closer inspection.
+#' Generates an interactive plot of the number of channels producing reads
+#' over the course of the run. The run is divided into time windows
+#' (\code{bin_width}, 10 minutes by default) and a channel counts as active in
+#' a window when at least one of its reads overlaps that window. Vertical
+#' dashed lines mark the first window after the reference point in which the
+#' number of active channels falls to 50\% and 25\% of the reference, where
+#' the reference is the highest count within the first hour of the run. If a
+#' threshold is not reached, a note is displayed on the plot.
+#'
+#' The sequencing summary does not record pore (mux) scans or pauses, so
+#' short periodic dips or gaps in the curve can reflect run control rather
+#' than pore loss.
 #'
 #' @param seq_summary A dataframe containing the sequencing summary
 #' @param thresholds Numeric vector of fractions at which to draw threshold
 #'   lines. Defaults to c(0.50, 0.25).
+#' @param bin_width Width of each time window in hours. Defaults to 1/6
+#'   (10 minutes).
 #'
 #' @returns plotly object
 #' @import dplyr
@@ -19,7 +28,8 @@
 #' plot_active_channels(sample_data)
 #' }
 plot_active_channels <- function(seq_summary,
-                                 thresholds = c(0.50, 0.25)) {
+                                 thresholds = c(0.50, 0.25),
+                                 bin_width = 1 / 6) {
 
   # Assertion
   if (nrow(seq_summary) == 0)
@@ -37,31 +47,49 @@ plot_active_channels <- function(seq_summary,
   if (!is.numeric(seq_summary$duration))
     stop("Column 'duration' must be numeric")
 
+  if (!is.numeric(bin_width) || length(bin_width) != 1 || !(bin_width > 0))
+    stop("bin_width must be a positive number of hours")
+
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
 
-  sorted_by_channel <- seq_summary %>%
-    dplyr::group_by(channel) %>%
-    dplyr::summarise(
-      last_activity = max(start_time + duration, na.rm = TRUE) / 3600,
-      .groups = "drop"
-    ) %>%
-    dplyr::arrange(last_activity) %>%
-    dplyr::mutate(
-      channel_no_start = dplyr::n(),
-      inactive_channels = seq_len(dplyr::n()),
-      active_channels = channel_no_start - inactive_channels
-    )
+  reads <- seq_summary[!is.na(seq_summary$start_time) &
+                         !is.na(seq_summary$duration) &
+                         !is.na(seq_summary$channel), ]
+  if (nrow(reads) == 0)
+    stop("No reads with start_time, duration and channel available")
 
-  initial_channels <- dplyr::first(sorted_by_channel$channel_no_start)
-  x_max <- max(sorted_by_channel$last_activity)
-  y_max <- initial_channels
+  # every window a read overlaps, from its start window to its end window
+  first_bin <- floor(reads$start_time / 3600 / bin_width)
+  last_bin  <- floor((reads$start_time + reads$duration) / 3600 / bin_width)
+  n_windows <- last_bin - first_bin + 1
+  read_idx  <- rep(seq_len(nrow(reads)), n_windows)
+  window_channel <- unique(data.frame(
+    bin     = first_bin[read_idx] + sequence(n_windows) - 1,
+    channel = reads$channel[read_idx]
+  ))
+
+  # windows without any read are kept as zero active channels
+  all_bins <- seq(min(first_bin), max(last_bin))
+  active_by_window <- data.frame(
+    bin = all_bins,
+    active_channels = tabulate(window_channel$bin - min(all_bins) + 1,
+                               nbins = length(all_bins))
+  )
+  active_by_window$time_h <- active_by_window$bin * bin_width
+
+  # reference: the highest count within the first hour of observed data
+  first_hour <- active_by_window$time_h < min(active_by_window$time_h) + 1
+  initial_channels <- max(active_by_window$active_channels[first_hour])
+  reference_time <- active_by_window$time_h[first_hour][
+    which.max(active_by_window$active_channels[first_hour])]
+  y_max <- max(active_by_window$active_channels)
 
   # Base plot
   channel_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
-      data = sorted_by_channel,
-      x = ~last_activity,
+      data = active_by_window,
+      x = ~time_h,
       y = ~active_channels,
       name = "Active channels",
       line = list(color = "#612a78", width = 2.5),
@@ -76,10 +104,10 @@ plot_active_channels <- function(seq_summary,
 
     thr_count <- round(initial_channels * thr)
 
-    crossing_time <- sorted_by_channel %>%
-      dplyr::filter(active_channels <= thr_count) %>%
+    crossing_time <- active_by_window %>%
+      dplyr::filter(time_h > reference_time, active_channels <= thr_count) %>%
       dplyr::slice(1) %>%
-      dplyr::pull(last_activity)
+      dplyr::pull(time_h)
 
     if (length(crossing_time) == 0) {
       missed_labels <- c(missed_labels, paste0(thr * 100, "%"))
@@ -87,7 +115,7 @@ plot_active_channels <- function(seq_summary,
     }
 
     thr_label <- paste0(
-      thr * 100, "% of initial active channels"
+      thr * 100, "% of first-hour maximum"
     )
 
     channel_plot <- channel_plot %>%
@@ -106,11 +134,13 @@ plot_active_channels <- function(seq_summary,
     missed_str <- paste(missed_labels, collapse = " and ")
 
     annotations <- list(list(
-      x = x_max * 0.5,
-      y = y_max * 0.15,
+      x = 0.5,
+      y = 0.15,
+      xref = "paper",
+      yref = "paper",
       text = paste0(
         "<b>\u26a0 ", missed_str, " threshold(s) not reached during this run.</b><br>",
-        "Channel decay may be atypical \u2014 please inspect this sample more closely."
+        "Active channels stayed above this level for the rest of the run."
       ),
       showarrow = FALSE,
       font = list(size = 12, color = "#9e2a2b", family = "Arial"),
@@ -133,14 +163,14 @@ plot_active_channels <- function(seq_summary,
       ),
       xaxis = list(
         title = list(text = "<b>Time [h]</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
         title = list(text = "<b>Number of active channels</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")
