@@ -89,19 +89,20 @@ plot_average_speed(sample_data)
 
 ### `plot_read_lengths()`
 
-Plots the read length distribution with vertical lines for the mean read
-length and the N50 value. The `upper_limit` parameter controls the x
-axis maximum — useful when a small number of very long reads would
-compress the rest of the distribution.
+Plots a histogram of read lengths on a log10 axis, with vertical lines
+for the mean read length and the N50 value. By default each bar is the
+number of reads in a length bin; `weight = "bases"` shows the number of
+bases instead, i.e. where the sequenced bases are. `upper_limit` sets
+the x axis maximum; reads beyond it are counted in a note on the plot.
+`log_x = FALSE` switches to a linear axis.
 
 ``` r
-# default upper limit is 4000 bp
 plot_read_lengths(sample_data)
 ```
 
 ``` r
-# zoom out to see the full long-read tail
-plot_read_lengths(sample_data, upper_limit = 20000)
+# bases per length bin, on a linear axis up to 20 kb
+plot_read_lengths(sample_data, weight = "bases", log_x = FALSE, upper_limit = 20000)
 ```
 
 ------------------------------------------------------------------------
@@ -125,8 +126,12 @@ plot_quality_distribution(sample_data, qscore_cutoff = 7)
 
 ### `plot_active_channels()`
 
-Shows how many pore channels remain active over the course of the run. A
-steep early drop suggests many pores became blocked or inactive quickly.
+Shows how many channels produced at least one read in each time window
+(10 minutes by default, set with `bin_width` in hours). Dashed lines
+mark the first window in which this number falls to 50% and 25% of the
+highest count in the first hour. Pore scans and pauses are not recorded
+in the sequencing summary, so short dips or gaps can reflect run control
+rather than pore loss.
 
 ``` r
 plot_active_channels(sample_data)
@@ -187,23 +192,23 @@ sessionInfo()
 #> [1] NanoQuRe_1.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] plotly_4.10.4       sass_0.4.10         utf8_1.2.6         
-#>  [4] generics_0.1.4      tidyr_1.3.1         digest_0.6.39      
-#>  [7] magrittr_2.0.4      evaluate_1.0.5      grid_4.4.2         
+#>  [1] plotly_4.12.0       sass_0.4.10         utf8_1.2.6         
+#>  [4] generics_0.1.4      tidyr_1.3.2         digest_0.6.39      
+#>  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.4.2         
 #> [10] RColorBrewer_1.1-3  fastmap_1.2.0       jsonlite_2.0.0     
-#> [13] httr_1.4.7          purrr_1.2.1         crosstalk_1.2.2    
-#> [16] viridisLite_0.4.2   scales_1.4.0        lazyeval_0.2.2     
-#> [19] textshaping_1.0.4   jquerylib_0.1.4     cli_3.6.5          
-#> [22] rlang_1.1.7         withr_3.0.2         cachem_1.1.0       
+#> [13] httr_1.4.9          purrr_1.2.2         crosstalk_1.2.2    
+#> [16] viridisLite_0.4.3   scales_1.4.0        lazyeval_0.2.3     
+#> [19] textshaping_1.0.5   jquerylib_0.1.4     cli_3.6.6          
+#> [22] rlang_1.3.0         withr_3.0.3         cachem_1.1.0       
 #> [25] yaml_2.3.12         otel_0.2.0          tools_4.4.2        
-#> [28] dplyr_1.1.4         ggplot2_4.0.1       DT_0.34.0          
-#> [31] vctrs_0.7.1         R6_2.6.1            lifecycle_1.0.5    
-#> [34] fs_1.6.6            htmlwidgets_1.6.4   ragg_1.5.0         
-#> [37] pkgconfig_2.0.3     desc_1.4.3          pkgdown_2.2.0      
-#> [40] pillar_1.11.1       bslib_0.10.0        gtable_0.3.6       
-#> [43] data.table_1.18.2.1 glue_1.8.0          systemfonts_1.3.1  
-#> [46] xfun_0.56           tibble_3.3.1        tidyselect_1.2.1   
-#> [49] rstudioapi_0.18.0   knitr_1.51          dichromat_2.0-0.1  
-#> [52] farver_2.1.2        htmltools_0.5.9     rmarkdown_2.30     
-#> [55] compiler_4.4.2      S7_0.2.1
+#> [28] dplyr_1.2.1         ggplot2_4.0.3       DT_0.34.0          
+#> [31] vctrs_0.7.3         R6_2.6.1            lifecycle_1.0.5    
+#> [34] fs_2.1.0            htmlwidgets_1.6.4   ragg_1.5.2         
+#> [37] pkgconfig_2.0.3     desc_1.4.3          pkgdown_2.2.1      
+#> [40] pillar_1.11.1       bslib_0.12.0        gtable_0.3.6       
+#> [43] data.table_1.18.6.1 glue_1.8.1          systemfonts_1.3.2  
+#> [46] xfun_0.60           tibble_3.3.1        tidyselect_1.2.1   
+#> [49] rstudioapi_0.19.0   knitr_1.52          dichromat_2.0-0.1  
+#> [52] farver_2.1.2        htmltools_0.5.9     rmarkdown_2.32     
+#> [55] compiler_4.4.2      S7_0.2.2
 ```

@@ -92,7 +92,7 @@ vignette covers each one in detail.
 | [`plot_average_speed()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_average_speed.md) | Translocation speed (bp/s) over time |
 | [`plot_read_lengths()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_read_lengths.md) | Read length distribution with mean and N50 lines |
 | [`plot_quality_distribution()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_quality_distribution.md) | Q score distribution with pass/fail split |
-| [`plot_active_channels()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_active_channels.md) | Channel activity decay over time |
+| [`plot_active_channels()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_active_channels.md) | Channels producing reads in each time window |
 | [`pore_activity_heatmap()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/pore_activity_heatmap.md) | Per-channel activity heatmap on flowcell layout |
 
 ## Session info
@@ -125,22 +125,22 @@ sessionInfo()
 #> [1] NanoQuRe_1.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.1.4        
+#>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        
 #>  [4] compiler_4.4.2      tidyselect_1.2.1    dichromat_2.0-0.1  
-#>  [7] tidyr_1.3.1         jquerylib_0.1.4     scales_1.4.0       
-#> [10] systemfonts_1.3.1   textshaping_1.0.4   yaml_2.3.12        
-#> [13] fastmap_1.2.0       ggplot2_4.0.1       R6_2.6.1           
-#> [16] generics_0.1.4      knitr_1.51          htmlwidgets_1.6.4  
+#>  [7] tidyr_1.3.2         jquerylib_0.1.4     scales_1.4.0       
+#> [10] systemfonts_1.3.2   textshaping_1.0.5   yaml_2.3.12        
+#> [13] fastmap_1.2.0       ggplot2_4.0.3       R6_2.6.1           
+#> [16] generics_0.1.4      knitr_1.52          htmlwidgets_1.6.4  
 #> [19] tibble_3.3.1        desc_1.4.3          RColorBrewer_1.1-3 
-#> [22] bslib_0.10.0        pillar_1.11.1       rlang_1.1.7        
-#> [25] DT_0.34.0           cachem_1.1.0        xfun_0.56          
-#> [28] S7_0.2.1            fs_1.6.6            sass_0.4.10        
-#> [31] lazyeval_0.2.2      otel_0.2.0          viridisLite_0.4.2  
-#> [34] plotly_4.10.4       cli_3.6.5           pkgdown_2.2.0      
-#> [37] magrittr_2.0.4      digest_0.6.39       grid_4.4.2         
-#> [40] rstudioapi_0.18.0   lifecycle_1.0.5     vctrs_0.7.1        
-#> [43] evaluate_1.0.5      glue_1.8.0          data.table_1.18.2.1
-#> [46] farver_2.1.2        ragg_1.5.0          purrr_1.2.1        
-#> [49] httr_1.4.7          rmarkdown_2.30      tools_4.4.2        
+#> [22] bslib_0.12.0        pillar_1.11.1       rlang_1.3.0        
+#> [25] DT_0.34.0           cachem_1.1.0        xfun_0.60          
+#> [28] S7_0.2.2            fs_2.1.0            sass_0.4.10        
+#> [31] lazyeval_0.2.3      otel_0.2.0          viridisLite_0.4.3  
+#> [34] plotly_4.12.0       cli_3.6.6           pkgdown_2.2.1      
+#> [37] magrittr_2.0.5      digest_0.6.39       grid_4.4.2         
+#> [40] rstudioapi_0.19.0   lifecycle_1.0.5     vctrs_0.7.3        
+#> [43] evaluate_1.0.5      glue_1.8.1          data.table_1.18.6.1
+#> [46] farver_2.1.2        ragg_1.5.2          purrr_1.2.2        
+#> [49] httr_1.4.9          rmarkdown_2.32      tools_4.4.2        
 #> [52] pkgconfig_2.0.3     htmltools_0.5.9
 ```

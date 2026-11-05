@@ -103,7 +103,7 @@ one in detail.
 | `plot_average_speed()` | Translocation speed (bp/s) over time |
 | `plot_read_lengths()` | Read length distribution with mean and N50 lines |
 | `plot_quality_distribution()` | Q score distribution with pass/fail split |
-| `plot_active_channels()` | Channel activity decay over time |
+| `plot_active_channels()` | Channels producing reads in each time window |
 | `pore_activity_heatmap()` | Per-channel activity heatmap on flowcell layout |
 
 ## Session info
