@@ -95,21 +95,22 @@ plot_average_speed(sample_data)
 
 ### `plot_read_lengths()`
 
-Plots the read length distribution with vertical lines for the mean read
-length and the N50 value. The `upper_limit` parameter controls the x
-axis maximum — useful when a small number of very long reads would
-compress the rest of the distribution.
+Plots a histogram of read lengths on a log10 axis, with vertical lines
+for the mean read length and the N50 value. By default each bar is the
+number of reads in a length bin; `weight = "bases"` shows the number of
+bases instead, i.e. where the sequenced bases are. `upper_limit` sets
+the x axis maximum; reads beyond it are counted in a note on the plot.
+`log_x = FALSE` switches to a linear axis.
 
 ``` r
 
-# default upper limit is 4000 bp
 plot_read_lengths(sample_data)
 ```
 
 ``` r
 
-# zoom out to see the full long-read tail
-plot_read_lengths(sample_data, upper_limit = 20000)
+# bases per length bin, on a linear axis up to 20 kb
+plot_read_lengths(sample_data, weight = "bases", log_x = FALSE, upper_limit = 20000)
 ```
 
 ------------------------------------------------------------------------
@@ -134,8 +135,12 @@ plot_quality_distribution(sample_data, qscore_cutoff = 7)
 
 ### `plot_active_channels()`
 
-Shows how many pore channels remain active over the course of the run. A
-steep early drop suggests many pores became blocked or inactive quickly.
+Shows how many channels produced at least one read in each time window
+(10 minutes by default, set with `bin_width` in hours). Dashed lines
+mark the first window in which this number falls to 50% and 25% of the
+highest count in the first hour. Pore scans and pauses are not recorded
+in the sequencing summary, so short dips or gaps can reflect run control
+rather than pore loss.
 
 ``` r
 
