@@ -57,8 +57,8 @@ testthat::test_that("plot_seq_throughput calculates yield per hour correctly", {
   # all 3 pass hours should each have 1 Gb yield
   testthat::expect_equal(pass_trace$y, c(1, 1, 1), ignore_attr = TRUE)
   
-  # single fail hour should have 1 Gb yield
-  testthat::expect_equal(fail_trace$y, 1, ignore_attr = TRUE)
+  # single fail hour has 1 Gb yield; the other run hours are zero, not absent
+  testthat::expect_equal(fail_trace$y, c(1, 0, 0), ignore_attr = TRUE)
 })
 
 testthat::test_that("plot_seq_throughput throws correct error messages", {
@@ -96,4 +96,20 @@ testthat::test_that("plot_seq_throughput throws correct error messages", {
     )),
     "Column 'start_time' must be numeric"
   )
+})
+
+testthat::test_that("plot_seq_throughput shows empty hours as zero yield", {
+
+  test_df <- data.frame(
+    sample_id = "Sample_123",
+    start_time = c(100, 3 * 3600 + 100),
+    duration = c(10, 10),
+    passes_filtering = c(TRUE, TRUE),
+    sequence_length_template = c(1e9, 1e9)
+  )
+
+  pass_trace <- plotly::plotly_build(plot_seq_throughput(test_df))$x$data[[1]]
+
+  testthat::expect_equal(pass_trace$x, c(0, 1, 2, 3), ignore_attr = TRUE)
+  testthat::expect_equal(pass_trace$y, c(1, 0, 0, 1), ignore_attr = TRUE)
 })

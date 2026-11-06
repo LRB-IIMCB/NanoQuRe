@@ -134,3 +134,48 @@ testthat::test_that("pore_activity_heatmap errors when multiple run_ids are pres
     "Sequencing summary must contain only one run_id"
   )
 })
+
+# ── Data integrity ────────────────────────────────────────────────────────────
+
+testthat::test_that("pore_activity_heatmap keeps every base in both panels", {
+
+  built <- plotly::plotly_build(pore_activity_heatmap(make_heatmap_df()))
+  totals <- vapply(built$x$data, function(tr) sum(tr$z), numeric(1))
+
+  # 1000 + 2000 + 3000 bases, including the earliest read
+  testthat::expect_equal(totals, c(6000, 6000))
+})
+
+testthat::test_that("pore_activity_heatmap keeps bases of runs shorter than 30 min", {
+
+  df <- make_heatmap_df()
+  df$start_time <- c(0, 10, 20)
+
+  built <- plotly::plotly_build(pore_activity_heatmap(df))
+
+  testthat::expect_equal(sum(built$x$data[[1]]$z), 6000)
+})
+
+testthat::test_that("pore_activity_heatmap places MinION channels at their layout cell", {
+
+  df <- make_heatmap_df()
+  df$channel <- c(1L, 33L, 1L)
+
+  z <- plotly::plotly_build(pore_activity_heatmap(df))$x$data[[2]]$z
+
+  # layout row 1 reads 33..40 followed by 8..1, so channel 33 is at (1, 1)
+  # and channel 1 at (1, 16)
+  testthat::expect_equal(z[1, 1], 2000)
+  testthat::expect_equal(z[1, 16], 4000)
+})
+
+testthat::test_that("pore_activity_heatmap errors on channels outside the platform range", {
+
+  df <- make_heatmap_df()
+  df$channel <- c(1L, 2L, 2500L)
+
+  testthat::expect_error(
+    pore_activity_heatmap(df, platform = "minion"),
+    "Channel ids must be between 1 and 512"
+  )
+})

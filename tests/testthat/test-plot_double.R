@@ -145,3 +145,22 @@ testthat::test_that("plot_double throws correct error messages", {
     "The data frame is missing the 'duration' column"
   )
 })
+
+testthat::test_that("plot_double reports the true minimum length", {
+
+  test_df <- data.frame(
+    sample_id = "Double_Sample",
+    start_time = c(0, 10, 20),
+    duration = c(1, 1, 1),
+    passes_filtering = c(TRUE, TRUE, TRUE),
+    sequence_length_template = c(10, 20, 30),
+    mean_qscore_template = c(10, 11, 12)
+  )
+
+  built <- plotly::plotly_build(plot_double(test_df)$length_plot)
+  traces <- stats::setNames(lapply(built$x$data, function(tr) tr$y),
+                            vapply(built$x$data, function(tr) tr$name, character(1)))
+
+  testthat::expect_equal(traces[["Min"]], 10, ignore_attr = TRUE)
+  testthat::expect_true(traces[["Min"]] <= traces[["Max"]])
+})

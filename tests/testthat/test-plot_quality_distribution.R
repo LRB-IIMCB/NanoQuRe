@@ -115,3 +115,19 @@ testthat::test_that("plot_quality_distribution throws correct error messages", {
     "qscore_cutoff must be a number"
   )
 })
+
+testthat::test_that("plot_quality_distribution shows every read, including Q > 15", {
+
+  test_df <- data.frame(
+    sample_id = "Quality_Sample",
+    sequence_length_template = c(100, 200, 300, 400),
+    mean_qscore_template = c(6, 10, 20, 28.5),
+    passes_filtering = c(FALSE, TRUE, TRUE, TRUE)
+  )
+
+  built <- plotly::plotly_build(plot_quality_distribution(test_df))
+  bars <- Filter(function(tr) identical(tr$type, "bar"), built$x$data)
+  shown <- sum(unlist(lapply(bars, function(tr) tr$y[!is.na(tr$x)])))
+
+  testthat::expect_equal(shown, 4)
+})

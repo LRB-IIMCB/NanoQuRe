@@ -125,3 +125,49 @@ testthat::test_that("generate_report accepts a TSV file path input", {
   
   testthat::expect_true(file.exists(out))
 })
+
+
+testthat::test_that("generate_report errors on missing sample_id values", {
+
+  df <- data.frame(sample_id = c("A", NA), passes_filtering = c(TRUE, FALSE))
+
+  testthat::expect_error(
+    generate_report(df),
+    "Column 'sample_id' contains missing values."
+  )
+})
+
+testthat::test_that("generate_report errors on missing passes_filtering values", {
+
+  df <- data.frame(sample_id = c("A", "A"), passes_filtering = c(TRUE, NA))
+
+  testthat::expect_error(
+    generate_report(df),
+    "Column 'passes_filtering' contains missing values."
+  )
+})
+
+
+testthat::test_that("generate_report writes nothing next to the installed template", {
+
+  test_df <- data.frame(
+    sample_id = "OnlySample", run_id = "R1", channel = 1:2,
+    start_time = c(0, 10), duration = 5,
+    sequence_length_template = c(100, 200),
+    mean_qscore_template = c(8, 9), passes_filtering = TRUE
+  )
+
+  out_dir <- tempfile("nqr_test_")
+  dir.create(out_dir)
+  on.exit(unlink(out_dir, recursive = TRUE), add = TRUE)
+
+  # read-only (system) libraries fail if knit intermediates land here
+  template_dir <- system.file("rmd", package = "NanoQuRe")
+  before <- list.files(template_dir, recursive = TRUE, all.files = TRUE)
+  generate_report(test_df, output_file = "clean_test.html", output_dir = out_dir)
+
+  testthat::expect_identical(
+    list.files(template_dir, recursive = TRUE, all.files = TRUE),
+    before
+  )
+})
