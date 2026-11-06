@@ -55,10 +55,13 @@ pore_activity_heatmap <- function(seq_summary,
       m + i
     }
     layout <- do.call(cbind, lapply(seq(from = 0, to = 2750, by = 250), chunk))
-    channelMap <- as.data.frame(cbind(
-      channel = as.vector(t(layout)),
-      which(layout == as.vector(layout), arr.ind = TRUE)
-    ))
+    # channel ids and their (row, col) must be enumerated in the same
+    # (column-major) order; pairing as.vector(t(layout)) with which(arr.ind)
+    # scrambled the spatial map (only 2/512 MinION channels were in place)
+    channelMap <- data.frame(
+      channel = as.vector(layout),
+      which(layout > 0, arr.ind = TRUE)
+    )
     return(channelMap)
   }
 
@@ -68,10 +71,13 @@ pore_activity_heatmap <- function(seq_summary,
       cbind(m[seq(5, 8, by = 1), ], m[seq(4), rev(seq(8))])
     }
     layout <- do.call(rbind, lapply(c(1, 449, 385, 321, 257, 193, 129, 65), blockCalc))
-    channelMap <- as.data.frame(cbind(
-      channel = as.vector(t(layout)),
-      which(layout == as.vector(layout), arr.ind = TRUE)
-    ))
+    # channel ids and their (row, col) must be enumerated in the same
+    # (column-major) order; pairing as.vector(t(layout)) with which(arr.ind)
+    # scrambled the spatial map (only 2/512 MinION channels were in place)
+    channelMap <- data.frame(
+      channel = as.vector(layout),
+      which(layout > 0, arr.ind = TRUE)
+    )
     return(channelMap)
   }
   ##############################################################################
@@ -81,11 +87,13 @@ pore_activity_heatmap <- function(seq_summary,
   sample_name <- dplyr::first(seq_summary$sample_id)
 
   tab <- data.table::data.table(seq_summary)
-  unixtime <- tab$start_time + tab$duration
-  runtime <- round(max(unixtime) / 3600)
-  rescaled <- scales::rescale(unixtime, to = c(0, runtime))
-  tab$template_unix <- rescaled
-  bins <- seq(from = 0, to = max(rescaled), by = bin_width)
+  # real read-end time in hours; the previous rescale() to [0, round(max)]
+  # shifted the time axis and, with left-open bins, dropped the earliest read
+  # (and the whole temporal panel for runs shorter than 30 min)
+  tab$template_unix <- (tab$start_time + tab$duration) / 3600
+  first_bin <- floor(min(tab$template_unix) / bin_width)
+  last_bin <- floor(max(tab$template_unix) / bin_width)
+  bins <- seq(from = first_bin, to = last_bin + 1) * bin_width
   n_bins <- length(bins) - 1
 
   if (platform == "minion") {
@@ -95,6 +103,12 @@ pore_activity_heatmap <- function(seq_summary,
     n_channels <- 3000
     layout <- getPromethIONChannelMap()
   }
+
+  # out-of-range channels used to be dropped silently (e.g. PromethION data
+  # with the default platform = "minion" lost ~80% of bases from the map)
+  if (any(is.na(tab$channel)) || any(tab$channel < 1 | tab$channel > n_channels))
+    stop("Channel ids must be between 1 and ", n_channels, " for platform '",
+         platform, "'. Check the 'platform' argument.")
 
   # Channel activity matrices
   # channels_activity_overtime <- matrix(0, ncol = n_channels, nrow = length(bins) - 1)
@@ -116,7 +130,8 @@ pore_activity_heatmap <- function(seq_summary,
   # a per-channel x per-bin nested loop. Previously O(n_channels * n_bins)
   # regardless of how much data was supplied (the reason this function took
   # ~5s even on tiny example data); now O(nrow(seq_summary)).
-  tab[, bin_idx := findInterval(template_unix, bins, left.open = TRUE)]
+  # left-closed bins [from, to): every read falls into exactly one bin
+  tab[, bin_idx := floor(template_unix / bin_width) - first_bin + 1]
 
   channels_activity <- rep(0, n_channels)
   channel_totals <- tab[

@@ -38,6 +38,12 @@ plot_average_speed <- function(seq_summary) {
 
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
+  # every hour of the run gets a row: empty hours stay NA so the line breaks
+  # instead of being interpolated across the gap
+  all_hours <- data.frame(
+    hour = seq(floor(min(seq_summary$start_time, na.rm = TRUE) / 3600),
+               floor(max(seq_summary$start_time, na.rm = TRUE) / 3600))
+  )
 
   cum_data <- seq_summary %>%
     dplyr::select(start_time, duration, passes_filtering, sequence_length_template)
@@ -48,7 +54,9 @@ plot_average_speed <- function(seq_summary) {
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour) %>%
     dplyr::summarise(speed = sum(sequence_length_template) / sum(duration),
-                     .groups = "drop")
+                     .groups = "drop") %>%
+    dplyr::right_join(all_hours, by = "hour") %>%
+    dplyr::arrange(hour)
 
   fail_speed <- cum_data %>%
     dplyr::filter(passes_filtering == FALSE) %>%
@@ -56,7 +64,9 @@ plot_average_speed <- function(seq_summary) {
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour) %>%
     dplyr::summarise(speed = sum(sequence_length_template) / sum(duration),
-                     .groups = "drop")
+                     .groups = "drop") %>%
+    dplyr::right_join(all_hours, by = "hour") %>%
+    dplyr::arrange(hour)
 
   # Plot
   speed_plot <- plotly::plot_ly() %>%

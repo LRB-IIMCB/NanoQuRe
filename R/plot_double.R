@@ -56,8 +56,8 @@ plot_double <- function(seq_summary) {
       min_length = min(sequence_length_template),
       av_length = mean(sequence_length_template),
       .groups = "drop"
-    ) %>%
-    dplyr::mutate(min_length = pmax(min_length, 50))
+    )
+  # true minimum is kept; flooring it at 50 could plot min > max
 
   summary_qscore <- double_data %>%
     dplyr::summarise(

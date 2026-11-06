@@ -34,6 +34,12 @@ plot_seq_throughput <- function(seq_summary) {
 
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
+  # every hour of the run gets a row: empty hours are zero yield instead of
+  # a straight line interpolated across the gap
+  all_hours <- data.frame(
+    hour = seq(floor(min(seq_summary$start_time, na.rm = TRUE) / 3600),
+               floor(max(seq_summary$start_time, na.rm = TRUE) / 3600))
+  )
 
   cum_data <- seq_summary %>%
     dplyr::select(start_time, duration, passes_filtering, sequence_length_template)
@@ -44,7 +50,10 @@ plot_seq_throughput <- function(seq_summary) {
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour) %>%
     dplyr::summarise(yield_per_hour = sum(sequence_length_template) / 1e9,
-                     .groups = "drop")
+                     .groups = "drop") %>%
+    dplyr::right_join(all_hours, by = "hour") %>%
+    dplyr::arrange(hour) %>%
+    dplyr::mutate(yield_per_hour = ifelse(is.na(yield_per_hour), 0, yield_per_hour))
 
   fail_throughput <- cum_data %>%
     dplyr::filter(passes_filtering == FALSE) %>%
@@ -52,7 +61,10 @@ plot_seq_throughput <- function(seq_summary) {
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour) %>%
     dplyr::summarise(yield_per_hour = sum(sequence_length_template) / 1e9,
-                     .groups = "drop")
+                     .groups = "drop") %>%
+    dplyr::right_join(all_hours, by = "hour") %>%
+    dplyr::arrange(hour) %>%
+    dplyr::mutate(yield_per_hour = ifelse(is.na(yield_per_hour), 0, yield_per_hour))
 
   # Plot
   throughput_plot <- plotly::plot_ly() %>%

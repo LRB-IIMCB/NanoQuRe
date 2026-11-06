@@ -37,7 +37,10 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
   binwidth <- 0.15
-  bins <- seq(-0.1, 15.1, by = binwidth)
+  # bins span the observed Q range; the former fixed -0.1..15.1 grid hid every
+  # read above ~Q15 (i.e. most reads of current R10.4.1 / sup basecalling)
+  q_range <- range(seq_summary$mean_qscore_template, na.rm = TRUE)
+  bins <- seq(floor(q_range[1]), ceiling(q_range[2]) + binwidth, by = binwidth)
   max_y <- nrow(seq_summary) * 0.05
 
   binned <- seq_summary %>%
@@ -116,7 +119,6 @@ plot_quality_distribution <- function(seq_summary, qscore_cutoff = 7) {
       xaxis = list(
         title = list(text = "<b>Mean Q score of read</b>",
                          font = list(size = 13, family = "Arial")),
-        range = c(-0.1, 15),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")
