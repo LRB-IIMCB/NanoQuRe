@@ -126,7 +126,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] NanoQuRe_1.0
+#> [1] NanoQuRe_1.1.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        
@@ -138,7 +138,7 @@ sessionInfo()
 #> [19] desc_1.4.3          RColorBrewer_1.1-3  bslib_0.12.0       
 #> [22] pillar_1.11.1       rlang_1.3.0         DT_0.34.0          
 #> [25] cachem_1.1.0        xfun_0.62           S7_0.2.2           
-#> [28] fs_2.1.0            sass_0.4.10         otel_0.2.0         
+#> [28] fs_2.1.0            sass_0.4.10         otel_0.3.0         
 #> [31] viridisLite_0.4.3   plotly_4.12.1       cli_3.6.6          
 #> [34] pkgdown_2.2.1       magrittr_2.0.5      digest_0.6.39      
 #> [37] grid_4.6.2          lifecycle_1.0.5     vctrs_0.7.3        
