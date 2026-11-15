@@ -33,6 +33,25 @@ testthat::test_that("caption_numbers reports values computed from the data", {
   )
 })
 
+testthat::test_that("caption_numbers prints round values without scientific notation", {
+
+  # 100000 reads used to be printed as "1e+05"
+  df <- data.frame(
+    sample_id = "Round_Sample",
+    channel = 1L,
+    start_time = 0,
+    duration = 1,
+    sequence_length_template = rep(1000, 100000),
+    mean_qscore_template = 10,
+    passes_filtering = TRUE
+  )
+
+  testthat::expect_match(
+    NanoQuRe:::caption_numbers("read_lengths", df),
+    "100,000 reads", fixed = TRUE
+  )
+})
+
 testthat::test_that("caption_numbers handles a sample without fail reads", {
 
   df <- make_caption_df()
@@ -42,6 +61,41 @@ testthat::test_that("caption_numbers handles a sample without fail reads", {
 
   testthat::expect_match(speed, "fail reads none", fixed = TRUE)
   testthat::expect_false(grepl("NaN|Inf", speed))
+})
+
+testthat::test_that("caption_numbers pins the text of the data-derived sections", {
+
+  df <- make_caption_df()
+
+  # pass reads 1000 + 3000 nt over 20 s, fail read 2000 nt over 10 s
+  testthat::expect_equal(
+    NanoQuRe:::caption_numbers("quality", df),
+    "Median read Q-score: pass 13.0, fail 6.0; lowest Q-score among pass reads: 12.0."
+  )
+  testthat::expect_equal(
+    NanoQuRe:::caption_numbers("length_qscore", df),
+    "Median read length 2,000 nt; median read Q-score 12.0."
+  )
+  # hour 0 holds 1000 + 3000 nt, hour 1 holds 2000 nt
+  testthat::expect_equal(
+    NanoQuRe:::caption_numbers("throughput", df),
+    "Highest hourly yield 0.000004 Gb in hour 0; last hour (1) 0.000002 Gb (pass and fail together)."
+  )
+  testthat::expect_equal(
+    NanoQuRe:::caption_numbers("speed", df),
+    "Over the whole run: pass reads 200 nt/s, fail reads 200 nt/s."
+  )
+})
+
+testthat::test_that("caption_numbers speed is robust to a zero total duration", {
+
+  df <- make_caption_df()
+  df$duration <- 0
+
+  testthat::expect_equal(
+    NanoQuRe:::caption_numbers("speed", df),
+    "Over the whole run: pass reads none, fail reads none."
+  )
 })
 
 testthat::test_that("every report section has a description and values", {

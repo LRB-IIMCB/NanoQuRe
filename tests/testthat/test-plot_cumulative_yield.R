@@ -1,5 +1,5 @@
 testthat::test_that("plot_cumulative_yield returns a valid plotly object", {
-  
+
   test_df <- data.frame(
     sample_id = "Cum_Sample",
     start_time = c(0, 3600, 7200, 0),
@@ -7,14 +7,14 @@ testthat::test_that("plot_cumulative_yield returns a valid plotly object", {
     passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 0.5e9)
   )
-  
+
   plt <- plot_cumulative_yield(test_df)
-  
+
   testthat::expect_s3_class(plt, "plotly")
 })
 
 testthat::test_that("plot_cumulative_yield has correct title and axis labels", {
-  
+
   test_df <- data.frame(
     sample_id = "Cum_Sample",
     start_time = c(0, 3600, 7200, 0),
@@ -22,18 +22,18 @@ testthat::test_that("plot_cumulative_yield has correct title and axis labels", {
     passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 0.5e9)
   )
-  
+
   plt <- plot_cumulative_yield(test_df)
   built <- plotly::plotly_build(plt)
   layout <- built$x$layout
-  
+
   testthat::expect_equal(layout$title$text, "<b>Cum_Sample</b>")
   testthat::expect_equal(layout$xaxis$title$text, "<b>Time [h]</b>")
   testthat::expect_equal(layout$yaxis$title$text, "<b>Yield [Gb]</b>")
 })
 
 testthat::test_that("plot_cumulative_yield calculates cumulative yield correctly", {
-  
+
   # Pass reads: 1e9 + 1e9 + 1e9 = 3 Gb cumulative
   # Fail reads: 0.5e9 = 0.5 Gb cumulative
   test_df <- data.frame(
@@ -43,41 +43,41 @@ testthat::test_that("plot_cumulative_yield calculates cumulative yield correctly
     passes_filtering = c(TRUE, TRUE, TRUE, FALSE),
     sequence_length_template = c(1e9, 1e9, 1e9, 0.5e9)
   )
-  
+
   plt <- plot_cumulative_yield(test_df)
   built <- plotly::plotly_build(plt)
-  
+
   # trace 1 = Pass, trace 2 = Fail
   pass_trace <- built$x$data[[1]]
   fail_trace <- built$x$data[[2]]
-  
+
   testthat::expect_equal(pass_trace$name, "Pass")
   testthat::expect_equal(fail_trace$name, "Fail")
-  
+
   # final cumulative pass yield should be 3 Gb
   testthat::expect_equal(max(pass_trace$y), 3, ignore_attr = TRUE)
-  
+
   # final cumulative fail yield should be 0.5 Gb
   testthat::expect_equal(max(fail_trace$y), 0.5, ignore_attr = TRUE)
 })
 
 testthat::test_that("plot_cumulative_yield throws correct error messages", {
-  
+
   # Missing 'sample_id'
   testthat::expect_error(
     plot_cumulative_yield(data.frame(wrong_col = 1)),
-    "The data frame is missing the 'sample_id' column"
+    "Required columns missing: sample_id"
   )
-  
+
   # sequence_length_template is wrong type (factor avoids coercion warning)
   testthat::expect_error(
     plot_cumulative_yield(data.frame(
       sample_id = "S1", start_time = 0, duration = 10,
       passes_filtering = TRUE, sequence_length_template = factor("100")
     )),
-    "Column 'sequence_length_template' must be numeric"
+    "Column sequence_length_template must be numeric"
   )
-  
+
   # Empty data frame (correct column names but 0 rows)
   testthat::expect_error(
     plot_cumulative_yield(data.frame(
@@ -85,15 +85,77 @@ testthat::test_that("plot_cumulative_yield throws correct error messages", {
       duration = numeric(), passes_filtering = logical(),
       sequence_length_template = numeric()
     )),
-    "The input data frame is empty"
+    "Empty data frame provided"
   )
-  
+
   # passes_filtering is wrong type (numeric instead of logical)
   testthat::expect_error(
     plot_cumulative_yield(data.frame(
       sample_id = "S1", start_time = 10, duration = 10,
       passes_filtering = 1, sequence_length_template = 100
     )),
-    "Column 'passes_filtering' must be logical"
+    "Column passes_filtering must be logical"
   )
+})
+testthat::test_that("plot_cumulative_yield returns the full cumulative vector over several bins", {
+
+  # 1-minute minimum bins: reads at 0, 1, 2 and 3 min give one point each
+  test_df <- data.frame(
+    sample_id = "Cum_Sample",
+    start_time = c(0, 60, 120, 180, 60),
+    passes_filtering = c(TRUE, TRUE, TRUE, TRUE, FALSE),
+    sequence_length_template = c(1e9, 2e9, 3e9, 4e9, 5e8)
+  )
+
+  built <- plotly::plotly_build(plot_cumulative_yield(test_df))
+
+  testthat::expect_equal(built$x$data[[1]]$y, c(1, 3, 6, 10), ignore_attr = TRUE)
+  testthat::expect_equal(built$x$data[[2]]$y, 0.5, ignore_attr = TRUE)
+})
+
+testthat::test_that("plot_cumulative_yield does not require a duration column", {
+
+  testthat::expect_no_error(
+    plot_cumulative_yield(data.frame(
+      sample_id = "S1", start_time = 0, passes_filtering = TRUE,
+      sequence_length_template = 100
+    ))
+  )
+})
+
+testthat::test_that("plot_cumulative_yield treats an NA length as 0 bases", {
+
+  test_df <- data.frame(
+    sample_id = "Cum_Sample",
+    start_time = c(0, 60, 120),
+    passes_filtering = c(TRUE, TRUE, TRUE),
+    sequence_length_template = c(1e9, NA, 2e9)
+  )
+
+  built <- plotly::plotly_build(plot_cumulative_yield(test_df))
+
+  testthat::expect_equal(built$x$data[[1]]$y, c(1, 1, 3), ignore_attr = TRUE)
+})
+
+testthat::test_that("plot_cumulative_yield validates max_points", {
+
+  test_df <- data.frame(
+    sample_id = "S1", start_time = 0, passes_filtering = TRUE,
+    sequence_length_template = 100
+  )
+
+  testthat::expect_error(plot_cumulative_yield(test_df, max_points = 0),
+                         "Max_points must be a single positive number")
+  testthat::expect_error(plot_cumulative_yield(test_df, max_points = c(10, 20)),
+                         "Max_points must be a single positive number")
+  testthat::expect_error(plot_cumulative_yield(test_df, max_points = "10"),
+                         "Max_points must be a single positive number")
+})
+
+testthat::test_that("plot_cumulative_yield errors when seq_summary is missing", {
+  testthat::expect_error(plot_cumulative_yield(), "Sequencing summary is missing")
+})
+
+testthat::test_that("plot_cumulative_yield errors on an empty data frame", {
+  testthat::expect_error(plot_cumulative_yield(data.frame()), "Empty data frame provided")
 })
