@@ -1,0 +1,452 @@
+# Plot Gallery
+
+## Overview
+
+This gallery shows every plotting function of NanoQuRe on the dataset
+bundled with the package, first with its default settings and then with
+the arguments that change the picture. Each plot is followed by a short
+note on how it may be read and on what it cannot show. All plots are
+interactive: hovering over a trace displays the underlying values, and
+the legend toggles individual traces.
+
+## Example data
+
+Two datasets are used. The bundled `sample_data` object holds 1000 reads
+of a single MinION run and serves the read length and Q-score
+distributions. Its reads come from the first minutes and the last half
+hour of the run only, so it cannot illustrate the plots that follow a
+run over time.
+
+``` r
+
+library(NanoQuRe)
+
+data(sample_data)
+```
+
+The time-resolved plots therefore use a simulated run, generated below:
+200,000 reads on 512 channels over 48 h, in which channels stop
+producing reads at different times and both the translocation speed and
+the Q-score decline slowly. These data are artificial. They only
+illustrate what the plots look like for a complete run and carry no
+biological meaning.
+
+``` r
+
+set.seed(123) # reproducible simulation
+
+n_reads <- 200000
+n_channels <- 512
+run_seconds <- 48 * 3600
+
+# each channel stops producing reads at its own time
+channel_end <- pmin(stats::rweibull(n_channels, shape = 1.5, scale = 30) * 3600,
+                    run_seconds)
+# channels that live longer contribute more reads
+channel <- sample(seq_len(n_channels), n_reads, replace = TRUE, prob = channel_end)
+start_time <- stats::runif(n_reads, min = 0, max = channel_end[channel])
+run_fraction <- start_time / run_seconds
+
+# log-normal read lengths; speed and quality decline over the run
+read_length <- round(stats::rlnorm(n_reads, meanlog = 6.8, sdlog = .9)) + 20
+speed <- stats::rnorm(n_reads, mean = 400 - 60 * run_fraction, sd = 25)
+qscore <- stats::rnorm(n_reads, mean = 12.5 - 2 * run_fraction, sd = 2)
+
+simulated_run <- data.frame(
+  sample_id = "simulated_run",
+  run_id = "simulated_run_1",
+  channel = channel,
+  start_time = start_time,
+  duration = read_length / pmax(speed, 50),
+  sequence_length_template = read_length,
+  mean_qscore_template = qscore,
+  # pass/fail threshold of the simulated basecaller
+  passes_filtering = qscore >= 9
+)
+```
+
+Every function returns an ordinary plotly object
+([`plot_double()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_double.md)
+returns a named list of two), which can be modified with plotly
+functions or embedded in an R Markdown document. The summary tables and
+[`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
+are described in the [Getting
+Started](https://LRB-IIMCB.github.io/NanoQuRe/articles/getting-started.md)
+and [Using Individual
+Functions](https://LRB-IIMCB.github.io/NanoQuRe/articles/individual-functions.md)
+vignettes.
+
+## Read length and quality
+
+### `plot_read_lengths()`
+
+The plot shows a histogram of read lengths drawn as a step line, with
+sequence length in nt on the x axis (logarithmic by default) and the
+number of reads per bin on the y axis. Vertical lines mark the mean read
+length and the N50.
+
+``` r
+
+plot_read_lengths(sample_data)
+```
+
+With `weight = "bases"`, each bin is scaled by the number of bases it
+contains instead of the number of reads, which shifts the visual weight
+towards long reads.
+
+``` r
+
+plot_read_lengths(sample_data, weight = "bases")
+```
+
+A linear axis combined with `upper_limit` truncates the view; reads
+beyond the limit are counted in a note at the top right of the plot.
+
+``` r
+
+plot_read_lengths(sample_data, log_x = FALSE, upper_limit = 5000)
+```
+
+Because the result is an ordinary plotly object, it can be modified
+further with plotly functions.
+
+``` r
+
+length_plot <- plot_read_lengths(sample_data)
+plotly::layout(length_plot, title = list(text = "Read lengths, MinION run"))
+```
+
+**Reading the plot.** In `sample_data` the mean read length is 1083 nt,
+the median is 712 nt, and the N50 is 1201 nt; the mean and N50 lie well
+to the right of the bulk of the reads because a few very long reads (the
+longest is 43360 nt; 10 reads exceed 10000 nt) pull both upwards. The
+base-weighted view shows the same effect: reads longer than 10000 nt are
+1% of reads but carry about 24% of the bases. The plot describes length
+only; it says nothing about the quality of those reads or about when in
+the run they were produced.
+
+### `plot_quality_distribution()`
+
+The plot shows a stacked histogram of the mean Q-score of each read (x
+axis) against the number of reads (y axis), with fail reads and pass
+reads in separate colours. A dashed vertical line marks the user-defined
+cut-off (`qscore_cutoff`), and a solid line marks the lowest Q-score
+among pass reads, which approximates the basecaller threshold.
+
+``` r
+
+plot_quality_distribution(sample_data)
+```
+
+Raising `qscore_cutoff` moves the dashed line, which is useful for
+judging how many reads would remain under a stricter custom filter.
+
+``` r
+
+plot_quality_distribution(sample_data, qscore_cutoff = 10)
+```
+
+**Reading the plot.** In `sample_data` 885 reads pass and 115 fail; the
+basecaller threshold is at about Q8.01, so the default cut-off of Q7
+lies below it and 61 fail reads sit above that line. The median read
+Q-score is 11.29, and 300 reads fall below Q10. The histogram describes
+per-read means only; it cannot show how quality varies within a read,
+nor why a given read failed.
+
+### `plot_double()`
+
+The function returns a named list of two plots that share the same x
+axis, time since the start of the run in hours. `length_plot` shows the
+maximum, average, and minimum read length per hour on a logarithmic y
+axis, and `qscore_plot` shows the maximum, average, and minimum mean
+Q-score per hour. Because `sample_data` covers only two short periods of
+a run, the plots below use the simulated run described above.
+
+``` r
+
+double_plots <- plot_double(simulated_run)
+double_plots$length_plot
+```
+
+``` r
+
+double_plots$qscore_plot
+```
+
+**Reading the plot.** These data are simulated and only illustrate the
+plot. The average Q-score falls from 12.47 in the first hour to 11.48 in
+hour 23 and 10.50 in hour 47, a slow decline of the kind that may
+indicate pore or flow cell ageing in a real run. The average read length
+stays near 1350 nt throughout, whereas the maximum varies widely from
+hour to hour (27660 nt in the first hour, 15709 nt in the last), because
+it is determined by single reads and is sensitive to the number of reads
+in each hour. The plots show per-hour extremes and means only, so they
+cannot reveal how many reads contribute to each hour or which channels
+are responsible for a change.
+
+## Yield, throughput, and speed
+
+### `plot_cumulative_yield()`
+
+The plot shows the cumulative number of sequenced bases (in Gb, y axis)
+against the start time of the reads (in hours, x axis), with one trace
+for pass reads and one for fail reads. Reads are sorted by start time
+and summed in order; the value at each time bin is the running total at
+its last read, and `max_points` caps the number of bins per trace (a bin
+is never narrower than one minute). The examples in this section use the
+simulated run, so the numbers illustrate the plots and carry no
+biological meaning.
+
+``` r
+
+plot_cumulative_yield(simulated_run)
+```
+
+Restricting the input to the first 12 h of the run, with a small
+`max_points`, gives a coarser trace over a shorter time axis.
+
+``` r
+
+first_12h <- simulated_run[simulated_run$start_time < 12 * 3600, ]
+plot_cumulative_yield(first_12h, max_points = 50L)
+```
+
+The returned object is an ordinary plotly object, so it can be modified
+with plotly functions, for example to change the title and the x axis
+range.
+
+``` r
+
+yield_plot <- plot_cumulative_yield(simulated_run)
+plotly::layout(
+  yield_plot,
+  title = list(text = "Cumulative yield, first 24 h"),
+  xaxis = list(range = c(0, 24))
+)
+```
+
+**Reading the plot.** The pass reads reach about 0.249 Gb and the fail
+reads about 0.024 Gb (8.8% of reads fail) by the end of the 48 h. The
+slope of the pass trace flattens over time, which suggests that fewer
+reads were started in the later hours, in line with the channels in the
+simulation stopping one after another. The plot cannot indicate why the
+slope changes, because a loss of active pores, a loss of library, and a
+change in read length all lower it.
+
+### `plot_seq_throughput()`
+
+The plot shows the yield per hour (in Gb, y axis) against run time (in
+hours, x axis), separately for pass and fail reads. Each read is
+assigned to the hour in which it started, the read lengths of each hour
+are summed, and every hour between the first and the last read is
+included, with hours without reads set to zero.
+
+``` r
+
+plot_seq_throughput(simulated_run)
+```
+
+The same plot for the first 12 h of the run, which shows the early hours
+at a finer scale.
+
+``` r
+
+plot_seq_throughput(first_12h)
+```
+
+**Reading the plot.** The pass throughput is highest in the first hour
+(about 0.0103 Gb) and falls to about 0.0050 Gb in hour 23 and about
+0.0009 Gb in hour 47, whereas the fail throughput stays between about
+0.0003 and 0.0006 Gb per hour. A decline of this kind may reflect pores
+becoming inactive, but the plot does not show which channels stopped.
+Hours without reads appear as zero yield and cannot be told apart from
+an interruption of the run, and a long read is counted wholly in the
+hour in which it started.
+
+### `plot_average_speed()`
+
+The plot shows the mean translocation speed (in nt/s, y axis) per hour
+of run time (x axis) for pass and fail reads. The speed of an hour is
+the summed read length divided by the summed read duration of the reads
+that started in that hour, which weights long reads more heavily than a
+mean of per-read speeds.
+
+``` r
+
+plot_average_speed(simulated_run)
+```
+
+The same plot for pass reads only, which removes the noisier fail trace
+and makes the trend of the pass reads easier to follow.
+
+``` r
+
+pass_reads <- simulated_run[simulated_run$passes_filtering, ]
+plot_average_speed(pass_reads)
+```
+
+**Reading the plot.** The pass speed declines from about 398 nt/s in
+hour 0 to about 384 nt/s in hour 11, about 370 nt/s in hour 23, and
+about 339 nt/s in hour 47, and the fail reads follow almost the same
+course. A slow decline of this kind is commonly attributed to ageing of
+the flow cell or depletion of reagents, although the plot alone cannot
+confirm a cause. The speed is derived from the `duration` field of the
+sequencing summary and is not a direct measurement of motor kinetics,
+and hours without reads would appear as gaps in the line.
+
+## Channel activity
+
+The plots of this group use the simulated run (`simulated_run`)
+described above; the data are artificial and only illustrate the plots.
+
+### `plot_active_channels()`
+
+The plot shows the number of channels with at least one read overlapping
+each time window. Dashed lines mark the first window in which the count
+falls to the given fractions (`thresholds`) of the highest count in the
+first hour; the final window, which is usually partial, is not searched.
+
+``` r
+
+plot_active_channels(simulated_run)
+```
+
+A wider window (one hour instead of ten minutes) smooths the short-term
+fluctuations of the count.
+
+``` r
+
+plot_active_channels(simulated_run, bin_width = 1)
+```
+
+Other fractions of the first-hour maximum can be marked with
+`thresholds`.
+
+``` r
+
+plot_active_channels(simulated_run, thresholds = c(.75, .5, .25))
+```
+
+A threshold that is never reached is reported in a note on the plot
+instead of a dashed line; here 5% of the first-hour maximum is not
+reached.
+
+``` r
+
+plot_active_channels(simulated_run, thresholds = c(.5, .25, .05),
+                     bin_width = 1)
+```
+
+**Reading the plot.** All 512 channels produced reads in
+`simulated_run`, and the first-hour maximum is 479 active channels with
+the default window (512 with `bin_width = 1`). With the default window,
+the count falls to 50% of that maximum at 24.5 h and to 25% at 36.5 h;
+the final window still holds 55 active channels (about 11%) and, with
+one-hour windows, the last window holds 63 (about 12%), which is why the
+5% line is absent. A channel without reads in a window is not
+necessarily exhausted, and pore scans and pauses are not recorded in the
+sequencing summary, so a decline of the count may reflect several
+processes that these data cannot separate.
+
+### `pore_activity_heatmap()`
+
+The figure has two panels: the upper one shows bases per channel per
+time bin (channels on the x axis, run time on the y axis), and the lower
+one shows bases per channel arranged according to the physical layout of
+the flow cell.
+
+``` r
+
+pore_activity_heatmap(simulated_run)
+```
+
+A coarser time bin reduces the number of rows of the upper panel.
+
+``` r
+
+pore_activity_heatmap(simulated_run, bin_width = 6)
+```
+
+The PromethION layout is illustrated with a second, small simulated
+summary (3000 reads on channels 1 to 3000, one `run_id`, 24 h) that only
+illustrates the 3000-channel layout.
+
+``` r
+
+set.seed(123) # reproducible simulation
+n_prom <- 3000
+prom_summary <- data.frame(
+  run_id = "simulated_promethion_1",
+  sample_id = "simulated_promethion",
+  channel = sample(seq_len(3000), n_prom, replace = TRUE),
+  start_time = stats::runif(n_prom, min = 0, max = 24 * 3600),
+  duration = stats::rlnorm(n_prom, meanlog = 1, sdlog = .7),
+  sequence_length_template = round(stats::rlnorm(n_prom, meanlog = 7.5,
+                                                 sdlog = .8)),
+  mean_qscore_template = stats::rnorm(n_prom, mean = 11, sd = 2)
+)
+prom_summary$passes_filtering <- prom_summary$mean_qscore_template >= 9
+
+pore_activity_heatmap(prom_summary, platform = "promethion", bin_width = 2)
+```
+
+**Reading the plot.** In `simulated_run`, the 100 channels with the most
+bases account for about 36% of the 273 million bases and the 100
+channels with the fewest for about 5%, so the yield per channel is
+uneven. Dark cells in the upper panel show when and on which channels
+the bases were produced; the lower panel shows whether high and low
+yields cluster in regions of the flow cell. The summary data do not
+identify the physical cause of differences between channels or regions.
+The function requires a single `run_id`, and channel numbers outside the
+selected layout (1 to 512 for MinION, 1 to 3000 for PromethION) stop it
+with an error, so `platform` has to match the data. Flongle flow cells
+are not supported.
+
+## Session info
+
+``` r
+
+sessionInfo()
+#> R version 4.6.2 (2026-10-29)
+#> Platform: x86_64-pc-linux-gnu
+#> Running under: Ubuntu 24.04.5 LTS
+#> 
+#> Matrix products: default
+#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> 
+#> locale:
+#>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+#>  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+#>  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+#> [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+#> 
+#> time zone: UTC
+#> tzcode source: system (glibc)
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] NanoQuRe_1.2.0
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        
+#>  [4] compiler_4.6.2      tidyselect_1.2.1    tidyr_1.3.2        
+#>  [7] jquerylib_0.1.4     systemfonts_1.3.2   scales_1.4.0       
+#> [10] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
+#> [13] ggplot2_4.0.4       R6_2.6.1            generics_0.1.4     
+#> [16] knitr_1.52          htmlwidgets_1.6.4   tibble_3.3.1       
+#> [19] desc_1.4.3          RColorBrewer_1.1-3  bslib_0.12.0       
+#> [22] pillar_1.11.1       rlang_1.3.0         DT_0.34.0          
+#> [25] cachem_1.1.0        xfun_0.62           S7_0.2.2           
+#> [28] fs_2.1.0            sass_0.4.10         otel_0.3.0         
+#> [31] viridisLite_0.4.3   plotly_4.12.1       cli_3.6.6          
+#> [34] withr_3.0.3         pkgdown_2.2.1       magrittr_2.0.5     
+#> [37] crosstalk_1.2.2     digest_0.6.39       grid_4.6.2         
+#> [40] lifecycle_1.0.5     vctrs_0.7.3         data.table_1.18.6.1
+#> [43] evaluate_1.0.5      glue_1.8.1          farver_2.1.2       
+#> [46] ragg_1.5.2          purrr_1.2.2         httr_1.4.9         
+#> [49] rmarkdown_2.32      tools_4.6.2         pkgconfig_2.0.3    
+#> [52] htmltools_0.5.9
+```
