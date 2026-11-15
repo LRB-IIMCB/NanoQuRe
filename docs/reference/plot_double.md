@@ -1,6 +1,6 @@
 # Plot Length and Q-score Over Time
 
-Generates two interactive plots showing how read length and mean Q score
+Generates two interactive plots showing how read length and mean Q-score
 change over the course of a sequencing run. Returns both as a named
 list.
 
@@ -14,7 +14,7 @@ plot_double(seq_summary)
 
 - seq_summary:
 
-  A dataframe containing the sequencing summary
+  A data frame containing the sequencing summary
 
 ## Value
 
@@ -26,7 +26,7 @@ A named list with two plotly objects:
 
 - qscore_plot:
 
-  Mean Q score (min, mean, max) per hour
+  Mean Q-score (min, mean, max) per hour
 
 ## Examples
 

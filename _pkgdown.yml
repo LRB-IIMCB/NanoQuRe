@@ -52,7 +52,7 @@ template:
       </style>
 
 home:
-  title: "NanoQuRe — Quality Control for Oxford Nanopore Sequencing"
+  title: "NanoQuRe: Quality Control for Oxford Nanopore Sequencing"
   description: >
     An R package for quality control of Oxford Nanopore sequencing data.
     Generates interactive plots, summary tables, and self-contained HTML
@@ -88,31 +88,31 @@ reference:
       - generate_report
 
   - title: "Summary Tables"
-    desc: "Functions that return summary data frames"
+    desc: "Functions that return summary data frames or single values"
     contents:
       - sequencing_stats
       - quality_stats
       - calculate_n50
 
   - title: "Yield & Throughput Plots"
-    desc: "Plots showing sequencing output over time"
+    desc: "Plots showing sequencing output and translocation speed over time"
     contents:
       - plot_cumulative_yield
       - plot_seq_throughput
       - plot_average_speed
 
   - title: "Quality & Length Plots"
-    desc: "Plots showing read quality and length distributions"
+    desc: "Plots showing read length and Q-score distributions and their change over time"
     contents:
       - plot_read_lengths
       - plot_quality_distribution
+      - plot_double
 
   - title: "Channel Activity Plots"
-    desc: "Plots showing pore and channel behaviour"
+    desc: "Plots showing the number of active channels and the yield per channel"
     contents:
       - plot_active_channels
       - pore_activity_heatmap
-      - plot_double
 
   - title: "Example Data"
     desc: "Bundled dataset for examples and vignettes"

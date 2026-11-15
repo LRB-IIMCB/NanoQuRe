@@ -1,8 +1,8 @@
 # Example Sequencing Summary
 
 A trimmed sequencing summary file produced by an ONT basecaller
-(Guppy/Dorado), included for use in examples and vignettes. Contains 30
-reads from a single MinION run.
+(Guppy/Dorado), included for use in examples and vignettes. Contains
+1000 reads from a single MinION run.
 
 ## Usage
 
@@ -12,7 +12,7 @@ sample_data
 
 ## Format
 
-A data frame with 30 rows and 8 columns:
+A tibble with 1000 rows and 8 columns:
 
 - sample_id:
 
@@ -24,7 +24,7 @@ A data frame with 30 rows and 8 columns:
 
 - channel:
 
-  integer. Pore channel number (1–512 for MinION).
+  numeric. Pore channel number (1-512 for MinION).
 
 - start_time:
 
@@ -40,7 +40,7 @@ A data frame with 30 rows and 8 columns:
 
 - mean_qscore_template:
 
-  numeric. Mean Q score of the read.
+  numeric. Mean Q-score of the read.
 
 - passes_filtering:
 

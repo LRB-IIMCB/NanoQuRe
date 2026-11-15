@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Natalia Gumińska \email{nguminska@iimcb.gov.pl}
   \item Alicja Stachurska \email{ala.stachurska04@gmail.com}
 }
 

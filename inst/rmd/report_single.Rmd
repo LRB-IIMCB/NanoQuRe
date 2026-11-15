@@ -5,7 +5,7 @@ output:
   html_document:
     theme: paper      
     highlight: pygments    
-    toc: true           #Table of content
+    toc: true           # Table of contents
     toc_float:
       collapsed: false  # This keeps the menu open so you see all plots
       smooth_scroll: true # Makes the transition "glide" when clicked
@@ -128,7 +128,7 @@ plot_active_channels(params$data)
 
 
 
-## Length and Qscore
+## Length and Q-score
 `r NanoQuRe:::caption_description("length_qscore")`
 
 *`r NanoQuRe:::caption_numbers("length_qscore", params$data, params$platform)`*
@@ -138,19 +138,35 @@ double_results$length_plot
 double_results$qscore_plot
 ```
 
-## Pore activity heatmap
+## Pore Activity Heatmap
 `r NanoQuRe:::caption_description("heatmap")`
 
 *`r NanoQuRe:::caption_numbers("heatmap", params$data, params$platform)`*
 ```{r, echo=FALSE}
-pore_activity_heatmap(params$data, platform = params$platform)
+# a heatmap error (several run_ids, channel outside the platform) is shown
+# as a notice so that the rest of the report is still rendered
+tryCatch(
+  pore_activity_heatmap(params$data, platform = params$platform),
+  error = function(e) {
+    htmltools::tags$div(
+      style = paste(
+        "color:#9e2a2b; background:#fff3cd; border:1px solid #e69f00;",
+        "padding:10px; border-radius:4px; margin-bottom:10px;"
+      ),
+      sprintf(
+        "Pore activity heatmap could not be generated for sample '%s': %s",
+        dplyr::first(params$data$sample_id), e$message
+      )
+    )
+  }
+)
 ```
 
 
 
 ## Reproducibility
 
-This report has been created using **`Rmarkdown`** and publicly available **`R`** packages for reproducibility. For clarity the **`R`** packages used, and their versions, is listed below.
+This report has been created using **R Markdown** and publicly available **`R`** packages for reproducibility. For clarity the **`R`** packages used, and their versions, are listed below.
 
 <details>
 <summary style="cursor:pointer; color:#612a78; font-weight:bold;">&#128269; Show session info</summary>

@@ -119,7 +119,7 @@ caption_by_sample("channels")
 htmltools::tagList(lapply(samples_split, plot_active_channels))
 ```
 
-## Length and Qscore
+## Length and Q-score
 `r NanoQuRe:::caption_description("length_qscore")`
 
 ```{r, echo=FALSE, results="asis"}
@@ -134,7 +134,7 @@ htmltools::tagList(lapply(samples_split, function(s) {
 
 
 
-## Pore activity heatmap
+## Pore Activity Heatmap
 `r NanoQuRe:::caption_description("heatmap")`
 
 ```{r, echo=FALSE, results="asis"}
@@ -163,7 +163,7 @@ htmltools::tagList(lapply(samples_split, function(s) {
 
 ## Reproducibility
 
-This report has been created using **`Rmarkdown`** and publicly available **`R`** packages for reproducibility. For clarity the **`R`** packages used, and their versions, is listed below.
+This report has been created using **R Markdown** and publicly available **`R`** packages for reproducibility. For clarity the **`R`** packages used, and their versions, are listed below.
 
 <details>
 <summary style="cursor:pointer; color:#612a78; font-weight:bold;">&#128269; Show session info</summary>

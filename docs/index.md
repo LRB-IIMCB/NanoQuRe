@@ -6,7 +6,7 @@
 
 **NanoQuRe** reads sequencing summary files produced by ONT basecallers
 (Guppy or Dorado) and generates interactive plots, summary tables, and a
-self-contained HTML QC report — all from a single function call.
+self-contained HTML QC report, all from a single function call.
 
 | What you get | Function |
 |----|----|
@@ -19,7 +19,7 @@ self-contained HTML QC report — all from a single function call.
 
 Unlike packages built around external basecallers/ML toolchains,
 NanoQuRe is a pure R package with no compiled code and no external
-system dependencies — install and go.
+system dependencies.
 
 ## Documentation
 
@@ -36,7 +36,7 @@ devtools::install_github("LRB-IIMCB/NanoQuRe")
 library(NanoQuRe)
 ```
 
-No compilation step and no external tools required — installation should
+No compilation step and no external tools required; installation should
 take just a few seconds on any platform.
 
 ## Usage
@@ -50,10 +50,10 @@ data(sample_data)
 generate_report(sample_data, output_file = "QC_report.html")
 ```
 
-This renders a self-contained HTML report — covering read length and
+This renders a self-contained HTML report, covering read length and
 quality distributions, cumulative yield, throughput, translocation
-speed, channel activity, and pore occupancy — to your current working
-directory (or wherever you point `output_dir`).
+speed, and channel activity, to your current working directory (or
+wherever you point `output_dir`).
 
 Every plot and table behind the report is also available standalone, if
 you want to embed one in your own analysis or R Markdown document:
@@ -71,26 +71,40 @@ vignettes for the full walkthrough.
 
 ## Input data
 
-NanoQuRe expects a data frame with the columns produced by ONT
-basecallers: `sample_id`, `run_id`, `channel`, `start_time`, `duration`,
-`sequence_length_template`, `mean_qscore_template`, and
-`passes_filtering`.
+NanoQuRe expects a data frame with eight columns: `run_id`, `channel`,
+`start_time`, `duration`, `sequence_length_template`,
+`mean_qscore_template`, and `passes_filtering` (all present in Guppy and
+Dorado sequencing summaries), plus `sample_id`. Raw basecaller summaries
+do not contain `sample_id`: a data frame needs it added by the user (one
+value per sample), whereas for a file without this column
 [`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
-accepts this either as an in-memory data frame or as a path to a
-tab-separated summary file.
+uses the file name (without directory and extension) as the sample
+identifier.
+[`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
+accepts the data either as an in-memory data frame or as a path to a
+tab-separated summary file, from which only the eight columns above are
+read; `passes_filtering` may be logical, TRUE/FALSE text, or 1/0 when
+passed to
+[`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md).
 
 ## Important notes
 
 - [`pore_activity_heatmap()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/pore_activity_heatmap.md)
   (and
   [`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md),
-  which calls it) takes a `platform` argument — `"minion"` (512
-  channels, default) or `"promethion"` (3000 channels). Get this wrong
-  for your actual flow cell and channel activity will be silently
-  misrepresented.
+  which calls it) takes a `platform` argument: `"minion"` (512 channels,
+  default) or `"promethion"` (3000 channels). Channel numbers outside
+  the selected layout stop the heatmap, whereas MinION data drawn with
+  `"promethion"` would be placed on the wrong layout without an error.
 - Multi-sample reports render each sample’s pore heatmap independently;
   a single problematic sample (e.g. spanning more than one `run_id`) is
-  reported inline rather than failing the whole report.
+  reported inline rather than failing the whole report. A single-sample
+  report likewise shows an inline notice instead of failing when the
+  heatmap cannot be drawn.
+- Only the MinION and PromethION layouts are supported; Flongle flow
+  cells (126 channels) are not.
+- [`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
+  warns when one `sample_id` spans several `run_id` values.
 
 ## Troubleshooting
 
