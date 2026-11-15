@@ -75,9 +75,53 @@ body, .contents, .contents p, .contents li,
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="nanoqure-development-version">NanoQuRe (development version)<a class="anchor" aria-label="anchor" href="#nanoqure-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.0" id="nanoqure-120">NanoQuRe 1.2.0<a class="anchor" aria-label="anchor" href="#nanoqure-120"></a></h2>
 <div class="section level3">
-<h3 id="data-integrity-development-version">Data integrity<a class="anchor" aria-label="anchor" href="#data-integrity-development-version"></a></h3>
+<h3 id="breaking-changes-1-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-2-0"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/quality_stats.html">quality_stats()</a></code> and <code><a href="../reference/sequencing_stats.html">sequencing_stats()</a></code></strong> return the columns <code>mean Q-score</code> and <code>average speed [nt/s]</code> instead of <code>mean qscore</code> and <code>average speed [bp/s]</code>.</li>
+<li>
+<strong><code><a href="../reference/generate_report.html">generate_report()</a></code></strong> stops when <code>output_file</code> contains a directory component; <code>output_dir</code> should be used instead.</li>
+<li>
+<strong>Error messages</strong> of all exported functions are reworded and missing columns are reported together (<code>Required columns missing: ...</code>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="reports-1-2-0">Reports<a class="anchor" aria-label="anchor" href="#reports-1-2-0"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/generate_report.html">generate_report()</a></code></strong> reads only the columns used by the report and takes <code>sample_id</code> from the file name when a summary file lacks this column.</li>
+<li>
+<strong><code><a href="../reference/generate_report.html">generate_report()</a></code></strong> accepts <code>passes_filtering</code> stored as TRUE/FALSE text or 1/0, validates <code>platform</code>, <code>output_file</code>, and <code>output_dir</code>, and warns when one <code>sample_id</code> spans several <code>run_id</code> values.</li>
+<li>
+<strong>The single-sample report</strong> shows a notice instead of failing when the pore activity heatmap cannot be drawn.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="plots-and-tables-1-2-0">Plots and tables<a class="anchor" aria-label="anchor" href="#plots-and-tables-1-2-0"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/plot_read_lengths.html">plot_read_lengths()</a></code></strong> sizes linear bins to <code>upper_limit</code> and validates <code>upper_limit</code> and <code>y_limit</code>.</li>
+<li>
+<strong><code><a href="../reference/plot_quality_distribution.html">plot_quality_distribution()</a></code></strong> draws its reference lines up to the tallest bar.</li>
+<li>
+<strong><code><a href="../reference/plot_active_channels.html">plot_active_channels()</a></code></strong> validates <code>thresholds</code> and ignores the final, usually partial, window when searching for threshold crossings.</li>
+<li>
+<strong><code><a href="../reference/plot_double.html">plot_double()</a></code> and <code><a href="../reference/plot_cumulative_yield.html">plot_cumulative_yield()</a></code></strong> no longer require columns they do not use.</li>
+<li>
+<strong>Missing values</strong> in lengths, Q-scores, and durations no longer propagate into plots and summary tables.</li>
+<li>
+<strong>Units and terminology</strong> are unified: <code>nt</code>, <code>nt/s</code>, and <code>Q-score</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="dependencies-1-2-0">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies-1-2-0"></a></h3>
+<ul><li>
+<strong><code>vroom</code> replaces <code>readr</code></strong>, and <code>data.table</code> is no longer required.</li>
+<li>
+<strong><code>stats</code>, <code>utils</code>, and <code>htmltools</code></strong> are declared in Imports.</li>
+</ul><hr></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="nanoqure-110">NanoQuRe 1.1.0<a class="anchor" aria-label="anchor" href="#nanoqure-110"></a></h2>
+<p><em>Released 2026-11-09.</em></p>
+<div class="section level3">
+<h3 id="data-integrity-1-1-0">Data integrity<a class="anchor" aria-label="anchor" href="#data-integrity-1-1-0"></a></h3>
 <ul><li>
 <strong><code><a href="../reference/pore_activity_heatmap.html">pore_activity_heatmap()</a></code></strong> places channels at their correct flow cell position, keeps every base in the time panel, and stops on channel numbers outside the selected platform.</li>
 <li>
@@ -90,7 +134,7 @@ body, .contents, .contents p, .contents li,
 <strong><code><a href="../reference/generate_report.html">generate_report()</a></code></strong> stops on missing <code>sample_id</code> or <code>passes_filtering</code> values and reads identifiers as text.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="reports-and-plots-development-version">Reports and plots<a class="anchor" aria-label="anchor" href="#reports-and-plots-development-version"></a></h3>
+<h3 id="reports-and-plots-1-1-0">Reports and plots<a class="anchor" aria-label="anchor" href="#reports-and-plots-1-1-0"></a></h3>
 <ul><li>
 <strong><code><a href="../reference/generate_report.html">generate_report()</a></code></strong> works from read-only libraries.</li>
 <li>
