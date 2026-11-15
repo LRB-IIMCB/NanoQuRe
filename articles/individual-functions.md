@@ -2,12 +2,17 @@
 
 ## Overview
 
-While
 [`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
-bundles everything into one HTML file, every plot and table in NanoQuRe
-is also available as a standalone function. This is useful when you want
-to embed a specific plot in your own R Markdown report, tweak
-parameters, or inspect a single metric interactively.
+bundles everything into one HTML file, but every plot and table in
+NanoQuRe is also available as a standalone function. This is useful for
+embedding a specific plot in an R Markdown document, adjusting its
+parameters, or inspecting a single metric interactively.
+
+Each function takes a data frame with the reads of one sample and stops
+with a message naming the missing columns when the input is incomplete.
+The `passes_filtering` column has to be logical here; only
+[`generate_report()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/generate_report.md)
+converts text or 1/0 flags.
 
 ``` r
 
@@ -22,8 +27,10 @@ data(sample_data)
 
 ### `sequencing_stats()`
 
-Returns a one-row summary of the run: duration, total bases sequenced,
-pass rate, and average translocation speed.
+Returns a one-row summary of the run: duration, number of reads, total
+bases sequenced, percentage of passed reads, and average translocation
+speed \[nt/s\]. The speed is the total read length divided by the summed
+read duration.
 
 ``` r
 
@@ -37,8 +44,9 @@ sequencing_stats(sample_data)
 
 ### `quality_stats()`
 
-Returns key quality metrics: total and passed read counts, N50, mean Q
-score, longest read, and mean length of passed reads.
+Returns the main quality metrics: total and passed read counts, N50,
+mean Q-score, longest read, and mean length of passed reads. Missing
+values are ignored in both tables.
 
 ``` r
 
@@ -50,14 +58,25 @@ quality_stats(sample_data)
 #> # ℹ 2 more variables: `longest read` <dbl>, `passed mean length` <dbl>
 ```
 
+### `calculate_n50()`
+
+Returns the N50 value alone, without a table or a plot:
+
+``` r
+
+calculate_n50(sample_data)
+#> [1] 1201
+```
+
 ------------------------------------------------------------------------
 
-## Yield plots
+## Yield and throughput
 
 ### `plot_cumulative_yield()`
 
-Shows how total sequenced bases accumulate over the run, split by
-pass/fail status. A flattening curve indicates the run is winding down.
+Shows how the sequenced bases accumulate over the run, separately for
+pass and fail reads. A flattening curve suggests that output is
+declining.
 
 ``` r
 
@@ -66,23 +85,23 @@ plot_cumulative_yield(sample_data)
 
 ### `plot_seq_throughput()`
 
-Shows yield per hour rather than cumulative yield — useful for spotting
-periods of low pore activity or blockages during the run.
+Shows the yield per hour instead of the cumulative yield. Each read is
+assigned to the hour in which it started, and hours without reads are
+shown as zero yield. The plot may help to spot periods of low output
+during the run.
 
 ``` r
 
 plot_seq_throughput(sample_data)
 ```
 
-------------------------------------------------------------------------
-
-## Speed
-
 ### `plot_average_speed()`
 
-Shows the average translocation speed of DNA through the pore in bases
-per second, split by pass/fail. A drop in speed can indicate pore aging
-or buffer issues.
+Shows the translocation speed per hour in nt/s (summed read length
+divided by summed read duration), separately for pass and fail reads.
+Hours without reads appear as gaps in the line. A drop in speed can
+indicate pore ageing or buffer depletion, although the summary alone
+does not identify the cause.
 
 ``` r
 
@@ -91,7 +110,7 @@ plot_average_speed(sample_data)
 
 ------------------------------------------------------------------------
 
-## Read length distribution
+## Read length and quality
 
 ### `plot_read_lengths()`
 
@@ -99,8 +118,9 @@ Plots a histogram of read lengths on a log10 axis, with vertical lines
 for the mean read length and the N50 value. By default each bar is the
 number of reads in a length bin; `weight = "bases"` shows the number of
 bases instead, i.e. where the sequenced bases are. `upper_limit` sets
-the x axis maximum; reads beyond it are counted in a note on the plot.
-`log_x = FALSE` switches to a linear axis.
+the x-axis maximum; reads beyond it are counted in a note on the plot.
+`log_x = FALSE` switches to a linear axis, on which the bins are sized
+to the visible range.
 
 ``` r
 
@@ -113,20 +133,34 @@ plot_read_lengths(sample_data)
 plot_read_lengths(sample_data, weight = "bases", log_x = FALSE, upper_limit = 20000)
 ```
 
-------------------------------------------------------------------------
-
-## Quality distribution
-
 ### `plot_quality_distribution()`
 
-Plots the Q score distribution split by pass/fail. Two vertical lines
-are shown: the basecaller’s own pass/fail threshold (derived from the
-data) and a user-defined cutoff for downstream analysis.
+Plots the Q-score distribution of pass and fail reads over the full
+range of scores. Up to two vertical lines are shown: a user-defined
+cut-off for downstream analysis (`qscore_cutoff`, Q7 by default) and,
+only when both pass and fail reads exist, the pass/fail threshold of the
+basecaller as derived from the data.
 
 ``` r
 
-# default user-defined cutoff is Q7
 plot_quality_distribution(sample_data, qscore_cutoff = 7)
+```
+
+### `plot_double()`
+
+Returns a named list of two plots, `length_plot` and `qscore_plot`, with
+the minimum, mean, and maximum read length and Q-score per hour of the
+run.
+
+``` r
+
+double_plots <- plot_double(sample_data)
+double_plots$length_plot
+```
+
+``` r
+
+double_plots$qscore_plot
 ```
 
 ------------------------------------------------------------------------
@@ -138,9 +172,10 @@ plot_quality_distribution(sample_data, qscore_cutoff = 7)
 Shows how many channels produced at least one read in each time window
 (10 minutes by default, set with `bin_width` in hours). Dashed lines
 mark the first window in which this number falls to 50% and 25% of the
-highest count in the first hour. Pore scans and pauses are not recorded
-in the sequencing summary, so short dips or gaps can reflect run control
-rather than pore loss.
+highest count in the first hour (`thresholds`); the final, usually
+partial, window is not considered. Pore scans and pauses are not
+recorded in the sequencing summary, so short dips or gaps can reflect
+run control and not pore loss.
 
 ``` r
 
@@ -149,27 +184,17 @@ plot_active_channels(sample_data)
 
 ### `pore_activity_heatmap()`
 
-Shows two complementary views of pore activity: a time × channel heatmap
-and a spatial heatmap overlaid on the flowcell layout. Darker colour
-means more bases sequenced through that channel.
+Shows two complementary views of channel yield: a heatmap of channels
+over time (`bin_width` in hours, 1 by default) and a heatmap on the flow
+cell layout. A darker colour means more bases sequenced through that
+channel. `platform` selects the layout: `"minion"` (512 channels,
+default) or `"promethion"` (3000 channels). The input has to contain a
+single `run_id`, channel numbers outside the selected layout stop the
+function, and Flongle flow cells are not supported.
 
 ``` r
 
 pore_activity_heatmap(sample_data, platform = "minion")
-```
-
-------------------------------------------------------------------------
-
-## N50 directly
-
-### `calculate_n50()`
-
-If you just need the N50 value without any plot:
-
-``` r
-
-calculate_n50(sample_data)
-#> [1] 1201
 ```
 
 ------------------------------------------------------------------------

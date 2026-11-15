@@ -9,7 +9,7 @@ Generate a full HTML QC report
 
 ## Summary Tables
 
-Functions that return summary data frames
+Functions that return summary data frames or single values
 
 - [`sequencing_stats()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/sequencing_stats.md)
   : Sequencing Stats
@@ -20,7 +20,7 @@ Functions that return summary data frames
 
 ## Yield & Throughput Plots
 
-Plots showing sequencing output over time
+Plots showing sequencing output and translocation speed over time
 
 - [`plot_cumulative_yield()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_cumulative_yield.md)
   : Plot Cumulative Yield
@@ -31,23 +31,24 @@ Plots showing sequencing output over time
 
 ## Quality & Length Plots
 
-Plots showing read quality and length distributions
+Plots showing read length and Q-score distributions and their change
+over time
 
 - [`plot_read_lengths()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_read_lengths.md)
   : Plot Read Lengths
 - [`plot_quality_distribution()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_quality_distribution.md)
   : Plot Quality Distribution
+- [`plot_double()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_double.md)
+  : Plot Length and Q-score Over Time
 
 ## Channel Activity Plots
 
-Plots showing pore and channel behaviour
+Plots showing the number of active channels and the yield per channel
 
 - [`plot_active_channels()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_active_channels.md)
   : Plot Active Channels
 - [`pore_activity_heatmap()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/pore_activity_heatmap.md)
   : Pore Activity Heatmap
-- [`plot_double()`](https://LRB-IIMCB.github.io/NanoQuRe/reference/plot_double.md)
-  : Plot Length and Q-score Over Time
 
 ## Example Data
 

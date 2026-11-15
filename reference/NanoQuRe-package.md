@@ -25,4 +25,6 @@ Useful links:
 
 Authors:
 
+- Natalia Gumińska <nguminska@iimcb.gov.pl>
+
 - Alicja Stachurska <ala.stachurska04@gmail.com>

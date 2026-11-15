@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>NanoQuRe — Quality Control for Oxford Nanopore Sequencing • NanoQuRe</title>
+<title>NanoQuRe: Quality Control for Oxford Nanopore Sequencing • NanoQuRe</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="NanoQuRe — Quality Control for Oxford Nanopore Sequencing">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="NanoQuRe: Quality Control for Oxford Nanopore Sequencing">
 <meta name="description" content="An R package for quality control of Oxford Nanopore sequencing data. Generates interactive plots, summary tables, and self-contained HTML reports from ONT sequencing summary files.
 ">
 <meta property="og:description" content="An R package for quality control of Oxford Nanopore sequencing data. Generates interactive plots, summary tables, and self-contained HTML reports from ONT sequencing summary files.
@@ -110,7 +110,7 @@ body, .contents, .contents p, .contents li,
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><strong>NanoQuRe</strong> reads sequencing summary files produced by ONT basecallers (Guppy or Dorado) and generates interactive plots, summary tables, and a self-contained HTML QC report – all from a single function call.</p>
+<p><strong>NanoQuRe</strong> reads sequencing summary files produced by ONT basecallers (Guppy or Dorado) and generates interactive plots, summary tables, and a self-contained HTML QC report, all from a single function call.</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -153,7 +153,7 @@ body, .contents, .contents p, .contents li,
 </tr>
 </tbody>
 </table>
-<p>Unlike packages built around external basecallers/ML toolchains, NanoQuRe is a pure R package with no compiled code and no external system dependencies – install and go.</p>
+<p>Unlike packages built around external basecallers/ML toolchains, NanoQuRe is a pure R package with no compiled code and no external system dependencies.</p>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
@@ -168,7 +168,7 @@ body, .contents, .contents p, .contents li,
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"LRB-IIMCB/NanoQuRe"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://LRB-IIMCB.github.io/NanoQuRe">NanoQuRe</a></span><span class="op">)</span></span></code></pre></div>
-<p>No compilation step and no external tools required – installation should take just a few seconds on any platform.</p>
+<p>No compilation step and no external tools required; installation should take just a few seconds on any platform.</p>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -179,7 +179,7 @@ body, .contents, .contents p, .contents li,
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">sample_data</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/generate_report.html">generate_report</a></span><span class="op">(</span><span class="va">sample_data</span>, output_file <span class="op">=</span> <span class="st">"QC_report.html"</span><span class="op">)</span></span></code></pre></div>
-<p>This renders a self-contained HTML report – covering read length and quality distributions, cumulative yield, throughput, translocation speed, channel activity, and pore occupancy – to your current working directory (or wherever you point <code>output_dir</code>).</p>
+<p>This renders a self-contained HTML report, covering read length and quality distributions, cumulative yield, throughput, translocation speed, and channel activity, to your current working directory (or wherever you point <code>output_dir</code>).</p>
 <p>Every plot and table behind the report is also available standalone, if you want to embed one in your own analysis or R Markdown document:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/plot_read_lengths.html">plot_read_lengths</a></span><span class="op">(</span><span class="va">sample_data</span><span class="op">)</span></span>
@@ -196,7 +196,7 @@ body, .contents, .contents p, .contents li,
 </h2>
 <ul>
 <li>
-<code><a href="reference/pore_activity_heatmap.html">pore_activity_heatmap()</a></code> (and <code><a href="reference/generate_report.html">generate_report()</a></code>, which calls it) takes a <code>platform</code> argument – <code>"minion"</code> (512 channels, default) or <code>"promethion"</code> (3000 channels). Get this wrong for your actual flow cell and channel activity will be silently misrepresented.</li>
+<code><a href="reference/pore_activity_heatmap.html">pore_activity_heatmap()</a></code> (and <code><a href="reference/generate_report.html">generate_report()</a></code>, which calls it) takes a <code>platform</code> argument: <code>"minion"</code> (512 channels, default) or <code>"promethion"</code> (3000 channels). Channel numbers outside the selected layout stop the heatmap, whereas MinION data drawn with <code>"promethion"</code> would be placed on the wrong layout without an error.</li>
 <li>Multi-sample reports render each sample’s pore heatmap independently; a single problematic sample (e.g. spanning more than one <code>run_id</code>) is reported inline rather than failing the whole report. A single-sample report likewise shows an inline notice instead of failing when the heatmap cannot be drawn.</li>
 <li>Only the MinION and PromethION layouts are supported; Flongle flow cells (126 channels) are not.</li>
 <li>
