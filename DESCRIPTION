@@ -1,7 +1,7 @@
 Package: NanoQuRe
 Type: Package
 Title: Quality Control for Oxford Nanopore Sequencing
-Version: 1.1.0
+Version: 1.2.0
 Authors@R: c(
     person(
       "Alicja", "Stachurska",
@@ -11,7 +11,7 @@ Authors@R: c(
     person(
       "Natalia", "Gumińska",
       email = "nguminska@iimcb.gov.pl",
-      role = c("cre")
+      role = c("aut", "cre")
     )
   )
 Description: Provides quality control tools for Oxford Nanopore Technologies (ONT)
@@ -28,11 +28,13 @@ URL: https://LRB-IIMCB.github.io/NanoQuRe, https://github.com/LRB-IIMCB/NanoQuRe
 BugReports: https://github.com/LRB-IIMCB/NanoQuRe/issues
 Imports:
     dplyr,
-    readr,
+    vroom,
     rmarkdown,
     DT,
     plotly,
-    data.table
+    stats,
+    utils,
+    htmltools
 Suggests:
     testthat,
     pkgdown,
