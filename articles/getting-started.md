@@ -131,9 +131,9 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        
 #>  [4] compiler_4.6.2      tidyselect_1.2.1    tidyr_1.3.2        
-#>  [7] jquerylib_0.1.4     scales_1.4.0        systemfonts_1.3.2  
+#>  [7] jquerylib_0.1.4     systemfonts_1.3.2   scales_1.4.0       
 #> [10] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
-#> [13] ggplot2_4.0.3       R6_2.6.1            generics_0.1.4     
+#> [13] ggplot2_4.0.4       R6_2.6.1            generics_0.1.4     
 #> [16] knitr_1.52          htmlwidgets_1.6.4   tibble_3.3.1       
 #> [19] desc_1.4.3          RColorBrewer_1.1-3  bslib_0.12.0       
 #> [22] pillar_1.11.1       rlang_1.3.0         DT_0.34.0          
@@ -142,7 +142,7 @@ sessionInfo()
 #> [31] viridisLite_0.4.3   plotly_4.12.1       cli_3.6.6          
 #> [34] pkgdown_2.2.1       magrittr_2.0.5      digest_0.6.39      
 #> [37] grid_4.6.2          lifecycle_1.0.5     vctrs_0.7.3        
-#> [40] evaluate_1.0.5      glue_1.8.1          data.table_1.18.6.1
+#> [40] data.table_1.18.6.1 evaluate_1.0.5      glue_1.8.1         
 #> [43] farver_2.1.2        ragg_1.5.2          purrr_1.2.2        
 #> [46] httr_1.4.9          rmarkdown_2.32      tools_4.6.2        
 #> [49] pkgconfig_2.0.3     htmltools_0.5.9

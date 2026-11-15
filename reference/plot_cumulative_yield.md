@@ -14,7 +14,7 @@ plot_cumulative_yield(seq_summary, max_points = 2000L)
 
 - seq_summary:
 
-  A dataframe containing the sequencing summary
+  A data frame containing the sequencing summary
 
 - max_points:
 

@@ -1,9 +1,11 @@
 # Plot Quality Distribution
 
-Generates an interactive plot with number of reads at each Q score
-sorted by pass/fail filtering status. Vertical line represents Q score
-cut-off which is by default equal to 7. The basecaller threshold line is
-only drawn when both passing and failing reads are present in the data.
+Generates an interactive plot with number of reads at each Q-score
+sorted by pass/fail filtering status. Two vertical lines are drawn: the
+user-defined Q-score cut-off (`qscore_cutoff`, by default 7) and the
+basecaller threshold, i.e. the lowest Q-score among passing reads. The
+basecaller threshold line is only drawn when both passing and failing
+reads are present in the data.
 
 ## Usage
 
@@ -15,11 +17,11 @@ plot_quality_distribution(seq_summary, qscore_cutoff = 7)
 
 - seq_summary:
 
-  A dataframe containing the sequencing summary
+  A data frame containing the sequencing summary
 
 - qscore_cutoff:
 
-  Numeric parameter of Qscore cut-off
+  Numeric Q-score cut-off drawn as a vertical line. Defaults to 7.
 
 ## Value
 

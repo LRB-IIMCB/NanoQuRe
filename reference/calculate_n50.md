@@ -13,7 +13,7 @@ calculate_n50(seq_summary)
 
 - seq_summary:
 
-  A dataframe containing the sequencing summary
+  A data frame containing the sequencing summary
 
 ## Value
 

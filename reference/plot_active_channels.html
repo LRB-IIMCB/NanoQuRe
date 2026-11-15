@@ -6,14 +6,18 @@ a window when at least one of its reads overlaps that window. Vertical
 dashed lines mark the first window after the reference point in which the
 number of active channels falls to 50% and 25% of the reference, where
 the reference is the highest count within the first hour of the run. If a
-threshold is not reached, a note is displayed on the plot."><meta property="og:description" content="Generates an interactive plot of the number of channels producing reads
+threshold is not reached, a note is displayed on the plot. The final window
+of a run is usually only partly covered by reads, so it is shown in the
+curve but ignored when looking for threshold crossings."><meta property="og:description" content="Generates an interactive plot of the number of channels producing reads
 over the course of the run. The run is divided into time windows
 (bin_width, 10 minutes by default) and a channel counts as active in
 a window when at least one of its reads overlaps that window. Vertical
 dashed lines mark the first window after the reference point in which the
 number of active channels falls to 50% and 25% of the reference, where
 the reference is the highest count within the first hour of the run. If a
-threshold is not reached, a note is displayed on the plot."><meta property="og:image" content="https://LRB-IIMCB.github.io/NanoQuRe/logo.png"><style>
+threshold is not reached, a note is displayed on the plot. The final window
+of a run is usually only partly covered by reads, so it is shown in the
+curve but ignored when looking for threshold crossings."><meta property="og:image" content="https://LRB-IIMCB.github.io/NanoQuRe/logo.png"><style>
 /* Unify fonts: system font stack throughout */
 body, .contents, .contents p, .contents li,
 .contents table, .contents th, .contents td {
@@ -97,7 +101,9 @@ a window when at least one of its reads overlaps that window. Vertical
 dashed lines mark the first window after the reference point in which the
 number of active channels falls to 50% and 25% of the reference, where
 the reference is the highest count within the first hour of the run. If a
-threshold is not reached, a note is displayed on the plot.</p>
+threshold is not reached, a note is displayed on the plot. The final window
+of a run is usually only partly covered by reads, so it is shown in the
+curve but ignored when looking for threshold crossings.</p>
     </div>
 
     <div class="section level2">
@@ -110,12 +116,12 @@ threshold is not reached, a note is displayed on the plot.</p>
 
 
 <dl><dt id="arg-seq-summary">seq_summary<a class="anchor" aria-label="anchor" href="#arg-seq-summary"></a></dt>
-<dd><p>A dataframe containing the sequencing summary</p></dd>
+<dd><p>A data frame containing the sequencing summary</p></dd>
 
 
 <dt id="arg-thresholds">thresholds<a class="anchor" aria-label="anchor" href="#arg-thresholds"></a></dt>
-<dd><p>Numeric vector of fractions at which to draw threshold
-lines. Defaults to c(0.50, 0.25).</p></dd>
+<dd><p>Numeric vector of fractions (each greater than 0 and at
+most 1) at which to draw threshold lines. Defaults to c(0.50, 0.25).</p></dd>
 
 
 <dt id="arg-bin-width">bin_width<a class="anchor" aria-label="anchor" href="#arg-bin-width"></a></dt>

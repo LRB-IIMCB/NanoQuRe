@@ -32,7 +32,7 @@ sequencing_stats(sample_data)
 #>   `sample id`     `duration [h]` `number of reads` `total bases sequenced [Gb]`
 #>   <chr>                    <dbl>             <int>                        <dbl>
 #> 1 experiment_0001           88.6              1000                        0.001
-#> # ℹ 2 more variables: `passed reads [%]` <dbl>, `average speed [bp/s]` <dbl>
+#> # ℹ 2 more variables: `passed reads [%]` <dbl>, `average speed [nt/s]` <dbl>
 ```
 
 ### `quality_stats()`
@@ -44,9 +44,9 @@ score, longest read, and mean length of passed reads.
 
 quality_stats(sample_data)
 #> # A tibble: 1 × 7
-#>   `sample id`     `all reads` `passed reads` `n50 value` `mean qscore`
-#>   <chr>                 <int>          <int>       <dbl>         <dbl>
-#> 1 experiment_0001        1000            885        1201          10.9
+#>   `sample id`     `all reads` `passed reads` `n50 value` `mean Q-score`
+#>   <chr>                 <int>          <int>       <dbl>          <dbl>
+#> 1 experiment_0001        1000            885        1201           10.9
 #> # ℹ 2 more variables: `longest read` <dbl>, `passed mean length` <dbl>
 ```
 
@@ -205,9 +205,9 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        
 #>  [4] compiler_4.6.2      tidyselect_1.2.1    tidyr_1.3.2        
-#>  [7] jquerylib_0.1.4     scales_1.4.0        systemfonts_1.3.2  
+#>  [7] jquerylib_0.1.4     systemfonts_1.3.2   scales_1.4.0       
 #> [10] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
-#> [13] ggplot2_4.0.3       R6_2.6.1            generics_0.1.4     
+#> [13] ggplot2_4.0.4       R6_2.6.1            generics_0.1.4     
 #> [16] knitr_1.52          htmlwidgets_1.6.4   tibble_3.3.1       
 #> [19] desc_1.4.3          RColorBrewer_1.1-3  bslib_0.12.0       
 #> [22] pillar_1.11.1       rlang_1.3.0         utf8_1.2.6         
@@ -217,7 +217,7 @@ sessionInfo()
 #> [34] cli_3.6.6           withr_3.0.3         pkgdown_2.2.1      
 #> [37] magrittr_2.0.5      crosstalk_1.2.2     digest_0.6.39      
 #> [40] grid_4.6.2          lifecycle_1.0.5     vctrs_0.7.3        
-#> [43] evaluate_1.0.5      glue_1.8.1          data.table_1.18.6.1
+#> [43] data.table_1.18.6.1 evaluate_1.0.5      glue_1.8.1         
 #> [46] farver_2.1.2        ragg_1.5.2          purrr_1.2.2        
 #> [49] httr_1.4.9          rmarkdown_2.32      tools_4.6.2        
 #> [52] pkgconfig_2.0.3     htmltools_0.5.9

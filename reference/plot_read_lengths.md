@@ -2,7 +2,8 @@
 
 Generates an interactive histogram of read lengths. Reads are counted in
 fixed bins (50 bins per order of magnitude on the default log axis, 200
-equal bins on a linear axis), so the plot size does not grow with the
+equal bins on a linear axis; with `upper_limit` the linear bins are
+sized to the visible range), so the plot size does not grow with the
 number of reads. Two vertical lines represent the mean read length and
 the N50 value calculated with
 [`calculate_n50`](https://LRB-IIMCB.github.io/NanoQuRe/reference/calculate_n50.md).
@@ -23,7 +24,7 @@ plot_read_lengths(
 
 - seq_summary:
 
-  A dataframe containing the sequencing summary
+  A data frame containing the sequencing summary
 
 - upper_limit:
 
@@ -33,8 +34,8 @@ plot_read_lengths(
 
 - y_limit:
 
-  Upper limit of the y axis. If NULL (default), the axis is scaled
-  automatically.
+  Upper limit of the y axis (a single positive number). If NULL
+  (default), the axis is scaled automatically.
 
 - log_x:
 
