@@ -9,6 +9,10 @@ template:
     link-color: "#612a78"
     navbar-bg: "#612a78"
     heading-color: "#612a78"
+    # fonts as on the pod5R site (bootswatch yeti): Open Sans, light headings
+    base_font: {google: {family: "Open Sans", wght: [300, 400, 700]}}
+    font-family-sans-serif: '"Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
+    headings-font-weight: 300
   includes:
     in_header: |
       <style>
@@ -76,10 +80,24 @@ navbar:
           href: articles/getting-started.html
         - text: "Using Individual Functions"
           href: articles/individual-functions.html
+        - text: "Plot Gallery"
+          href: articles/plot-gallery.html
     github:
       icon: fab fa-github
       href: https://github.com/LRB-IIMCB/NanoQuRe
       aria-label: GitHub
+
+articles:
+  - title: "Vignettes"
+    navbar: ~
+    contents:
+      - getting-started
+      - individual-functions
+
+  - title: "Gallery"
+    desc: "Every plotting function on the bundled data, with argument variants"
+    contents:
+      - plot-gallery
 
 reference:
   - title: "Report Generation"
