@@ -13,14 +13,14 @@ plot_read_lengths(
 )
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 
 \item{upper_limit}{Upper limit of the x axis in nucleotides. If NULL
 (default), the full length range is shown. Reads beyond the limit are
 counted in an on-plot note.}
 
-\item{y_limit}{Upper limit of the y axis. If NULL (default), the axis is
-scaled automatically.}
+\item{y_limit}{Upper limit of the y axis (a single positive number). If NULL
+(default), the axis is scaled automatically.}
 
 \item{log_x}{Logical; plot lengths on a log10 axis. Defaults to TRUE.
 Reads of length 0 cannot be shown on a log axis and are counted in an
@@ -36,7 +36,8 @@ plotly object
 \description{
 Generates an interactive histogram of read lengths. Reads are counted in
 fixed bins (50 bins per order of magnitude on the default log axis, 200
-equal bins on a linear axis), so the plot size does not grow with the
+equal bins on a linear axis; with \code{upper_limit} the linear bins are
+sized to the visible range), so the plot size does not grow with the
 number of reads. Two vertical lines represent the mean read length and the
 N50 value calculated with \code{\link{calculate_n50}}.
 }

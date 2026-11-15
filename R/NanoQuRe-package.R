@@ -1,19 +1,18 @@
 #' @keywords internal
 "_PACKAGE"
 ## usethis namespace: start
-#' @import dplyr
-#' @import rmarkdown
-#' @importFrom data.table data.table
+#' @importFrom dplyr %>%
+#' @importFrom htmltools tagList
+#' @importFrom utils globalVariables
 #' @importFrom DT datatable
 #' @importFrom plotly plot_ly add_bars add_lines add_trace layout subplot
-#' @importFrom stats quantile
 ## usethis namespace: end
 NULL
 ################################################################################
 # NSE variable declarations for R CMD check
 ################################################################################
-# These variables are used in dplyr/data.table NSE contexts (mutate/filter/
-# group_by/summarise/count/:=) throughout the package and would otherwise
+# These variables are used in dplyr NSE contexts (mutate/filter/
+# group_by/summarise/count) throughout the package and would otherwise
 # generate "no visible binding/function definition" NOTEs.
 utils::globalVariables(c(
   # Core sequencing summary columns
@@ -46,19 +45,13 @@ utils::globalVariables(c(
   # Hourly throughput (plot_seq_throughput)
   ##############################################################################
   "yield_per_hour",
-  # Pore activity heatmap (pore_activity_heatmap)
+  # Hourly translocation speed (plot_average_speed)
   ##############################################################################
-  "template_unix",
-  "bin_idx",
+  "speed",
   # Generic dplyr::count() / aggregation output
   ##############################################################################
   "n",
   # magrittr placeholder (used in conditional pipe branches)
   ##############################################################################
-  ".",
-  # data.table's in-place assignment operator (tab[, col := value]) - not a
-  # real function/variable, but codetools flags it the same way; this is
-  # data.table's own documented fix for this exact NOTE
-  ##############################################################################
-  ":="
+  "."
 ))

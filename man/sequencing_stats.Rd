@@ -7,15 +7,16 @@
 sequencing_stats(seq_summary)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 }
 \value{
-A dataframe with general run metrics
+A data frame with general run metrics
 }
 \description{
 Generates a table containing general run metrics from a sequencing summary:
 sample ID, duration in hours, number of reads, total bases sequenced in Gb,
-percentage of passed reads, and average sequencing speed in bp/s.
+percentage of passed reads, and average sequencing speed in nt/s. Missing values are removed from every sum; the speed is
+\code{NA} when the total read duration is zero.
 }
 \examples{
 \dontrun{

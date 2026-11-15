@@ -10,7 +10,7 @@
 #' @param section One of "read_lengths", "cumulative_yield", "quality",
 #'   "speed", "throughput", "channels", "length_qscore", "heatmap".
 #'
-#' @returns A character string
+#' @return A character string
 #' @noRd
 caption_description <- function(section) {
 
@@ -63,8 +63,9 @@ caption_description <- function(section) {
     )
   )
 
-  if (!(section %in% names(descriptions)))
-    stop("Unknown report section: ", section)
+  if (!(section %in% names(descriptions))) {
+    stop("Unknown report section: ", section, call. = FALSE)
+  }
 
   return(descriptions[[section]])
 }
@@ -76,12 +77,16 @@ caption_description <- function(section) {
 #' section. It states quantities only, never their causes.
 #'
 #' @param section See \code{caption_description}.
-#' @param seq_summary A dataframe containing the sequencing summary of one
+#' @param seq_summary A data frame containing the sequencing summary of one
 #'   sample
 #' @param platform \code{"minion"} or \code{"promethion"}; sets the number
 #'   of channels on the flow cell.
 #'
-#' @returns A character string
+#' @details Only the MinION (512) and PromethION (3000) channel counts are
+#'   known; runs on other flow cells (e.g. Flongle, 126 channels) are reported
+#'   against 512 channels.
+#'
+#' @return A character string
 #' @noRd
 caption_numbers <- function(section, seq_summary, platform = "minion") {
 
@@ -89,12 +94,15 @@ caption_numbers <- function(section, seq_summary, platform = "minion") {
   passed  <- seq_summary$passes_filtering
   qscores <- seq_summary$mean_qscore_template
 
-  num <- function(x, digits = 0) format(round(x, digits), big.mark = ",", nsmall = digits)
+  # scientific = FALSE: round values such as 100000 were printed as "1e+05"
+  num <- function(x, digits = 0) format(round(x, digits), big.mark = ",", nsmall = digits,
+                                        scientific = FALSE)
   gb  <- function(x) format(signif(x / 1e9, 3), scientific = FALSE)
   med <- function(x) if (length(x) == 0) "none" else num(stats::median(x), 1)
   rate <- function(keep) {
-    if (!any(keep)) "none" else
-      paste0(num(sum(lengths[keep]) / sum(seq_summary$duration[keep])), " bases/s")
+    # zero total duration would give Inf/NaN
+    if (!any(keep) || sum(seq_summary$duration[keep]) <= 0) "none" else
+      paste0(num(sum(lengths[keep]) / sum(seq_summary$duration[keep])), " nt/s")
   }
 
   n_channels <- if (platform == "promethion") 3000 else 512
@@ -139,7 +147,7 @@ caption_numbers <- function(section, seq_summary, platform = "minion") {
                    num(n_channels - dplyr::n_distinct(seq_summary$channel)), " of ",
                    num(n_channels), " channels produced no reads."
                  ),
-                 stop("Unknown report section: ", section)
+                 stop("Unknown report section: ", section, call. = FALSE)
   )
 
   return(text)

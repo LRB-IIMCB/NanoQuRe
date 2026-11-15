@@ -7,22 +7,28 @@
 pore_activity_heatmap(seq_summary, platform = "minion", bin_width = 1)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 
-\item{platform}{Flowcell used for sequencing: \code{"minion"} or
+\item{platform}{Flow cell used for sequencing: \code{"minion"} or
 \code{"promethion"}. Defaults to \code{"minion"}.}
 
-\item{bin_width}{Width of each time bin in hours for the channel-by-time
-heatmap. Defaults to 1. Increase for very long runs to limit matrix size.}
+\item{bin_width}{Width of each time bin in hours (a single positive number)
+for the channel-by-time heatmap. Defaults to 1. Increase for very long runs to limit matrix size.}
 }
 \value{
 plotly object
 }
 \description{
 Generates an interactive heatmap showing channel activity over time and
-channel activity with respect to their disposition on the flowcell.
+channel activity with respect to their disposition on the flow cell.
 }
 \details{
+The input must contain a single \code{run_id}. Only the MinION (512
+channels) and PromethION (3000 channels) layouts are supported. Flongle
+(126 channels) is not: Flongle data passed with \code{platform = "minion"}
+is drawn on the MinION layout, so the spatial panel does not reflect the
+physical positions of the channels.
+
 Function contains helpers originally provided by Barbara Ottolini,
 from Oxford Nanopore Technologies.
 For reference see: https://github.com/sagrudd/nanopoRe/blob/master/R/FlowcellLayout.R

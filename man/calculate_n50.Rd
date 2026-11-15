@@ -7,7 +7,7 @@
 calculate_n50(seq_summary)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 }
 \value{
 Numeric N50 value in bases

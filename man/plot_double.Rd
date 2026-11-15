@@ -7,17 +7,17 @@
 plot_double(seq_summary)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 }
 \value{
 A named list with two plotly objects:
 \describe{
   \item{length_plot}{Read length (min, mean, max) per hour}
-  \item{qscore_plot}{Mean Q score (min, mean, max) per hour}
+  \item{qscore_plot}{Mean Q-score (min, mean, max) per hour}
 }
 }
 \description{
-Generates two interactive plots showing how read length and mean Q score
+Generates two interactive plots showing how read length and mean Q-score
 change over the course of a sequencing run. Returns both as a named list.
 }
 \examples{

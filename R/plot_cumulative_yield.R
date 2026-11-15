@@ -3,12 +3,12 @@
 #' Generates an interactive cumulative plot containing the number of sequenced
 #' bases in Gb over time in hours sorted by pass/fail filtering status.
 #'
-#' @param seq_summary A dataframe containing the sequencing summary
+#' @param seq_summary A data frame containing the sequencing summary
 #' @param max_points Maximum number of points plotted per pass/fail trace.
 #'   Reads are binned by time so very large runs stay performant in the
 #'   browser. Defaults to 2000L.
 #'
-#' @returns plotly object
+#' @return plotly object
 #' @export
 #'
 #' @examples
@@ -17,25 +17,35 @@
 #' }
 plot_cumulative_yield <- function(seq_summary, max_points = 2000L) {
 
-  # Validation
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sample_id' column")
-  if (!("start_time" %in% names(seq_summary)))
-    stop("The data frame is missing the 'start_time' column")
-  if (!("duration" %in% names(seq_summary)))
-    stop("The data frame is missing the 'duration' column")
-  if (!("passes_filtering" %in% names(seq_summary)))
-    stop("The data frame is missing the 'passes_filtering' column")
-  if (!("sequence_length_template" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sequence_length_template' column")
-  if (!is.numeric(seq_summary$sequence_length_template))
-    stop("Column 'sequence_length_template' must be numeric")
-  if (!is.logical(seq_summary$passes_filtering))
-    stop("Column 'passes_filtering' must be logical")
-  if (!is.numeric(seq_summary$start_time))
-    stop("Column 'start_time' must be numeric")
+  #assertions
+  if (missing(seq_summary)) {
+    stop("Sequencing summary is missing. Please provide a valid seq_summary argument.",
+         call. = FALSE)
+  }
+
+  if (!is.data.frame(seq_summary) || nrow(seq_summary) == 0) {
+    stop("Empty data frame provided as an input (seq_summary). Please provide a valid input.",
+         call. = FALSE)
+  }
+
+  # required columns
+  required_cols <- c("sample_id", "start_time", "passes_filtering", "sequence_length_template")
+  missing_cols <- setdiff(required_cols, colnames(seq_summary))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Required columns missing: %s", paste(missing_cols, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  assert_condition(is.numeric(seq_summary$sequence_length_template),
+                   "Column sequence_length_template must be numeric. Please provide a valid argument.")
+  assert_condition(is.logical(seq_summary$passes_filtering),
+                   "Column passes_filtering must be logical. Please provide a valid argument.")
+  assert_condition(is.numeric(seq_summary$start_time),
+                   "Column start_time must be numeric. Please provide a valid argument.")
+
+  assert_condition(is.numeric(max_points) && length(max_points) == 1 &&
+                     !is.na(max_points) && max_points > 0,
+                   "Max_points must be a single positive number. Please provide a valid argument.")
 
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
@@ -46,7 +56,6 @@ plot_cumulative_yield <- function(seq_summary, max_points = 2000L) {
 
   cum_data <- seq_summary %>%
     dplyr::select(start_time, passes_filtering, sequence_length_template) %>%
-    dplyr::arrange(start_time) %>%
     dplyr::mutate(
       h_start_time = start_time / 3600,
       # bin index for each read
@@ -56,8 +65,10 @@ plot_cumulative_yield <- function(seq_summary, max_points = 2000L) {
   build_cum_trace <- function(df) {
     df %>%
       dplyr::arrange(h_start_time) %>%
-      # cumsum over ALL rows first, then take last value per bin
-      dplyr::mutate(bases_gb = cumsum(as.numeric(sequence_length_template)) / 1e9) %>%
+      # cumsum over ALL rows first, then take last value per bin; an NA length
+      # counts as 0 bases so it does not poison every later value
+      dplyr::mutate(bases_gb = cumsum(dplyr::coalesce(
+        as.numeric(sequence_length_template), 0)) / 1e9) %>%
       dplyr::group_by(time_bin) %>%
       dplyr::summarise(bases_gb = dplyr::last(bases_gb), .groups = "drop") %>%
       dplyr::rename(h_start_time = time_bin)
@@ -97,14 +108,14 @@ plot_cumulative_yield <- function(seq_summary, max_points = 2000L) {
       ),
       xaxis = list(
         title = list(text = "<b>Time [h]</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
         title = list(text = "<b>Yield [Gb]</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")

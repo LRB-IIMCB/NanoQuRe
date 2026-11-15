@@ -5,15 +5,15 @@
 \alias{sample_data}
 \title{Example Sequencing Summary}
 \format{
-A data frame with 30 rows and 8 columns:
+A tibble with 1000 rows and 8 columns:
 \describe{
   \item{sample_id}{character. Sample identifier.}
   \item{run_id}{character. Unique run identifier assigned by the basecaller.}
-  \item{channel}{integer. Pore channel number (1–512 for MinION).}
+  \item{channel}{numeric. Pore channel number (1-512 for MinION).}
   \item{start_time}{numeric. Read start time in seconds from run start.}
   \item{duration}{numeric. Read duration in seconds.}
   \item{sequence_length_template}{numeric. Read length in bases.}
-  \item{mean_qscore_template}{numeric. Mean Q score of the read.}
+  \item{mean_qscore_template}{numeric. Mean Q-score of the read.}
   \item{passes_filtering}{logical. Whether the read passed basecaller filters.}
 }
 }
@@ -25,7 +25,7 @@ sample_data
 }
 \description{
 A trimmed sequencing summary file produced by an ONT basecaller (Guppy/Dorado),
-included for use in examples and vignettes. Contains 30 reads from a single
+included for use in examples and vignettes. Contains 1000 reads from a single
 MinION run.
 }
 \keyword{datasets}

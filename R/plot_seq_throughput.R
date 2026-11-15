@@ -3,9 +3,9 @@
 #' Generates an interactive plot with sequence throughput during time
 #' filtered by pass/fail status.
 #'
-#' @param seq_summary A dataframe containing the sequencing summary
+#' @param seq_summary A data frame containing the sequencing summary
 #'
-#' @returns plotly object
+#' @return plotly object
 #' @export
 #'
 #' @examples
@@ -14,23 +14,29 @@
 #' }
 plot_seq_throughput <- function(seq_summary) {
 
-  # Assertions
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sample_id' column")
-  if (!("start_time" %in% names(seq_summary)))
-    stop("The data frame is missing the 'start_time' column")
-  if (!("duration" %in% names(seq_summary)))
-    stop("The data frame is missing the 'duration' column")
-  if (!("passes_filtering" %in% names(seq_summary)))
-    stop("The data frame is missing the 'passes_filtering' column")
-  if (!("sequence_length_template" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sequence_length_template' column")
-  if (!is.logical(seq_summary$passes_filtering))
-    stop("Column 'passes_filtering' must be logical")
-  if (!is.numeric(seq_summary$start_time))
-    stop("Column 'start_time' must be numeric")
+  #assertions
+  if (missing(seq_summary)) {
+    stop("Sequencing summary is missing. Please provide a valid seq_summary argument.",
+         call. = FALSE)
+  }
+
+  if (!is.data.frame(seq_summary) || nrow(seq_summary) == 0) {
+    stop("Empty data frame provided as an input (seq_summary). Please provide a valid input.",
+         call. = FALSE)
+  }
+
+  # required columns
+  required_cols <- c("sample_id", "start_time", "duration", "passes_filtering", "sequence_length_template")
+  missing_cols <- setdiff(required_cols, colnames(seq_summary))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Required columns missing: %s", paste(missing_cols, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  assert_condition(is.logical(seq_summary$passes_filtering),
+                   "Column passes_filtering must be logical. Please provide a valid argument.")
+  assert_condition(is.numeric(seq_summary$start_time),
+                   "Column start_time must be numeric. Please provide a valid argument.")
 
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
@@ -46,10 +52,9 @@ plot_seq_throughput <- function(seq_summary) {
 
   pass_throughput <- cum_data %>%
     dplyr::filter(passes_filtering == TRUE) %>%
-    dplyr::arrange(start_time) %>%
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour) %>%
-    dplyr::summarise(yield_per_hour = sum(sequence_length_template) / 1e9,
+    dplyr::summarise(yield_per_hour = sum(sequence_length_template, na.rm = TRUE) / 1e9,
                      .groups = "drop") %>%
     dplyr::right_join(all_hours, by = "hour") %>%
     dplyr::arrange(hour) %>%
@@ -57,10 +62,9 @@ plot_seq_throughput <- function(seq_summary) {
 
   fail_throughput <- cum_data %>%
     dplyr::filter(passes_filtering == FALSE) %>%
-    dplyr::arrange(start_time) %>%
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour) %>%
-    dplyr::summarise(yield_per_hour = sum(sequence_length_template) / 1e9,
+    dplyr::summarise(yield_per_hour = sum(sequence_length_template, na.rm = TRUE) / 1e9,
                      .groups = "drop") %>%
     dplyr::right_join(all_hours, by = "hour") %>%
     dplyr::arrange(hour) %>%
@@ -92,14 +96,14 @@ plot_seq_throughput <- function(seq_summary) {
       ),
       xaxis = list(
         title = list(text = "<b>Time [h]</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
         title = list(text = "<b>Yield per hour [Gb]</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")

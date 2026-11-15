@@ -7,10 +7,10 @@
 plot_active_channels(seq_summary, thresholds = c(0.5, 0.25), bin_width = 1/6)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 
-\item{thresholds}{Numeric vector of fractions at which to draw threshold
-lines. Defaults to c(0.50, 0.25).}
+\item{thresholds}{Numeric vector of fractions (each greater than 0 and at
+most 1) at which to draw threshold lines. Defaults to c(0.50, 0.25).}
 
 \item{bin_width}{Width of each time window in hours. Defaults to 1/6
 (10 minutes).}
@@ -26,7 +26,9 @@ a window when at least one of its reads overlaps that window. Vertical
 dashed lines mark the first window after the reference point in which the
 number of active channels falls to 50\% and 25\% of the reference, where
 the reference is the highest count within the first hour of the run. If a
-threshold is not reached, a note is displayed on the plot.
+threshold is not reached, a note is displayed on the plot. The final window
+of a run is usually only partly covered by reads, so it is shown in the
+curve but ignored when looking for threshold crossings.
 }
 \details{
 The sequencing summary does not record pore (mux) scans or pauses, so

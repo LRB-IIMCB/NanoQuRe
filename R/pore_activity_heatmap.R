@@ -1,19 +1,25 @@
 #' Pore Activity Heatmap
 #'
 #' Generates an interactive heatmap showing channel activity over time and
-#' channel activity with respect to their disposition on the flowcell.
+#' channel activity with respect to their disposition on the flow cell.
+#'
+#' The input must contain a single \code{run_id}. Only the MinION (512
+#' channels) and PromethION (3000 channels) layouts are supported. Flongle
+#' (126 channels) is not: Flongle data passed with \code{platform = "minion"}
+#' is drawn on the MinION layout, so the spatial panel does not reflect the
+#' physical positions of the channels.
 #'
 #' Function contains helpers originally provided by Barbara Ottolini,
 #' from Oxford Nanopore Technologies.
 #' For reference see: https://github.com/sagrudd/nanopoRe/blob/master/R/FlowcellLayout.R
 #'
-#' @param seq_summary A dataframe containing the sequencing summary
-#' @param platform Flowcell used for sequencing: \code{"minion"} or
+#' @param seq_summary A data frame containing the sequencing summary
+#' @param platform Flow cell used for sequencing: \code{"minion"} or
 #'   \code{"promethion"}. Defaults to \code{"minion"}.
-#' @param bin_width Width of each time bin in hours for the channel-by-time
-#'   heatmap. Defaults to 1. Increase for very long runs to limit matrix size.
+#' @param bin_width Width of each time bin in hours (a single positive number)
+#'   for the channel-by-time heatmap. Defaults to 1. Increase for very long runs to limit matrix size.
 #'
-#' @returns plotly object
+#' @return plotly object
 #' @export
 #'
 #' @examples
@@ -24,30 +30,48 @@ pore_activity_heatmap <- function(seq_summary,
                                   platform = "minion",
                                   bin_width = 1) {
 
-  # Assertions
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("run_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'run_id' column")
-  if (!("channel" %in% names(seq_summary)))
-    stop("The data frame is missing the 'channel' column")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sample_id' column")
-  if (!("start_time" %in% names(seq_summary)))
-    stop("The data frame is missing the 'start_time' column")
-  if (!("sequence_length_template" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sequence_length_template' column")
-  if (!(platform %in% c("minion", "promethion")))
-    stop("Wrong platform specified. Choose either 'minion' or 'promethion'")
-  if (dplyr::n_distinct(seq_summary$run_id) != 1)
-    stop("Sequencing summary must contain only one run_id")
+  #assertions
+  if (missing(seq_summary)) {
+    stop("Sequencing summary is missing. Please provide a valid seq_summary argument.",
+         call. = FALSE)
+  }
+
+  if (!is.data.frame(seq_summary) || nrow(seq_summary) == 0) {
+    stop("Empty data frame provided as an input (seq_summary). Please provide a valid input.",
+         call. = FALSE)
+  }
+
+  # required columns
+  required_cols <- c("run_id", "channel", "sample_id", "start_time",
+                     "sequence_length_template", "duration")
+  missing_cols <- setdiff(required_cols, colnames(seq_summary))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Required columns missing: %s", paste(missing_cols, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  assert_condition(is.numeric(seq_summary$duration),
+                   "Column duration must be numeric. Please provide a valid argument.")
+  assert_condition(is.numeric(bin_width) && length(bin_width) == 1 &&
+                     !is.na(bin_width) && bin_width > 0,
+                   "Bin_width must be a single positive number of hours. Please provide a valid argument.")
+  assert_condition(!anyNA(seq_summary$start_time) && !anyNA(seq_summary$duration),
+                   "Columns start_time and duration must not contain NA values. Please provide a valid input.")
+
+  if (!(is_string(platform) && platform %in% c("minion", "promethion"))) {
+    stop("Wrong platform specified. Choose either 'minion' or 'promethion'.",
+         call. = FALSE)
+  }
+
+  assert_condition(dplyr::n_distinct(seq_summary$run_id) == 1,
+                   "Sequencing summary must contain only one run_id. Please provide a valid input.")
 
   ##############################################################################
   # Channel map helpers
   # the following helper functions were kindly provided by Barbara Ottolini,
   # from Oxford Nanopore Technologies,
   # pointing at https://github.com/sagrudd/nanopoRe/blob/master/R/FlowcellLayout.R
-  # these should provide the channels layout in MinION and PromethION flowcells
+  # these should provide the channels layout in MinION and PromethION flow cells
 
   getPromethIONChannelMap <- function() {
     chunk <- function(i) {
@@ -86,7 +110,11 @@ pore_activity_heatmap <- function(seq_summary,
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
 
-  tab <- data.table::data.table(seq_summary)
+  # only the columns used below are kept
+  tab <- data.frame(channel = seq_summary$channel,
+                    start_time = seq_summary$start_time,
+                    duration = seq_summary$duration,
+                    sequence_length_template = seq_summary$sequence_length_template)
   # real read-end time in hours; the previous rescale() to [0, round(max)]
   # shifted the time axis and, with left-open bins, dropped the earliest read
   # (and the whole temporal panel for runs shorter than 30 min)
@@ -106,9 +134,10 @@ pore_activity_heatmap <- function(seq_summary,
 
   # out-of-range channels used to be dropped silently (e.g. PromethION data
   # with the default platform = "minion" lost ~80% of bases from the map)
-  if (any(is.na(tab$channel)) || any(tab$channel < 1 | tab$channel > n_channels))
+  if (any(is.na(tab$channel)) || any(tab$channel < 1 | tab$channel > n_channels)) {
     stop("Channel ids must be between 1 and ", n_channels, " for platform '",
-         platform, "'. Check the 'platform' argument.")
+         platform, "'. Check the 'platform' argument.", call. = FALSE)
+  }
 
   # Channel activity matrices
   # channels_activity_overtime <- matrix(0, ncol = n_channels, nrow = length(bins) - 1)
@@ -126,28 +155,23 @@ pore_activity_heatmap <- function(seq_summary,
   # }
 
   ##############################################################################
-  # Channel activity matrices - vectorized via data.table grouping instead of
-  # a per-channel x per-bin nested loop. Previously O(n_channels * n_bins)
-  # regardless of how much data was supplied (the reason this function took
-  # ~5s even on tiny example data); now O(nrow(seq_summary)).
+  # channel activity matrices - grouped sums with rowsum() instead of a
+  # per-channel x per-bin nested loop, so the cost follows the number of reads
+  # and not n_channels * n_bins
   # left-closed bins [from, to): every read falls into exactly one bin
-  tab[, bin_idx := floor(template_unix / bin_width) - first_bin + 1]
+  tab$channel <- as.integer(tab$channel)
+  tab$bin_idx <- as.integer(floor(tab$template_unix / bin_width) - first_bin + 1)
 
   channels_activity <- rep(0, n_channels)
-  channel_totals <- tab[
-    channel >= 1 & channel <= n_channels,
-    .(total = sum(sequence_length_template)),
-    by = channel
-  ]
-  channels_activity[channel_totals$channel] <- channel_totals$total
+  channel_totals <- rowsum(tab$sequence_length_template, tab$channel)
+  channels_activity[as.integer(rownames(channel_totals))] <- channel_totals[, 1]
 
+  # one sum per (bin, channel) cell, addressed by its column-major position
+  # in the n_bins x n_channels matrix
   channels_activity_overtime <- matrix(0, ncol = n_channels, nrow = n_bins)
-  bin_channel_totals <- tab[
-    bin_idx >= 1 & bin_idx <= n_bins & channel >= 1 & channel <= n_channels,
-    .(total = sum(sequence_length_template)),
-    by = .(bin_idx, channel)
-  ]
-  channels_activity_overtime[cbind(bin_channel_totals$bin_idx, bin_channel_totals$channel)] <- bin_channel_totals$total
+  cell_idx <- (tab$channel - 1L) * n_bins + tab$bin_idx
+  cell_totals <- rowsum(tab$sequence_length_template, cell_idx)
+  channels_activity_overtime[as.integer(rownames(cell_totals))] <- cell_totals[, 1]
   ##############################################################################
 
   channels_activity_labels <- matrix("0", nrow = max(layout$row), ncol = max(layout$col))

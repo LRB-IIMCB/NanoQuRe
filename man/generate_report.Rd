@@ -12,15 +12,16 @@ generate_report(
 )
 }
 \arguments{
-\item{...}{One or more dataframes containing sequencing summaries}
+\item{...}{One or more data frames containing sequencing summaries, or
+paths to tab-separated sequencing summary files}
 
-\item{output_file}{Name of the output HTML file,
-default is "NanoQuRe_Report.html"}
+\item{output_file}{Name of the output HTML file (a file name without a
+directory component), default is "NanoQuRe_Report.html"}
 
 \item{output_dir}{Directory the rendered report is written to. Defaults
 to the current working directory.}
 
-\item{platform}{Flowcell platform forwarded to
+\item{platform}{Flow cell platform forwarded to
 \code{\link{pore_activity_heatmap}}: \code{"minion"} or
 \code{"promethion"}. Defaults to \code{"minion"}.}
 }
@@ -28,9 +29,23 @@ to the current working directory.}
 Path to the rendered HTML report
 }
 \description{
-Generates an HTML QC report from one or more sequencing summary dataframes.
+Generates an HTML QC report from one or more sequencing summaries.
 Automatically selects a single-sample or multi-sample template based on
 the number of unique sample IDs present in the data.
+}
+\details{
+Every input must contain the columns \code{run_id},
+  \code{channel}, \code{start_time}, \code{duration},
+  \code{sequence_length_template}, \code{mean_qscore_template}, and
+  \code{passes_filtering}. Only these columns and \code{sample_id} are
+  read from a file. Raw Guppy or Dorado sequencing summaries do not
+  contain \code{sample_id}: for a file without this column the file name
+  (without directory and extension) is used as the sample identifier. A
+  data frame input must contain \code{sample_id}, as there is no file name
+  to fall back on. The \code{passes_filtering} column may be
+  logical, TRUE/FALSE text or 1/0. A sample spanning several
+  \code{run_id} values triggers a warning, because reads from different
+  runs share one time axis in the plots.
 }
 \examples{
 \dontrun{

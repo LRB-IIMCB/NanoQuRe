@@ -3,9 +3,9 @@
 #' Calculates the N50 value: the read length at which 50% of all sequenced
 #' bases are contained in reads of that length or longer.
 #'
-#' @param seq_summary A dataframe containing the sequencing summary
+#' @param seq_summary A data frame containing the sequencing summary
 #'
-#' @returns Numeric N50 value in bases
+#' @return Numeric N50 value in bases
 #' @export
 #'
 #' @examples
@@ -17,20 +17,33 @@
 #' }
 calculate_n50 <- function(seq_summary) {
 
-  # Assertions
-  if (!("sequence_length_template" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sequence_length_template' column")
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!is.numeric(seq_summary$sequence_length_template))
-    stop("Column 'sequence_length_template' must be numeric")
+  #assertions
+  if (missing(seq_summary)) {
+    stop("Sequencing summary is missing. Please provide a valid seq_summary argument.",
+         call. = FALSE)
+  }
+
+  if (!is.data.frame(seq_summary) || nrow(seq_summary) == 0) {
+    stop("Empty data frame provided as an input (seq_summary). Please provide a valid input.",
+         call. = FALSE)
+  }
+
+  # required columns
+  required_cols <- c("sequence_length_template")
+  missing_cols <- setdiff(required_cols, colnames(seq_summary))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Required columns missing: %s", paste(missing_cols, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  assert_condition(is.numeric(seq_summary$sequence_length_template),
+                   "Column sequence_length_template must be numeric. Please provide a valid argument.")
 
   total_bases <- sum(seq_summary$sequence_length_template, na.rm = TRUE)
   half_data <- total_bases / 2
-  descend_seq <- seq_summary %>%
-    dplyr::select(sequence_length_template) %>%
-    dplyr::arrange(dplyr::desc(sequence_length_template)) %>%
-    dplyr::pull(sequence_length_template)
+  # sort the vector directly instead of copying the whole data frame
+  descend_seq <- sort(seq_summary$sequence_length_template,
+                      decreasing = TRUE, na.last = NA)
   cumulative_sum <- cumsum(descend_seq)
   n50_index <- which(cumulative_sum >= half_data)[1]
   n50_value <- descend_seq[n50_index]

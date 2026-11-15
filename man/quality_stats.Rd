@@ -7,15 +7,17 @@
 quality_stats(seq_summary)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 }
 \value{
-A dataframe with quality metrics for the sequencing run
+A data frame with quality metrics for the sequencing run
 }
 \description{
 Generates a table containing the most important quality metrics from a
 sequencing summary: number of all reads, number of passed reads, N50 value,
-mean Q-score, longest read length, and mean length of passed reads.
+mean Q-score, longest read length, and mean length of passed reads. Missing
+values in read lengths and Q-scores are removed from every summary; the
+mean length of passed reads is \code{NA} when no read passes the filter.
 }
 \examples{
 \dontrun{

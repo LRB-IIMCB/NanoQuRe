@@ -7,7 +7,7 @@
 plot_cumulative_yield(seq_summary, max_points = 2000L)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 
 \item{max_points}{Maximum number of points plotted per pass/fail trace.
 Reads are binned by time so very large runs stay performant in the

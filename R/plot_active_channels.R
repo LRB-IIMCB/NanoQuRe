@@ -7,20 +7,21 @@
 #' dashed lines mark the first window after the reference point in which the
 #' number of active channels falls to 50\% and 25\% of the reference, where
 #' the reference is the highest count within the first hour of the run. If a
-#' threshold is not reached, a note is displayed on the plot.
+#' threshold is not reached, a note is displayed on the plot. The final window
+#' of a run is usually only partly covered by reads, so it is shown in the
+#' curve but ignored when looking for threshold crossings.
 #'
 #' The sequencing summary does not record pore (mux) scans or pauses, so
 #' short periodic dips or gaps in the curve can reflect run control rather
 #' than pore loss.
 #'
-#' @param seq_summary A dataframe containing the sequencing summary
-#' @param thresholds Numeric vector of fractions at which to draw threshold
-#'   lines. Defaults to c(0.50, 0.25).
+#' @param seq_summary A data frame containing the sequencing summary
+#' @param thresholds Numeric vector of fractions (each greater than 0 and at
+#'   most 1) at which to draw threshold lines. Defaults to c(0.50, 0.25).
 #' @param bin_width Width of each time window in hours. Defaults to 1/6
 #'   (10 minutes).
 #'
-#' @returns plotly object
-#' @import dplyr
+#' @return plotly object
 #' @export
 #'
 #' @examples
@@ -31,49 +32,69 @@ plot_active_channels <- function(seq_summary,
                                  thresholds = c(0.50, 0.25),
                                  bin_width = 1 / 6) {
 
-  # Assertion
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("start_time" %in% names(seq_summary)))
-    stop("The data frame is missing the 'start_time' column")
-  if (!("duration" %in% names(seq_summary)))
-    stop("The data frame is missing the 'duration' column")
-  if (!("channel" %in% names(seq_summary)))
-    stop("The data frame is missing the 'channel' column")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing 'sample_id' column")
-  if (!is.numeric(seq_summary$start_time))
-    stop("Column 'start_time' must be numeric")
-  if (!is.numeric(seq_summary$duration))
-    stop("Column 'duration' must be numeric")
+  #assertions
+  if (missing(seq_summary)) {
+    stop("Sequencing summary is missing. Please provide a valid seq_summary argument.",
+         call. = FALSE)
+  }
 
-  if (!is.numeric(bin_width) || length(bin_width) != 1 || !(bin_width > 0))
-    stop("bin_width must be a positive number of hours")
+  if (!is.data.frame(seq_summary) || nrow(seq_summary) == 0) {
+    stop("Empty data frame provided as an input (seq_summary). Please provide a valid input.",
+         call. = FALSE)
+  }
+
+  # required columns
+  required_cols <- c("sample_id", "start_time", "duration", "channel")
+  missing_cols <- setdiff(required_cols, colnames(seq_summary))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Required columns missing: %s", paste(missing_cols, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  assert_condition(is.numeric(seq_summary$start_time),
+                   "Column start_time must be numeric. Please provide a valid argument.")
+
+  assert_condition(is.numeric(seq_summary$duration),
+                   "Column duration must be numeric. Please provide a valid argument.")
+
+  assert_condition(is.numeric(bin_width) && length(bin_width) == 1 && isTRUE(bin_width > 0),
+                   "Bin_width must be a positive number of hours. Please provide a valid argument.")
+
+  assert_condition(is.numeric(thresholds) && length(thresholds) > 0 &&
+                     !any(is.na(thresholds)) && all(thresholds > 0 & thresholds <= 1),
+                   "Thresholds must be numeric fractions greater than 0 and at most 1. Please provide a valid argument.")
 
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
 
-  reads <- seq_summary[!is.na(seq_summary$start_time) &
-                         !is.na(seq_summary$duration) &
-                         !is.na(seq_summary$channel), ]
-  if (nrow(reads) == 0)
-    stop("No reads with start_time, duration and channel available")
+  # only the three needed columns are kept before the rows are filtered
+  reads <- seq_summary[, c("start_time", "duration", "channel")]
+  reads <- reads[!is.na(reads$start_time) &
+                   !is.na(reads$duration) &
+                   !is.na(reads$channel), ]
+  if (nrow(reads) == 0) {
+    stop("No reads with start_time, duration and channel available", call. = FALSE)
+  }
 
   # every window a read overlaps, from its start window to its end window
   first_bin <- floor(reads$start_time / 3600 / bin_width)
   last_bin  <- floor((reads$start_time + reads$duration) / 3600 / bin_width)
   n_windows <- last_bin - first_bin + 1
   read_idx  <- rep(seq_len(nrow(reads)), n_windows)
-  window_channel <- unique(data.frame(
-    bin     = first_bin[read_idx] + sequence(n_windows) - 1,
-    channel = reads$channel[read_idx]
-  ))
+  window_bin <- first_bin[read_idx] + sequence(n_windows) - 1
 
   # windows without any read are kept as zero active channels
   all_bins <- seq(min(first_bin), max(last_bin))
+
+  # (window, channel) pairs are de-duplicated on one numeric key, which is much
+  # cheaper than unique() on a two-column data frame of all read-window rows
+  channel_id <- match(reads$channel, unique(reads$channel))[read_idx]
+  pair_key <- (window_bin - min(all_bins)) * max(channel_id) + channel_id
+  window_bin <- window_bin[!duplicated(pair_key)]
+
   active_by_window <- data.frame(
     bin = all_bins,
-    active_channels = tabulate(window_channel$bin - min(all_bins) + 1,
+    active_channels = tabulate(window_bin - min(all_bins) + 1,
                                nbins = length(all_bins))
   )
   active_by_window$time_h <- active_by_window$bin * bin_width
@@ -104,18 +125,20 @@ plot_active_channels <- function(seq_summary,
 
     thr_count <- round(initial_channels * thr)
 
+    # the final window is usually partial, so it is not searched
     crossing_time <- active_by_window %>%
-      dplyr::filter(time_h > reference_time, active_channels <= thr_count) %>%
+      dplyr::filter(time_h > reference_time, bin < max(bin),
+                    active_channels <= thr_count) %>%
       dplyr::slice(1) %>%
       dplyr::pull(time_h)
 
     if (length(crossing_time) == 0) {
-      missed_labels <- c(missed_labels, paste0(thr * 100, "%"))
+      missed_labels <- c(missed_labels, paste0(format(thr * 100), "%"))
       next
     }
 
     thr_label <- paste0(
-      thr * 100, "% of first-hour maximum"
+      format(thr * 100), "% of first-hour maximum"
     )
 
     channel_plot <- channel_plot %>%

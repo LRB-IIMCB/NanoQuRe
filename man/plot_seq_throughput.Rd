@@ -7,7 +7,7 @@
 plot_seq_throughput(seq_summary)
 }
 \arguments{
-\item{seq_summary}{A dataframe containing the sequencing summary}
+\item{seq_summary}{A data frame containing the sequencing summary}
 }
 \value{
 plotly object

@@ -1,14 +1,14 @@
 #' Plot Length and Q-score Over Time
 #'
-#' Generates two interactive plots showing how read length and mean Q score
+#' Generates two interactive plots showing how read length and mean Q-score
 #' change over the course of a sequencing run. Returns both as a named list.
 #'
-#' @param seq_summary A dataframe containing the sequencing summary
+#' @param seq_summary A data frame containing the sequencing summary
 #'
-#' @returns A named list with two plotly objects:
+#' @return A named list with two plotly objects:
 #' \describe{
 #'   \item{length_plot}{Read length (min, mean, max) per hour}
-#'   \item{qscore_plot}{Mean Q score (min, mean, max) per hour}
+#'   \item{qscore_plot}{Mean Q-score (min, mean, max) per hour}
 #' }
 #' @export
 #'
@@ -20,54 +20,76 @@
 #' }
 plot_double <- function(seq_summary) {
 
-  # Assertions
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sample_id' column")
-  if (!("start_time" %in% names(seq_summary)))
-    stop("The data frame is missing the 'start_time' column")
-  if (!("duration" %in% names(seq_summary)))
-    stop("The data frame is missing the 'duration' column")
-  if (!("passes_filtering" %in% names(seq_summary)))
-    stop("The data frame is missing the 'passes_filtering' column")
-  if (!("sequence_length_template" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sequence_length_template' column")
-  if (!("mean_qscore_template" %in% names(seq_summary)))
-    stop("The data frame is missing the 'mean_qscore_template' column")
-  if (!is.logical(seq_summary$passes_filtering))
-    stop("Column 'passes_filtering' must be logical")
-  if (!is.numeric(seq_summary$start_time))
-    stop("Column 'start_time' must be numeric")
+  #assertions
+  if (missing(seq_summary)) {
+    stop("Sequencing summary is missing. Please provide a valid seq_summary argument.",
+         call. = FALSE)
+  }
+
+  if (!is.data.frame(seq_summary) || nrow(seq_summary) == 0) {
+    stop("Empty data frame provided as an input (seq_summary). Please provide a valid input.",
+         call. = FALSE)
+  }
+
+  # required columns
+  required_cols <- c("sample_id", "start_time", "sequence_length_template",
+                     "mean_qscore_template")
+  missing_cols <- setdiff(required_cols, colnames(seq_summary))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Required columns missing: %s", paste(missing_cols, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  assert_condition(is.numeric(seq_summary$mean_qscore_template),
+                   "Column mean_qscore_template must be numeric. Please provide a valid argument.")
+
+  assert_condition(is.numeric(seq_summary$start_time),
+                   "Column start_time must be numeric. Please provide a valid argument.")
 
   # Data prep
   sample_name <- dplyr::first(seq_summary$sample_id)
 
+  # every hour of the run gets a row: hours without reads stay NA so the
+  # lines break instead of being interpolated across the gap
+  all_hours <- data.frame(
+    hour = seq(floor(min(seq_summary$start_time, na.rm = TRUE) / 3600),
+               floor(max(seq_summary$start_time, na.rm = TRUE) / 3600))
+  )
+
   double_data <- seq_summary %>%
-    dplyr::select(start_time, duration, sequence_length_template,
-                  mean_qscore_template) %>%
-    dplyr::arrange(start_time) %>%
+    dplyr::select(start_time, sequence_length_template, mean_qscore_template) %>%
     dplyr::mutate(hour = floor(start_time / 3600)) %>%
     dplyr::group_by(hour)
 
   summary_length <- double_data %>%
     dplyr::summarise(
-      max_length = max(sequence_length_template),
-      min_length = min(sequence_length_template),
-      av_length = mean(sequence_length_template),
+      max_length = suppressWarnings(max(sequence_length_template, na.rm = TRUE)),
+      # zero-length reads are left out of the minimum: 0 cannot be drawn on the
+      # log y axis
+      min_length = suppressWarnings(
+        min(sequence_length_template[sequence_length_template > 0], na.rm = TRUE)),
+      av_length = mean(sequence_length_template, na.rm = TRUE),
       .groups = "drop"
-    )
-  # true minimum is kept; flooring it at 50 could plot min > max
+    ) %>%
+    # all-NA hours give +/-Inf and NaN, which are mapped to NA
+    dplyr::mutate(dplyr::across(-hour, ~ ifelse(is.finite(.x), .x, NA_real_))) %>%
+    dplyr::right_join(all_hours, by = "hour") %>%
+    dplyr::arrange(hour)
+  # true minimum (of reads with positive length) is kept; flooring it at 50
+  # could plot min > max
 
   summary_qscore <- double_data %>%
     dplyr::summarise(
-      max_qscore = max(mean_qscore_template),
-      min_qscore = min(mean_qscore_template),
-      av_qscore = mean(mean_qscore_template),
+      max_qscore = suppressWarnings(max(mean_qscore_template, na.rm = TRUE)),
+      min_qscore = suppressWarnings(min(mean_qscore_template, na.rm = TRUE)),
+      av_qscore = mean(mean_qscore_template, na.rm = TRUE),
       .groups = "drop"
-    )
+    ) %>%
+    dplyr::mutate(dplyr::across(-hour, ~ ifelse(is.finite(.x), .x, NA_real_))) %>%
+    dplyr::right_join(all_hours, by = "hour") %>%
+    dplyr::arrange(hour)
 
-  # shared legend config — shown on length plot only to avoid duplication
+  # shared legend config - shown on length plot only to avoid duplication
   legend_outside <- list(
     x = 1.02,
     y = 1,
@@ -86,7 +108,7 @@ plot_double <- function(seq_summary) {
       y = ~max_length,
       name = "Max",
       line = list(color = "#E69F00", width = 2),
-      hovertemplate = "Time: %{x} h<br>Max length: %{y} bp<extra></extra>"
+      hovertemplate = "Time: %{x} h<br>Max length: %{y} nt<extra></extra>"
     ) %>%
     plotly::add_lines(
       data = summary_length,
@@ -94,7 +116,7 @@ plot_double <- function(seq_summary) {
       y = ~av_length,
       name = "Average",
       line = list(color = "#009E73", width = 2),
-      hovertemplate = "Time: %{x} h<br>Avg length: %{y:.0f} bp<extra></extra>"
+      hovertemplate = "Time: %{x} h<br>Avg length: %{y:.0f} nt<extra></extra>"
     ) %>%
     plotly::add_lines(
       data = summary_length,
@@ -102,7 +124,7 @@ plot_double <- function(seq_summary) {
       y = ~min_length,
       name = "Min",
       line = list(color = "#56B4E9", width = 2),
-      hovertemplate = "Time: %{x} h<br>Min length: %{y} bp<extra></extra>"
+      hovertemplate = "Time: %{x} h<br>Min length: %{y} nt<extra></extra>"
     ) %>%
     plotly::layout(
       title = list(
@@ -112,14 +134,14 @@ plot_double <- function(seq_summary) {
       ),
       xaxis = list(
         title = list(text = "<b>Time [h]</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
-        title = list(text = "<b>Length [bp]</b>",
-                          font = list(size = 13, family = "Arial")),
+        title = list(text = "<b>Length [nt]</b>",
+                     font = list(size = 13, family = "Arial")),
         type = "log",
         dtick = "D2",
         tickformat = ",.0f",
@@ -132,7 +154,7 @@ plot_double <- function(seq_summary) {
       legend = legend_outside
     )
 
-  # Q score plot (legend hidden — same colours as length plot)
+  # Q-score plot (legend hidden - same colours as length plot)
   qscore_plot <- plotly::plot_ly() %>%
     plotly::add_lines(
       data = summary_qscore,
@@ -169,14 +191,14 @@ plot_double <- function(seq_summary) {
       ),
       xaxis = list(
         title = list(text = "<b>Time [h]</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")
       ),
       yaxis = list(
         title = list(text = "<b>Q-score</b>",
-                         font = list(size = 13, family = "Arial")),
+                     font = list(size = 13, family = "Arial")),
         showgrid = TRUE,
         gridcolor = "#e0e0e0",
         tickfont = list(size = 11, family = "Arial", color = "#333333")

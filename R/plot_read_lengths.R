@@ -2,16 +2,17 @@
 #'
 #' Generates an interactive histogram of read lengths. Reads are counted in
 #' fixed bins (50 bins per order of magnitude on the default log axis, 200
-#' equal bins on a linear axis), so the plot size does not grow with the
+#' equal bins on a linear axis; with \code{upper_limit} the linear bins are
+#' sized to the visible range), so the plot size does not grow with the
 #' number of reads. Two vertical lines represent the mean read length and the
 #' N50 value calculated with \code{\link{calculate_n50}}.
 #'
-#' @param seq_summary A dataframe containing the sequencing summary
+#' @param seq_summary A data frame containing the sequencing summary
 #' @param upper_limit Upper limit of the x axis in nucleotides. If NULL
 #'   (default), the full length range is shown. Reads beyond the limit are
 #'   counted in an on-plot note.
-#' @param y_limit Upper limit of the y axis. If NULL (default), the axis is
-#'   scaled automatically.
+#' @param y_limit Upper limit of the y axis (a single positive number). If NULL
+#'   (default), the axis is scaled automatically.
 #' @param log_x Logical; plot lengths on a log10 axis. Defaults to TRUE.
 #'   Reads of length 0 cannot be shown on a log axis and are counted in an
 #'   on-plot note.
@@ -19,7 +20,7 @@
 #'   of reads per bin) or \code{"bases"} (sum of read lengths per bin, i.e.
 #'   where the sequenced bases are).
 #'
-#' @returns plotly object
+#' @return plotly object
 #' @export
 #'
 #' @examples
@@ -33,24 +34,49 @@ plot_read_lengths <- function(seq_summary,
                               log_x = TRUE,
                               weight = "reads") {
 
-  # Assertions
-  if (nrow(seq_summary) == 0)
-    stop("The input data frame is empty")
-  if (!("sequence_length_template" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sequence_length_template' column")
-  if (!("sample_id" %in% names(seq_summary)))
-    stop("The data frame is missing the 'sample_id' column")
-  if (!is.numeric(seq_summary$sequence_length_template))
-    stop("Column 'sequence_length_template' must be numeric")
-  if (!(weight %in% c("reads", "bases")))
-    stop("weight must be either 'reads' or 'bases'")
-  if (!is.logical(log_x) || is.na(log_x))
-    stop("log_x must be TRUE or FALSE")
+  #assertions
+  if (missing(seq_summary)) {
+    stop("Sequencing summary is missing. Please provide a valid seq_summary argument.",
+         call. = FALSE)
+  }
+
+  if (!is.data.frame(seq_summary) || nrow(seq_summary) == 0) {
+    stop("Empty data frame provided as an input (seq_summary). Please provide a valid input.",
+         call. = FALSE)
+  }
+
+  # required columns
+  required_cols <- c("sample_id", "sequence_length_template")
+  missing_cols <- setdiff(required_cols, colnames(seq_summary))
+  if (length(missing_cols) > 0) {
+    stop(sprintf("Required columns missing: %s", paste(missing_cols, collapse = ", ")),
+         call. = FALSE)
+  }
+
+  assert_condition(is.numeric(seq_summary$sequence_length_template),
+                   "Column sequence_length_template must be numeric. Please provide a valid argument.")
+
+  if (!is_string(weight) || !(weight %in% c("reads", "bases"))) {
+    stop("Weight must be either 'reads' or 'bases'. Please provide a valid argument.",
+         call. = FALSE)
+  }
+
+  assert_condition(is.logical(log_x) && length(log_x) == 1 && !is.na(log_x),
+                   "Log_x must be TRUE or FALSE. Please provide a valid argument.")
 
   if (!is.null(upper_limit)) {
+    # numeric strings are accepted
     upper_limit <- suppressWarnings(as.numeric(upper_limit))
-    if (is.na(upper_limit))
-      stop("upper_limit must be a number")
+    assert_condition(length(upper_limit) == 1 && !is.na(upper_limit),
+                     "Upper_limit must be a number. Please provide a valid argument.")
+    assert_condition(upper_limit > 0,
+                     "Upper_limit must be a positive number. Please provide a valid argument.")
+  }
+
+  if (!is.null(y_limit)) {
+    assert_condition(is.numeric(y_limit) && length(y_limit) == 1 && !is.na(y_limit) &&
+                       y_limit > 0,
+                     "Y_limit must be a single positive number. Please provide a valid argument.")
   }
 
   # Data prep
@@ -63,8 +89,9 @@ plot_read_lengths <- function(seq_summary,
   # zero-length reads have no position on a log axis
   n_hidden_zero <- if (log_x) sum(lengths <= 0) else 0
   shown <- if (log_x) lengths[lengths > 0] else lengths
-  if (length(shown) == 0)
-    stop("No reads of positive length to plot; use log_x = FALSE")
+  if (length(shown) == 0) {
+    stop("No reads of positive length to plot; use log_x = FALSE", call. = FALSE)
+  }
 
   # bin edges; the last edge lies above the longest read so every read is counted
   if (log_x) {
@@ -73,7 +100,12 @@ plot_read_lengths <- function(seq_summary,
     high <- floor(log10(max(shown)) * steps_per_decade) + 1
     breaks <- 10^(seq(low, high) / steps_per_decade)
   } else {
-    bin_width <- max(1, ceiling(max(shown) / 200))
+    # bin width follows the visible maximum so that a few very long reads do
+    # not leave only a couple of bins in the visible range; the breaks below
+    # still extend over every read, with the total capped at 50000 bins so the
+    # plot size stays bounded when upper_limit is far below the longest read
+    visible_max <- if (is.null(upper_limit)) max(shown) else min(max(shown), upper_limit)
+    bin_width <- max(1, ceiling(visible_max / 200), ceiling(max(shown) / 50000))
     breaks <- seq(0, (floor(max(shown) / bin_width) + 1) * bin_width, by = bin_width)
   }
 
@@ -111,9 +143,11 @@ plot_read_lengths <- function(seq_summary,
   if (weight == "reads") {
     y_title <- "<b>Number of reads</b>"
     trace_name <- "Read counts"
+    hover_label <- "Count"
   } else {
     y_title <- "<b>Number of bases</b>"
     trace_name <- "Bases"
+    hover_label <- "Bases"
   }
 
   x_range <- if (is.null(upper_limit)) {
@@ -135,7 +169,8 @@ plot_read_lengths <- function(seq_summary,
       line          = list(color = "#404040", width = 1, shape = "hv"),
       fill          = "tozeroy",
       fillcolor     = "rgba(64, 64, 64, 0.6)",
-      hovertemplate = "Length: %{x:.0f}-%{customdata:.0f} nt<br>Count: %{y}<extra></extra>"
+      hovertemplate = paste0("Length: %{x:.0f}-%{customdata:.0f} nt<br>",
+                             hover_label, ": %{y}<extra></extra>")
     ) %>%
     plotly::add_lines(
       x             = c(mean_length, mean_length),
